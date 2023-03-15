@@ -1,12 +1,25 @@
 package com.example.tourapp;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.widget.ViewPager2;
@@ -16,11 +29,14 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private ViewPager2 viewPager2;
     private TabLayout tabLayout;
+    private LinearLayout pop_upsview;
+
 
     private List<Fragment> fragmentList;
     private TabLayoutMediator mediator;
@@ -31,10 +47,42 @@ public class MainActivity extends AppCompatActivity {
     int activeSize = 25;
     int noemalSize = 16;
 
+    private final String[] permissionArray = new String[]{
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.READ_MEDIA_AUDIO,
+            Manifest.permission.READ_MEDIA_IMAGES,
+            Manifest.permission.READ_MEDIA_VIDEO,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+
+    };
+    private ActivityResultLauncher<String[]> requestPermissions;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestPermissions = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), new ActivityResultCallback<Map<String, Boolean>>() {
+            @Override
+            public void onActivityResult(Map<String, Boolean> result) {
+                boolean internet = Boolean.TRUE.equals(result.get(Manifest.permission.INTERNET));
+                //boolean writeStorage = Boolean.TRUE.equals(result.get(Manifest.permission.WRITE_EXTERNAL_STORAGE));
+                //boolean readStorage = Boolean.TRUE.equals(result.get(Manifest.permission.READ_EXTERNAL_STORAGE));
+                boolean accessNetWork = Boolean.TRUE.equals(result.get(Manifest.permission.ACCESS_NETWORK_STATE));
+                boolean readContacts = Boolean.TRUE.equals(result.get(Manifest.permission.READ_CONTACTS));
+                boolean readPhoneState = Boolean.TRUE.equals(result.get(Manifest.permission.READ_PHONE_STATE));
+                boolean readaudio = Boolean.TRUE.equals(result.get(Manifest.permission.READ_MEDIA_AUDIO));
+                boolean readimages = Boolean.TRUE.equals(result.get(Manifest.permission.READ_MEDIA_IMAGES));
+                boolean readVodeo = Boolean.TRUE.equals(result.get(Manifest.permission.READ_MEDIA_VIDEO));
+                boolean writeStorage = Boolean.TRUE.equals(result.get(Manifest.permission.WRITE_EXTERNAL_STORAGE));
+
+            }
+        });
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        checkVersion();
 
         tabtext = new String[]{"地图", "旅游团", "用户"};
 
@@ -48,8 +96,8 @@ public class MainActivity extends AppCompatActivity {
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragmentList);
         viewPager2.setAdapter(viewPagerAdapter);
-
-       // viewPager2.registerOnPageChangeCallback(changeCallback);
+        viewPager2.setUserInputEnabled(false);
+        // viewPager2.registerOnPageChangeCallback(changeCallback);
 
         mediator = new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
             @Override
@@ -57,27 +105,42 @@ public class MainActivity extends AppCompatActivity {
                 switch (position) {
                     case 0:
                         tab.setText(tabtext[0]);
+
                         break;
                     case 1:
                         tab.setText(tabtext[1]);
+
                         break;
                     case 2:
                         tab.setText(tabtext[2]);
+
                         break;
                 }
             }
         });
         mediator.attach();
-        ;
+        viewPager2.setUserInputEnabled(false);
+
+    }
+
+    private void checkVersion() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            for (int i = 0; i < permissionArray.length; i++) {
+                if (checkSelfPermission(permissionArray[i]) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions.launch(permissionArray);
+                }
+            }
+        }
     }
 
     @Override
     public void onBackPressed() {
         if (viewPager2.getCurrentItem() == 0) {
-            super.onBackPressed();
+                super.onBackPressed();
         } else {
             viewPager2.setCurrentItem(viewPager2.getCurrentItem() - 1);
         }
+
     }
 
 //    private ViewPager2.OnPageChangeCallback changeCallback = new ViewPager2.OnPageChangeCallback() {
@@ -103,7 +166,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         mediator.detach();
-       // viewPager2.unregisterOnPageChangeCallback(changeCallback);
+        // viewPager2.unregisterOnPageChangeCallback(changeCallback);
         super.onDestroy();
     }
+
 }
