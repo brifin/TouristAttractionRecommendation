@@ -141,7 +141,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             case R.id.placebtu:
                 break;
             case R.id.detailbtu:
-                Toast.makeText(getContext(), "Detail", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getContext(), DetailActivity.class);
                 startActivity(intent);
                 break;
