@@ -2,28 +2,22 @@ package com.example.tourapp;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.tourapp.adapter.ViewPagerAdapter;
+import com.example.tourapp.fragment.MapFragment;
+import com.example.tourapp.fragment.TourFragment;
+import com.example.tourapp.fragment.UserFragment;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 

@@ -1,4 +1,4 @@
-package com.example.tourapp;
+package com.example.tourapp.fragment;
 
 import android.Manifest;
 import android.content.Intent;
@@ -27,6 +27,8 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
+import com.example.tourapp.DetailActivity;
+import com.example.tourapp.R;
 
 import java.util.ArrayList;
 import java.util.List;
