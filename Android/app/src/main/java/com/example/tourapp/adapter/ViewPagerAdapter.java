@@ -1,4 +1,4 @@
-package com.example.tourapp;
+package com.example.tourapp.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;

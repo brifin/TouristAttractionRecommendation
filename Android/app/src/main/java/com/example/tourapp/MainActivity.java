@@ -2,28 +2,22 @@ package com.example.tourapp;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.tourapp.adapter.ViewPagerAdapter;
+import com.example.tourapp.fragment.MapFragment;
+import com.example.tourapp.fragment.TourFragment;
+import com.example.tourapp.fragment.UserFragment;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -40,12 +34,12 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Fragment> fragmentList;
     private TabLayoutMediator mediator;
-    private String[] tabtext;
+    private String[] tabText;
     int activeColor = R.color.purple_200;
     int normalColor = R.color.black;
 
     int activeSize = 25;
-    int noemalSize = 16;
+    int normalSize = 16;
 
     private final String[] permissionArray = new String[]{
             Manifest.permission.INTERNET,
@@ -71,9 +65,9 @@ public class MainActivity extends AppCompatActivity {
                 boolean accessNetWork = Boolean.TRUE.equals(result.get(Manifest.permission.ACCESS_NETWORK_STATE));
                 boolean readContacts = Boolean.TRUE.equals(result.get(Manifest.permission.READ_CONTACTS));
                 boolean readPhoneState = Boolean.TRUE.equals(result.get(Manifest.permission.READ_PHONE_STATE));
-                boolean readaudio = Boolean.TRUE.equals(result.get(Manifest.permission.READ_MEDIA_AUDIO));
-                boolean readimages = Boolean.TRUE.equals(result.get(Manifest.permission.READ_MEDIA_IMAGES));
-                boolean readVodeo = Boolean.TRUE.equals(result.get(Manifest.permission.READ_MEDIA_VIDEO));
+                boolean readAudio = Boolean.TRUE.equals(result.get(Manifest.permission.READ_MEDIA_AUDIO));
+                boolean readImages = Boolean.TRUE.equals(result.get(Manifest.permission.READ_MEDIA_IMAGES));
+                boolean readVideo = Boolean.TRUE.equals(result.get(Manifest.permission.READ_MEDIA_VIDEO));
                 boolean writeStorage = Boolean.TRUE.equals(result.get(Manifest.permission.WRITE_EXTERNAL_STORAGE));
 
             }
@@ -84,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         checkVersion();
 
-        tabtext = new String[]{"地图", "旅游团", "用户"};
+        tabText = new String[]{"地图", "旅游团", "用户"};
 
         fragmentList = new ArrayList<Fragment>();
         fragmentList.add(new MapFragment());
@@ -104,15 +98,15 @@ public class MainActivity extends AppCompatActivity {
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
                 switch (position) {
                     case 0:
-                        tab.setText(tabtext[0]);
+                        tab.setText(tabText[0]);
 
                         break;
                     case 1:
-                        tab.setText(tabtext[1]);
+                        tab.setText(tabText[1]);
 
                         break;
                     case 2:
-                        tab.setText(tabtext[2]);
+                        tab.setText(tabText[2]);
 
                         break;
                 }

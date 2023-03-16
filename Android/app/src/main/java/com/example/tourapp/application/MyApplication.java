@@ -1,4 +1,4 @@
-package com.example.tourapp;
+package com.example.tourapp.application;
 
 import android.app.Application;
 import android.content.Context;
