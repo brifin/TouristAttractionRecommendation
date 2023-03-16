@@ -28,13 +28,21 @@
         android:theme="@style/Theme.TourApp"
         tools:targetApi="31">
         <activity
+            android:name=".PlaceActivity2"
+            android:exported="false"
+            android:theme="@style/PlaceTheme" />
+        <activity
+            android:name=".PhotoActivity"
+            android:exported="false"
+            android:theme="@style/PhotoTheme" />
+        <activity
             android:name=".DetailActivity"
             android:exported="false"
-            android:theme="@style/DetailTheme"/>
+            android:theme="@style/DetailTheme" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="Q2hgRZo3cVX5ceHsSG3Z3yPTSns1GLdK"></meta-data>
+            android:value="Q2hgRZo3cVX5ceHsSG3Z3yPTSns1GLdK" />
 
         <activity
             android:name=".MainActivity"
@@ -49,7 +57,7 @@
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote"></service>
+            android:process=":remote" />
     </application>
 
 </manifest>

@@ -137,12 +137,16 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.photobtu:
+                Intent intent_photo = new Intent(getContext(), PhotoActivity.class);
+                startActivity(intent_photo);
                 break;
             case R.id.placebtu:
+                Intent intent_Place = new Intent(getContext(), PlaceActivity2.class);
+                startActivity(intent_Place);
                 break;
             case R.id.detailbtu:
-                Intent intent = new Intent(getContext(), DetailActivity.class);
-                startActivity(intent);
+                Intent intent_Detail = new Intent(getContext(), DetailActivity.class);
+                startActivity(intent_Detail);
                 break;
             default:
                 break;
