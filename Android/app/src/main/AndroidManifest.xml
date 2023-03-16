@@ -31,7 +31,7 @@
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".PlaceActivity2"
+            android:name=".PlaceActivity"
             android:exported="false"
             android:theme="@style/PlaceTheme" />
         <activity

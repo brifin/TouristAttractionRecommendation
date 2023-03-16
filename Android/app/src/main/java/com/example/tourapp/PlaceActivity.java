@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
-public class PlaceActivity2 extends AppCompatActivity {
+public class PlaceActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

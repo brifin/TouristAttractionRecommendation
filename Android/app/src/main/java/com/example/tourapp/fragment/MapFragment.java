@@ -1,12 +1,8 @@
 package com.example.tourapp.fragment;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -28,10 +24,9 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
 import com.example.tourapp.DetailActivity;
+import com.example.tourapp.PhotoActivity;
+import com.example.tourapp.PlaceActivity;
 import com.example.tourapp.R;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class MapFragment extends Fragment implements View.OnClickListener {
@@ -143,7 +138,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 startActivity(intent_photo);
                 break;
             case R.id.placebtu:
-                Intent intent_Place = new Intent(getContext(), PlaceActivity2.class);
+                Intent intent_Place = new Intent(getContext(), PlaceActivity.class);
                 startActivity(intent_Place);
                 break;
             case R.id.detailbtu:
