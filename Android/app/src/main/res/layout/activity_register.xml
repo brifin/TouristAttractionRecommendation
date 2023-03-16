@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="20dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="160dp"
+    android:weightSum="1"
+    android:background="@drawable/register">
+
+    <EditText
+        android:drawableLeft="@android:drawable/ic_menu_myplaces"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:inputType="text"
+        android:ems="10"
+        android:id="@+id/et_reset_username"
+        android:layout_alignParentTop="true"
+        android:hint="请输入您的用户名"
+        android:layout_alignLeft="@+id/et_new_password"
+        android:layout_alignStart="@+id/et_new_password"
+        android:layout_alignRight="@+id/et_new_password"
+        android:layout_alignEnd="@+id/et_new_password"
+        android:background="@drawable/editext_selector"/>
+
+
+    <EditText
+        android:drawableLeft="@android:drawable/ic_lock_idle_lock"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/et_old_password"
+        android:hint="请输入您的密码"
+        android:layout_below="@+id/et_reset_username"
+        android:layout_alignRight="@+id/et_reset_username"
+        android:layout_alignEnd="@+id/et_reset_username"
+        android:layout_alignLeft="@+id/et_reset_username"
+        android:layout_alignStart="@+id/et_reset_username"
+        android:background="@drawable/editext_selector"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="取消"
+        android:id="@+id/btn_cancel"
+        android:textSize="20dp"
+        android:background="#95D14F"
+        android:layout_below="@+id/btn_sure"
+        android:layout_alignLeft="@+id/btn_sure"
+        android:layout_alignStart="@+id/btn_sure"
+        android:layout_marginTop="10dp" />
+
+    <EditText
+        android:drawableLeft="@android:drawable/ic_lock_idle_lock"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/et_new_password"
+        android:layout_below="@+id/et_old_password"
+        android:layout_centerHorizontal="true"
+        android:hint="请确认您的密码"
+        android:background="@drawable/editext_selector"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="确定"
+        android:id="@+id/btn_sure"
+        android:textSize="20dp"
+        android:background="#2196F3"
+        android:layout_below="@+id/et_new_password"
+        android:layout_alignLeft="@+id/et_new_password"
+        android:layout_alignStart="@+id/et_new_password"
+        android:layout_marginTop="50dp" />
+
+</RelativeLayout>
