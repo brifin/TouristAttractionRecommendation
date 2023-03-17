@@ -26,7 +26,7 @@
             android:layout_weight="1"
             android:layout_height="52dp"
             android:background="@drawable/shape_edit_normal"
-            android:src="@drawable/user"/>
+            android:src="@drawable/user_item"/>
         <EditText
             android:layout_width="0dp"
             android:layout_weight="5"

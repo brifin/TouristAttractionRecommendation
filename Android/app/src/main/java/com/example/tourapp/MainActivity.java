@@ -2,19 +2,25 @@ package com.example.tourapp;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.tourapp.adapter.ViewPagerAdapter;
+import com.example.tourapp.application.MyApplication;
 import com.example.tourapp.fragment.MapFragment;
 import com.example.tourapp.fragment.TourFragment;
 import com.example.tourapp.fragment.UserFragment;
@@ -30,11 +36,15 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager2 viewPager2;
     private TabLayout tabLayout;
     private LinearLayout pop_upsview;
+    private TextView itemTextview;
 
 
     private List<Fragment> fragmentList;
     private TabLayoutMediator mediator;
     private String[] tabText;
+    int[] itemLayout;
+    int[] itemImgId;
+    int[] itemtvId;
     int activeColor = R.color.purple_200;
     int normalColor = R.color.black;
 
@@ -79,6 +89,9 @@ public class MainActivity extends AppCompatActivity {
         checkVersion();
 
         tabText = new String[]{"地图", "旅游团", "用户"};
+        itemLayout = new int[] {R.layout.mapitemlayout, R.layout.tourteamitem, R.layout.useritem};
+        itemImgId = new int[] {R.id.mapimg, R.id.tourteamimg, R.id.userimg};
+        itemtvId = new int[] {R.id.mapitemtv, R.id.touritemtv, R.id.useritemtv};
 
         fragmentList = new ArrayList<Fragment>();
         fragmentList.add(new MapFragment());
@@ -98,22 +111,47 @@ public class MainActivity extends AppCompatActivity {
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
                 switch (position) {
                     case 0:
-                        tab.setText(tabText[0]);
-
+                        //tab.setText(tabText[0]);
+                        View view0 = LayoutInflater.from(MyApplication.getContext()).inflate(itemLayout[0],null);
+                        tab.setCustomView(view0);
                         break;
                     case 1:
-                        tab.setText(tabText[1]);
+                        //tab.setText(tabText[1]);
+                        View view1 = LayoutInflater.from(MyApplication.getContext()).inflate(itemLayout[1],null);
+                        tab.setCustomView(view1);
 
                         break;
                     case 2:
-                        tab.setText(tabText[2]);
-
+                        //tab.setText(tabText[2]);
+                        View view2 = LayoutInflater.from(MyApplication.getContext()).inflate(itemLayout[2],null);
+                        tab.setCustomView(view2);
                         break;
                 }
             }
         });
         mediator.attach();
         viewPager2.setUserInputEnabled(false);
+        //选中改变图片颜色和文字颜色
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                tab.getCustomView().findViewById(itemImgId[tab.getPosition()]).setFocusable(true);
+                itemTextview = (TextView) tab.getCustomView().findViewById(itemtvId[tab.getPosition()]);
+                itemTextview.setTextColor(getColor(R.color.teal_700));
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                tab.getCustomView().findViewById(itemImgId[tab.getPosition()]).setFocusable(false);
+                itemTextview = (TextView) tab.getCustomView().findViewById(itemtvId[tab.getPosition()]);
+                itemTextview.setTextColor(getColor(R.color.black));
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
     }
 
@@ -137,25 +175,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    private ViewPager2.OnPageChangeCallback changeCallback = new ViewPager2.OnPageChangeCallback() {
-//        @Override
-//        public void onPageSelected(int position) {
-//            int tabCount = tabLayout.getTabCount();
-//
-//            for (int i = 0; i < tabCount; i++) {
-//                TabLayout.Tab tab = tabLayout.getTabAt(i);
-//                TextView textView = (TextView) tab.getCustomView();
-//
-//                if (tab.getPosition() == position) {
-//                    textView.setTextSize(activeSize);
-//                    textView.setTypeface(Typeface.DEFAULT_BOLD);
-//                } else {
-//                    textView.setTextSize(noemalSize);
-//                    textView.setTypeface(Typeface.DEFAULT);
-//                }
-//            }
-//        }
-//    };
 
     @Override
     protected void onDestroy() {

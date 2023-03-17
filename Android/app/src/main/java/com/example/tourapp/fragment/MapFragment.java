@@ -50,24 +50,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        permissionList = new ArrayList<String>();
-//        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-//            permissionList.add(Manifest.permission.INTERNET);
-//        }
-//        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
-//            permissionList.add(Manifest.permission.ACCESS_NETWORK_STATE);
-//        }
-//        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//            permissionList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-//        }
-//        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//            permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-//        }
-//        if (!permissionList.isEmpty()) {
-//            String[] permissions = permissionList.toArray(new String[permissionList.size()]);
-//            requestPermissions(permissions, 1001);
-//        }
-
     }
 
 

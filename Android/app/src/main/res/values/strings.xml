@@ -20,4 +20,5 @@
     <string name="register">没有账号?点击注册</string>
     <string name="login_success">登录成功</string>
     <string name="login_failed">登陆失败</string>
+
 </resources>
