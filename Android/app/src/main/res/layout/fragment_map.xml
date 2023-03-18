@@ -57,9 +57,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/teal_700"
+            android:background="#70B874"
             android:text="图片"
-            android:textColor="@color/purple_500" />
+            android:textColor="@color/white" />
         <View
             android:layout_width="1px"
             android:layout_height="match_parent"
@@ -70,9 +70,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/teal_700"
+            android:background="#70B874"
             android:text="地点"
-            android:textColor="@color/purple_500" />
+            android:textColor="@color/white" />
 
         <View
             android:layout_width="1px"
@@ -84,9 +84,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/teal_700"
+            android:background="#70B874"
             android:text="详细"
-            android:textColor="@color/purple_500" />
+            android:textColor="@color/white" />
 
     </LinearLayout>
 
