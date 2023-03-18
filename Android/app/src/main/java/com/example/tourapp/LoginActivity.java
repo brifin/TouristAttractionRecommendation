@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }else {
                     editor.putBoolean("mRememberCheck",false);
                 }
-                editor.commit();
+                editor.apply();
                 Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                 startActivity(intent);
                 finish();

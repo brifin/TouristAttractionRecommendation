@@ -21,7 +21,7 @@ public class UpdatePasswordActivity extends AppCompatActivity implements View.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_forget_password);
+        setContentView(R.layout.activity_reset_password);
         et_name = findViewById(R.id.et_name);
         et_reset_old_password = findViewById(R.id.et_reset_old_password);
         et_reset_new_password = findViewById(R.id.et_reset_new_password);
