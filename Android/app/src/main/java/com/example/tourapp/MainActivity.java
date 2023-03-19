@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.READ_MEDIA_IMAGES,
             Manifest.permission.READ_MEDIA_VIDEO,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-
     };
     private ActivityResultLauncher<String[]> requestPermissions;
 
@@ -70,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onActivityResult(Map<String, Boolean> result) {
                 boolean internet = Boolean.TRUE.equals(result.get(Manifest.permission.INTERNET));
-                //boolean writeStorage = Boolean.TRUE.equals(result.get(Manifest.permission.WRITE_EXTERNAL_STORAGE));
-                //boolean readStorage = Boolean.TRUE.equals(result.get(Manifest.permission.READ_EXTERNAL_STORAGE));
                 boolean accessNetWork = Boolean.TRUE.equals(result.get(Manifest.permission.ACCESS_NETWORK_STATE));
                 boolean readContacts = Boolean.TRUE.equals(result.get(Manifest.permission.READ_CONTACTS));
                 boolean readPhoneState = Boolean.TRUE.equals(result.get(Manifest.permission.READ_PHONE_STATE));
@@ -79,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
                 boolean readImages = Boolean.TRUE.equals(result.get(Manifest.permission.READ_MEDIA_IMAGES));
                 boolean readVideo = Boolean.TRUE.equals(result.get(Manifest.permission.READ_MEDIA_VIDEO));
                 boolean writeStorage = Boolean.TRUE.equals(result.get(Manifest.permission.WRITE_EXTERNAL_STORAGE));
-
             }
         });
 
@@ -87,7 +83,31 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         checkVersion();
+        initView();
 
+        //选中改变图片颜色和文字颜色
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                tab.getCustomView().findViewById(itemImgId[tab.getPosition()]).setFocusable(true);
+                itemTextview = (TextView) tab.getCustomView().findViewById(itemtvId[tab.getPosition()]);
+                itemTextview.setTextColor(getColor(R.color.teal_700));
+            }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                tab.getCustomView().findViewById(itemImgId[tab.getPosition()]).setFocusable(false);
+                itemTextview = (TextView) tab.getCustomView().findViewById(itemtvId[tab.getPosition()]);
+                itemTextview.setTextColor(getColor(R.color.black));
+            }
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+    }
+    //初始化视图
+    public void initView(){
         tabText = new String[]{"地图", "旅游团", "用户"};
         itemLayout = new int[] {R.layout.mapitemlayout, R.layout.tourteamitem, R.layout.useritem};
         itemImgId = new int[] {R.id.mapimg, R.id.tourteamimg, R.id.userimg};
@@ -104,25 +124,20 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragmentList);
         viewPager2.setAdapter(viewPagerAdapter);
         viewPager2.setUserInputEnabled(false);
-        // viewPager2.registerOnPageChangeCallback(changeCallback);
 
         mediator = new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
             @Override
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
                 switch (position) {
                     case 0:
-                        //tab.setText(tabText[0]);
                         View view0 = LayoutInflater.from(MyApplication.getContext()).inflate(itemLayout[0],null);
                         tab.setCustomView(view0);
                         break;
                     case 1:
-                        //tab.setText(tabText[1]);
                         View view1 = LayoutInflater.from(MyApplication.getContext()).inflate(itemLayout[1],null);
                         tab.setCustomView(view1);
-
                         break;
                     case 2:
-                        //tab.setText(tabText[2]);
                         View view2 = LayoutInflater.from(MyApplication.getContext()).inflate(itemLayout[2],null);
                         tab.setCustomView(view2);
                         break;
@@ -131,28 +146,6 @@ public class MainActivity extends AppCompatActivity {
         });
         mediator.attach();
         viewPager2.setUserInputEnabled(false);
-        //选中改变图片颜色和文字颜色
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                tab.getCustomView().findViewById(itemImgId[tab.getPosition()]).setFocusable(true);
-                itemTextview = (TextView) tab.getCustomView().findViewById(itemtvId[tab.getPosition()]);
-                itemTextview.setTextColor(getColor(R.color.teal_700));
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                tab.getCustomView().findViewById(itemImgId[tab.getPosition()]).setFocusable(false);
-                itemTextview = (TextView) tab.getCustomView().findViewById(itemtvId[tab.getPosition()]);
-                itemTextview.setTextColor(getColor(R.color.black));
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
     }
 
     private void checkVersion() {
@@ -164,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
+    //设置返回
     @Override
     public void onBackPressed() {
         if (viewPager2.getCurrentItem() == 0) {
@@ -175,12 +168,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     protected void onDestroy() {
         mediator.detach();
-        // viewPager2.unregisterOnPageChangeCallback(changeCallback);
         super.onDestroy();
     }
-
 }
