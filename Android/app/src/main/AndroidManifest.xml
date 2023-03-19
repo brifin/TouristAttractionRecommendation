@@ -31,14 +31,6 @@
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".PlaceActivity"
-            android:exported="false"
-            android:theme="@style/PlaceTheme" />
-        <activity
-            android:name=".PhotoActivity"
-            android:exported="false"
-            android:theme="@style/PhotoTheme" />
-        <activity
             android:name=".DetailActivity"
             android:exported="false"
             android:theme="@style/DetailTheme" />
