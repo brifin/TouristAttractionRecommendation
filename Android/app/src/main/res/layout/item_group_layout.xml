@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--个人信息界面（编辑资料界面）的每个item-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -15,20 +14,23 @@
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal">
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:src="@drawable/dianzan"/>
-
         <TextView
             android:id="@+id/title_tv"
             android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/gray"
+            android:text="旅游点"/>
+
+        <TextView
+            android:id="@+id/content_edt"
+            android:layout_width="0dp"
             android:layout_weight="4"
             android:layout_height="wrap_content"
-            android:textColor="#C1D4DF"
+            android:textColor="@color/gray_"
             android:textSize="18sp"
-            tools:text="我点赞的" />
+            android:hint="我点赞的" />
 
 
         <!--点击跳转或者弹出选择框-->

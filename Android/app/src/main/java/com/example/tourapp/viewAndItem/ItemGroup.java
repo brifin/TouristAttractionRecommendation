@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 
 import com.example.tourapp.R;
 
-
 public class ItemGroup extends FrameLayout {
 
     private LinearLayout itemGroupLayout; //组合控件的布局
@@ -50,6 +49,7 @@ public class ItemGroup extends FrameLayout {
         View view = LayoutInflater.from(context).inflate(R.layout.item_group_layout, null);
         itemGroupLayout = (LinearLayout) view.findViewById(R.id.item_group_layout);
         titleTv = (TextView) view.findViewById(R.id.title_tv);
+        contentEdt = (TextView) view.findViewById(R.id.content_edt);
         jtRightIv = (ImageView) view.findViewById(R.id.jt_right_iv);
         addView(view); //把自定义的这个组合控件的布局加入到当前FramLayout
     }

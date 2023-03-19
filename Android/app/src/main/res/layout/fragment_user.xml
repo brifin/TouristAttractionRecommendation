@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".fragment.UserFragment">
 
-    <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:id="@+id/layout_titlebar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -43,7 +43,7 @@
             android:gravity="center"
             android:paddingRight="5dp"
             android:singleLine="true"
-            android:src="@drawable/tourImage" />
+            android:src="@drawable/tour_image" />
 
     </LinearLayout>
 
@@ -121,5 +121,56 @@
         android:layout_height="24dp"
         android:background="#E0E5E8"/>
 
+    <com.example.tourapp.viewAndItem.ItemGroup
+        android:id="@+id/ig_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:jt_visible="false"
+        app:paddingLeft="5dp"
+        app:title="ID号" />
+
+    <com.example.tourapp.viewAndItem.ItemGroup
+        android:id="@+id/ig_nickname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:jt_visible="true"
+        app:edt_hint_content="修改昵称"
+        app:paddingLeft="5dp"
+        app:title="昵称"/>
+
+    <com.example.tourapp.viewAndItem.ItemGroup
+        android:id="@+id/ig_gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:jt_visible="true"
+        app:edt_hint_content="请选择性别"
+        app:paddingLeft="5dp"
+        app:title="性别"/>
+
+
+    <com.example.tourapp.viewAndItem.ItemGroup
+        android:id="@+id/ig_like"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:jt_visible="true"
+        app:paddingLeft="5dp"
+        app:title="我点赞过"/>
+
+    <com.example.tourapp.viewAndItem.ItemGroup
+        android:id="@+id/ig_arrive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:jt_visible="true"
+        app:paddingLeft="5dp"
+        app:title="我到达过"/>
+
+    <com.example.tourapp.viewAndItem.ItemGroup
+        android:id="@+id/ig_birthday"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:jt_visible="true"
+        app:edt_hint_content="请选择生日"
+        app:paddingLeft="5dp"
+        app:title="生日"/>
 
 </LinearLayout>
