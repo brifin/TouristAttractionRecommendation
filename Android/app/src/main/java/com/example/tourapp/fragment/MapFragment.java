@@ -145,7 +145,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     setAnimation(pop_upsView);
                 }
             }
-
             @Override
             public void onMapPoiClick(MapPoi mapPoi) {
 

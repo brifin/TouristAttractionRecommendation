@@ -21,23 +21,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:orientation="horizontal">
+            android:layout_marginTop="35dp"
+            android:orientation="vertical"
+            android:layout_marginRight="10dp">
 
             <Button
+                android:layout_gravity="right"
                 android:id="@+id/recommendbtu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bt_press"
+                android:layout_width="40dp"
+                android:layout_height="65dp"
+                android:background="@drawable/recommend_item"
                 android:text="推荐"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textSize="10sp"/>
 
             <Button
                 android:id="@+id/pathbtu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bt_press"
+                android:layout_width="40dp"
+                android:layout_height="65dp"
+                android:background="@drawable/path_item"
                 android:text="生成路径"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textSize="10sp"/>
 
 
         </LinearLayout>
@@ -83,41 +88,39 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-               >
+                android:layout_marginLeft="10dp">
 
                 <TextView
                     android:id="@+id/detailtext"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scrollbars="vertical"
-                    android:text="天安门（旧称：承天门）位于中国北京市中心，故宫的南端，属于首批全国重点文物保护单位之一，中国国家象征之一。天安门正中门洞上方悬挂着毛泽东画像，两边分别是“中华人民共和国万岁”和“世界人民大团结万岁”的大幅标语。天安门（旧称：承天门）位于中国北京市中心，故宫的南端，属于首批全国重点文物保护单位之一，中国国家象征之一。天安门正中门洞上方悬挂着毛泽东画像，两边分别是与动荡的国际形势和作为世界最大经济体、也是西方民主代表的美国令人震惊的国内分裂形成鲜明对比的是，中国在我们眼前展现的不可思议的壮举让人们相信，用不了多久，中国就能实现民族复兴的中国梦。事实上，任何冷静地观察美国国会大厦危机的人都知道，我们正在目睹一场重大变化，在国际政治中具有显着潜力的回响，成群结队的破坏者冲进了现任美国总统本人鼓励的大楼。两个世纪以来，美国民主被视为西方的典范，由于内部原因，它正在急剧破裂。"/>
+                    android:text="天安门（旧称：承天门）位于中国北京市中心，故宫的南端，属于首批全国重点文物保护单位之一，中国国家象征之一。天安门正中门洞上方悬挂着毛泽东画像，两边分别是“中华人民共和国万岁”和“世界人民大团结万岁”的大幅标语。天安门（旧称：承天门）位于中国北京市中心，故宫的南端，属于首批全国重点文物保护单位之一，中国国家象征之一。天安门正中门洞上方悬挂着毛泽东画像，两边分别是与动荡的国际形势和作为世界最大经济体、也是西方民主代表的美国令人震惊的国内分裂形成鲜明对比的是，中国在我们眼前展现的不可思议的壮举让人们相信，用不了多久，中国就能实现民族复兴的中国梦。事实上，任何冷静地观察美国国会大厦危机的人都知道，我们正在目睹一场重大变化，在国际政治中具有显着潜力的回响，成群结队的破坏者冲进了现任美国总统本人鼓励的大楼。两个世纪以来，美国民主被视为西方的典范，由于内部原因，它正在急剧破裂。" />
             </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_marginTop="15dp"
-                android:layout_marginLeft="120dp"
                 android:id="@+id/heart"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/heart"
-                />
+                android:layout_marginLeft="120dp"
+                android:layout_marginTop="15dp"
+                android:src="@drawable/heart" />
 
 
             <ImageView
-                android:layout_marginTop="50dp"
-                android:layout_marginLeft="5dp"
                 android:id="@+id/detailImage1"
                 android:layout_width="160dp"
                 android:layout_height="200dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="50dp"
                 android:src="@drawable/tiananmen_test" />
 
 

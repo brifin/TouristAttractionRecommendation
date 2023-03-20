@@ -7,6 +7,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,6 +17,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
@@ -79,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         checkVersion();
@@ -93,12 +95,14 @@ public class MainActivity extends AppCompatActivity {
                 itemTextview = (TextView) tab.getCustomView().findViewById(itemtvId[tab.getPosition()]);
                 itemTextview.setTextColor(getColor(R.color.teal_700));
             }
+
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 tab.getCustomView().findViewById(itemImgId[tab.getPosition()]).setFocusable(false);
                 itemTextview = (TextView) tab.getCustomView().findViewById(itemtvId[tab.getPosition()]);
                 itemTextview.setTextColor(getColor(R.color.black));
             }
+
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 
@@ -106,12 +110,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
     //初始化视图
-    public void initView(){
+    public void initView() {
         tabText = new String[]{"地图", "旅游团", "用户"};
-        itemLayout = new int[] {R.layout.mapitemlayout, R.layout.tourteamitem, R.layout.useritem};
-        itemImgId = new int[] {R.id.mapimg, R.id.tourteamimg, R.id.userimg};
-        itemtvId = new int[] {R.id.mapitemtv, R.id.touritemtv, R.id.useritemtv};
+        itemLayout = new int[]{R.layout.mapitemlayout, R.layout.tourteamitem, R.layout.useritem};
+        itemImgId = new int[]{R.id.mapimg, R.id.tourteamimg, R.id.userimg};
+        itemtvId = new int[]{R.id.mapitemtv, R.id.touritemtv, R.id.useritemtv};
 
         fragmentList = new ArrayList<Fragment>();
         fragmentList.add(new MapFragment());
@@ -130,15 +135,15 @@ public class MainActivity extends AppCompatActivity {
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
                 switch (position) {
                     case 0:
-                        View view0 = LayoutInflater.from(MyApplication.getContext()).inflate(itemLayout[0],null);
+                        View view0 = LayoutInflater.from(MyApplication.getContext()).inflate(itemLayout[0], null);
                         tab.setCustomView(view0);
                         break;
                     case 1:
-                        View view1 = LayoutInflater.from(MyApplication.getContext()).inflate(itemLayout[1],null);
+                        View view1 = LayoutInflater.from(MyApplication.getContext()).inflate(itemLayout[1], null);
                         tab.setCustomView(view1);
                         break;
                     case 2:
-                        View view2 = LayoutInflater.from(MyApplication.getContext()).inflate(itemLayout[2],null);
+                        View view2 = LayoutInflater.from(MyApplication.getContext()).inflate(itemLayout[2], null);
                         tab.setCustomView(view2);
                         break;
                 }
@@ -146,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
         });
         mediator.attach();
         viewPager2.setUserInputEnabled(false);
+        hideStable();
     }
 
     private void checkVersion() {
@@ -157,15 +163,28 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
     //设置返回
     @Override
     public void onBackPressed() {
         if (viewPager2.getCurrentItem() == 0) {
-                super.onBackPressed();
+            super.onBackPressed();
         } else {
             viewPager2.setCurrentItem(viewPager2.getCurrentItem() - 1);
         }
 
+    }
+
+    //隐藏状态栏
+    public void hideStable() {
+//        View decorView = getWindow().getDecorView();
+//        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN
+//                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                | View.SYSTEM_UI_FLAG_IMMERSIVE
+//                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+//        decorView.setSystemUiVisibility(uiOptions);
+        getSupportActionBar().hide();
     }
 
     @Override

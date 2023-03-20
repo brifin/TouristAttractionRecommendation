@@ -3,6 +3,8 @@ plugins {
     id 'com.google.relay' version '0.3.02'
 }
 
+
+
 android {
     namespace 'com.example.tourapp'
     compileSdk 33

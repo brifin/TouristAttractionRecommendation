@@ -2,15 +2,20 @@
     <!-- Base application theme. -->
     <style name="Theme.TourApp" parent="Theme.MaterialComponents.DayNight.Bridge">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#79BC7C</item>
+        <item name="colorPrimary">#F5F8F5</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">#F5EEF6</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
+<!--        <item name="android:windowBackground">@color/transparent</item>-->
+<!--        <item name="android:windowIsTranslucent">true</item>-->
+<!--        <item name="android:windowTranslucentStatus">true</item>-->
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">#79BC7C</item>
+<!--        设置状态栏透明-->
+        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
         <!-- Customize your theme here. -->
     </style>
 </resources>
