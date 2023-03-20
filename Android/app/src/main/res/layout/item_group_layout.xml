@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--个人信息界面（编辑资料界面）的每个item-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:paddingLeft="0dp">
+
+    <LinearLayout
+        android:id="@+id/item_group_layout"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/title_tv"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/gray"
+            android:text="旅游点"/>
+
+        <TextView
+            android:id="@+id/content_edt"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray_"
+            android:textSize="18sp"
+            android:hint="我点赞的" />
+
+
+        <!--点击跳转或者弹出选择框-->
+        <ImageView
+            android:id="@+id/jt_right_iv"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="25dp"
+            android:layout_marginRight="7dp"
+            android:padding="8dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/forward" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:background="#E0E5E8" />
+</LinearLayout>

@@ -11,6 +11,12 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="view_white">#e8e8e8</color>
+
     <color name="transparent">#00FFFFFF</color>
+
+    <color name="gray">#515659</color>
+    <color name="gray_">#868B8E</color>
+    <color name="orange">#ffffdd</color>
+
 
 </resources>

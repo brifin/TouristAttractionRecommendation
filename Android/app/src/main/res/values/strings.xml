@@ -5,7 +5,7 @@
     <string name="user">用户</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title">即将开始旅途</string>
+    <string name="login_title">即将开始旅途</string>
     <string name="login_username">请输入用户名</string>
     <string name="login_pwd">请输入密码</string>
     <string name="remember_pwd">记住密码</string>
@@ -20,5 +20,9 @@
     <string name="register">没有账号?点击注册</string>
     <string name="login_success">登录成功</string>
     <string name="login_failed">登陆失败</string>
-
+    <string name="user_title">个人中心</string>
+    <string name="nickname">昵称:</string>
+    <string name="username">用户名:</string>
+    <string name="collect">收藏成功</string>
+    <string name="unCollect">取消收藏</string>
 </resources>
