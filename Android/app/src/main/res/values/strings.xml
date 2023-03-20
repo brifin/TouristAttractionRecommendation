@@ -23,4 +23,6 @@
     <string name="user_title">个人中心</string>
     <string name="nickname">昵称:</string>
     <string name="username">用户名:</string>
+    <string name="collect">收藏成功</string>
+    <string name="unCollect">取消收藏</string>
 </resources>

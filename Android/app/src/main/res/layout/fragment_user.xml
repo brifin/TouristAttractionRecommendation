@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:background="@color/orange"
     tools:context=".fragment.UserFragment">
 
     <LinearLayout
@@ -79,7 +80,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:background="@android:color/white">
 
                 <TextView
                     android:layout_width="0dp"
@@ -99,7 +101,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:background="@android:color/white">
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -139,16 +142,6 @@
         app:title="昵称"/>
 
     <com.example.tourapp.viewAndItem.ItemGroup
-        android:id="@+id/ig_gender"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:jt_visible="true"
-        app:edt_hint_content="请选择性别"
-        app:paddingLeft="5dp"
-        app:title="性别"/>
-
-
-    <com.example.tourapp.viewAndItem.ItemGroup
         android:id="@+id/ig_like"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -163,14 +156,5 @@
         app:jt_visible="true"
         app:paddingLeft="5dp"
         app:title="我到达过"/>
-
-    <com.example.tourapp.viewAndItem.ItemGroup
-        android:id="@+id/ig_birthday"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:jt_visible="true"
-        app:edt_hint_content="请选择生日"
-        app:paddingLeft="5dp"
-        app:title="生日"/>
 
 </LinearLayout>

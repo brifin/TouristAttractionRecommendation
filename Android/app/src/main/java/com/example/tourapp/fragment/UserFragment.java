@@ -35,19 +35,15 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         TextView tv_username = view.findViewById(R.id.tv_username);
         ItemGroup ig_id = view.findViewById(R.id.ig_id);
         ItemGroup ig_nickname = view.findViewById(R.id.ig_nickname);
-        ItemGroup ig_gender = view.findViewById(R.id.ig_gender);
         ItemGroup ig_arrive = view.findViewById(R.id.ig_arrive);
         ItemGroup ig_like = view.findViewById(R.id.ig_like);
-        ItemGroup ig_birthday = view.findViewById(R.id.ig_birthday);
         /**id通过后端查询返回设置
          //TODO
          ig_id.getContentEdt().setText(?);
          */
         ig_nickname.setOnClickListener(this);
         ig_arrive.setOnClickListener(this);
-        ig_birthday.setOnClickListener(this);
         ig_like.setOnClickListener(this);
-        ig_gender.setOnClickListener(this);
         return view;
     }
 
@@ -57,10 +53,6 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             case R.id.ig_arrive:
                 break;
             case R.id.ig_like:
-                break;
-            case R.id.ig_birthday:
-                break;
-            case R.id.ig_gender:
                 break;
             case R.id.ig_nickname:
                 break;

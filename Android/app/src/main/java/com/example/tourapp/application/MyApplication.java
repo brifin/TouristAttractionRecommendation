@@ -11,9 +11,15 @@ import com.baidu.mapapi.common.BaiduMapSDKException;
 public class MyApplication extends Application {
 
     private static Context mcontext;
+    private static MyApplication mApp;
+
+    public static MyApplication getInstance() {
+        return mApp;
+    }
     @Override
     public void onCreate() {
         super.onCreate();
+        mApp = this;
         mcontext = getApplicationContext();
         SDKInitializer.setAgreePrivacy(mcontext, true);
         try{
