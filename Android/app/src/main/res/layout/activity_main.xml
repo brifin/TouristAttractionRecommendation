@@ -8,6 +8,7 @@
     android:orientation="vertical"
     tools:context=".MainActivity"
     tools:ignore="MissingConstraints">
+    <!--    android:fitsSystemWindows="true">-->
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewpager2"
@@ -27,7 +28,7 @@
         app:tabMode="fixed"
         app:tabSelectedTextColor="#359A91"
         app:tabTextColor="@color/black">
-<!--        app:tabUnboundedRipple="true"-->
+
 
         <com.google.android.material.tabs.TabItem
 

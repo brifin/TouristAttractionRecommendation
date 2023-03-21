@@ -43,6 +43,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     private View pop_upsView;
     private TextView detailText;
     private ImageView heartiv;
+    private LinearLayout recommendLY;
+    private LinearLayout pathLY;
     private Boolean flag = true;
     private int longAnimationDuration;
     public MapFragment() {
@@ -86,7 +88,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.recommendbtu:
+            case R.id.Lyre:
                 LatLng point = new LatLng(39.90, 116.28);
                 BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
                 OverlayOptions option = new MarkerOptions()
@@ -94,7 +96,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         .position(point);
                 mBaiduMap.addOverlay(option);
                 break;
-            case R.id.pathbtu:
+            case R.id.Lypath:
                 break;
             case R.id.heart:
                 if(flag){
@@ -145,7 +147,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     setAnimation(pop_upsView);
                 }
             }
-
             @Override
             public void onMapPoiClick(MapPoi mapPoi) {
 
@@ -159,10 +160,15 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         detailText.setMovementMethod(ScrollingMovementMethod.getInstance());
         heartiv = pop_upsView.findViewById(R.id.heart);
         heartiv.setOnClickListener(this);
-        recommendBtu = (Button) view.findViewById(R.id.recommendbtu);
-        pathBtu = (Button) view.findViewById(R.id.pathbtu);
-        recommendBtu.setOnClickListener(this);
-        pathBtu.setOnClickListener(this);
+        //recommendBtu = (Button) view.findViewById(R.id.recommendbtu);
+        //pathBtu = (Button) view.findViewById(R.id.pathbtu);
+        recommendLY = (LinearLayout)view.findViewById(R.id.Lyre) ;
+        pathLY = (LinearLayout) view.findViewById(R.id.Lypath);
+        recommendLY.setOnClickListener(this);
+        pathLY.setOnClickListener(this);
+        //recommendBtu.setOnClickListener(this);
+        //pathBtu.setOnClickListener(this);
+
     }
 
 
