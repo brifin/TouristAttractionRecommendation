@@ -29,6 +29,8 @@ import com.example.tourapp.fragment.TourFragment;
 import com.example.tourapp.fragment.UserFragment;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.gyf.immersionbar.BarHide;
+import com.gyf.immersionbar.ImmersionBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,29 +88,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         checkVersion();
         initView();
-
-        //选中改变图片颜色和文字颜色
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                tab.getCustomView().findViewById(itemImgId[tab.getPosition()]).setFocusable(true);
-                itemTextview = (TextView) tab.getCustomView().findViewById(itemtvId[tab.getPosition()]);
-                itemTextview.setTextColor(getColor(R.color.teal_700));
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                tab.getCustomView().findViewById(itemImgId[tab.getPosition()]).setFocusable(false);
-                itemTextview = (TextView) tab.getCustomView().findViewById(itemtvId[tab.getPosition()]);
-                itemTextview.setTextColor(getColor(R.color.black));
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
     }
 
     //初始化视图
@@ -126,9 +105,28 @@ public class MainActivity extends AppCompatActivity {
         viewPager2 = (ViewPager2) findViewById(R.id.viewpager2);
         tabLayout = (TabLayout) findViewById(R.id.tablayout);
 
+        hideStable();
+
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle(), fragmentList);
         viewPager2.setAdapter(viewPagerAdapter);
         viewPager2.setUserInputEnabled(false);
+        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+                hideStable();
+            }
+        });
 
         mediator = new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
             @Override
@@ -151,7 +149,27 @@ public class MainActivity extends AppCompatActivity {
         });
         mediator.attach();
         viewPager2.setUserInputEnabled(false);
-        hideStable();
+        //选中改变图片颜色和文字颜色
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                tab.getCustomView().findViewById(itemImgId[tab.getPosition()]).setFocusable(true);
+                itemTextview = (TextView) tab.getCustomView().findViewById(itemtvId[tab.getPosition()]);
+                itemTextview.setTextColor(getColor(R.color.teal_700));
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                tab.getCustomView().findViewById(itemImgId[tab.getPosition()]).setFocusable(false);
+                itemTextview = (TextView) tab.getCustomView().findViewById(itemtvId[tab.getPosition()]);
+                itemTextview.setTextColor(getColor(R.color.black));
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     private void checkVersion() {
@@ -177,15 +195,16 @@ public class MainActivity extends AppCompatActivity {
 
     //隐藏状态栏
     public void hideStable() {
-//        View decorView = getWindow().getDecorView();
-//        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN
-//                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                | View.SYSTEM_UI_FLAG_IMMERSIVE
-//                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-//        decorView.setSystemUiVisibility(uiOptions);
-        getSupportActionBar().hide();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+        ImmersionBar.with(this)
+                .transparentBar()
+                .statusBarDarkFont(true)
+                .statusBarAlpha(0.0f)
+                .hideBar(BarHide.FLAG_HIDE_BAR)
+                .init();
     }
+
 
     @Override
     protected void onDestroy() {
