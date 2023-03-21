@@ -47,6 +47,8 @@ public class TourAdapter extends ArrayAdapter<TourItem> implements View.OnClickL
         viewHolder.tv_tourName.setText(tourItem.getTourName());
         viewHolder.iv_collection.setOnClickListener(this);
         viewHolder.iv_collection.setTag(position);
+        viewHolder.tv_tourName.setOnClickListener(this);
+        viewHolder.tv_tourName.setTag(position);
         return view;
     }
 

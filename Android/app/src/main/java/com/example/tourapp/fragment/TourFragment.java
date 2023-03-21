@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tourapp.R;
@@ -86,16 +87,20 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
         switch (v.getId()) {
             case R.id.iv_collection:
                     ImageView iv_collection = v.findViewById(R.id.iv_collection);
-                if(tourItemList.get(position).isIsCollect()) {
+                if(tourItemList.get(position).isIsGroup()) {
                     iv_collection.setImageResource(R.drawable.uncollection);
-                    tourItemList.get(position).setIsCollect(false);
+                    tourItemList.get(position).setIsGroup(false);
                     Toast.makeText(getContext(), getString(R.string.unCollect), Toast.LENGTH_SHORT).show();
                 }else {
                     iv_collection.setImageResource(R.drawable.collection);
-                    tourItemList.get(position).setIsCollect(true);
+                    tourItemList.get(position).setIsGroup(true);
                     Toast.makeText(getContext(), getString(R.string.collect), Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case R.id.tv_tourName:
+                Intent intent = new Intent(getActivity(), TourDetailActivity.class);
+                intent.putExtra("tour_id",tourItemList.get(position).getTourId());
+                startActivity(intent);
         }
     }
 }

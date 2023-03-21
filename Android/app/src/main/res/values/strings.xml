@@ -25,4 +25,5 @@
     <string name="username">用户名:</string>
     <string name="collect">收藏成功</string>
     <string name="unCollect">取消收藏</string>
+    <string name="is_nickname_valid">昵称为空或包含空格</string>
 </resources>

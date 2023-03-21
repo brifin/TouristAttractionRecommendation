@@ -5,17 +5,17 @@ public class TourItem {
     private int imageId;
     private int tourId;
 
-    private boolean isCollect;
+    private boolean isGroup;
 
 
     public TourItem() {
     }
 
-    public TourItem(String tourName, int imageId, int tourId, boolean isCollect) {
+    public TourItem(String tourName, int imageId, int tourId, boolean isGroup) {
         this.tourName = tourName;
         this.imageId = imageId;
         this.tourId = tourId;
-        this.isCollect = isCollect;
+        this.isGroup = isGroup;
     }
 
     /**
@@ -68,21 +68,21 @@ public class TourItem {
 
     /**
      * 获取
-     * @return isCollect
+     * @return isGroup
      */
-    public boolean isIsCollect() {
-        return isCollect;
+    public boolean isIsGroup() {
+        return isGroup;
     }
 
     /**
      * 设置
-     * @param isCollect
+     * @param isGroup
      */
-    public void setIsCollect(boolean isCollect) {
-        this.isCollect = isCollect;
+    public void setIsGroup(boolean isGroup) {
+        this.isGroup = isGroup;
     }
 
     public String toString() {
-        return "TourItem{tourName = " + tourName + ", imageId = " + imageId + ", tourId = " + tourId + ", isCollect = " + isCollect + "}";
+        return "TourItem{tourName = " + tourName + ", imageId = " + imageId + ", tourId = " + tourId + ", isGroup = " + isGroup + "}";
     }
 }
