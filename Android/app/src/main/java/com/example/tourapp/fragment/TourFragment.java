@@ -28,13 +28,8 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
 
     private List<TourItem> tourItemList = new ArrayList<>();
     private TourAdapter tourAdapter;
-    private boolean isCollect;
 
-    public TourFragment() {
-    }
-
-
-
+    public TourFragment() {}
 
 
     @Override
@@ -69,10 +64,10 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
         for(int i = 1;i < 12;i++) {
             tourName = "旅游团"+ i;
             if((i & 1) == 1) {
-                TourItem tourItem  = new TourItem(tourName,R.drawable.collection,i);
+                TourItem tourItem  = new TourItem(tourName,R.drawable.collection,i,true);
                 tourItemList.add(tourItem);
             }else {
-                TourItem tourItem = new TourItem(tourName,R.drawable.uncollection,i);
+                TourItem tourItem = new TourItem(tourName,R.drawable.uncollection,i,false);
                 tourItemList.add(tourItem);
             }
         }
@@ -91,13 +86,13 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
         switch (v.getId()) {
             case R.id.iv_collection:
                     ImageView iv_collection = v.findViewById(R.id.iv_collection);
-                if(isCollect) {
+                if(tourItemList.get(position).isIsCollect()) {
                     iv_collection.setImageResource(R.drawable.uncollection);
-                    isCollect = false;
+                    tourItemList.get(position).setIsCollect(false);
                     Toast.makeText(getContext(), getString(R.string.unCollect), Toast.LENGTH_SHORT).show();
                 }else {
                     iv_collection.setImageResource(R.drawable.collection);
-                    isCollect = true;
+                    tourItemList.get(position).setIsCollect(true);
                     Toast.makeText(getContext(), getString(R.string.collect), Toast.LENGTH_SHORT).show();
                 }
                 break;
