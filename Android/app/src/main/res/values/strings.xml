@@ -26,4 +26,6 @@
     <string name="collect">收藏成功</string>
     <string name="unCollect">取消收藏</string>
     <string name="is_nickname_valid">昵称为空或包含空格</string>
+    <string name="set_invalid">设置失败</string>
+    <string name="tour_record">行程记录</string>
 </resources>

@@ -3,14 +3,19 @@ package com.example.tourapp.fragment;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.tourapp.EditNickNameActivity;
 import com.example.tourapp.MainActivity;
@@ -109,16 +115,22 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         //拍照按钮监听
         take_photo.setOnClickListener(view -> {
             if (popupWindow != null && popupWindow.isShowing()) {
-                //TODO 申请权限
-
+                //申请权限
+                requestPermissions(new String[]{
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                },10);
                 //去除选择框
                 popupWindow.dismiss();
             }
         });
         //相册按钮监听
         from_albums.setOnClickListener(view -> {
-            //TODO 申请权限
-
+            //申请权限
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            startActivityForResult(intent,3);
             //去除选择框
             popupWindow.dismiss();
         });
@@ -133,13 +145,39 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         });
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == 10) {
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intent = new Intent();
+                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent,2);
+            }
+        }
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == 1) {
+        switch (requestCode){
+            case 1:
             String nickname = data.getStringExtra("nickname");
             ig_nickname.getContentEdt().setText(nickname);
             tv_nickname.setText(nickname);
+            break;
+            case 2:
+                if(data != null) {
+                    Bundle bundle = data.getExtras();
+                    Bitmap bitmap = bundle.getParcelable("data");
+                    iv_portrait.setImageBitmap(bitmap);
+                }else {
+                    Toast.makeText(getActivity(), getString(R.string.set_invalid), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case 3:
+                Uri uri = data.getData();
+                iv_portrait.setImageURI(uri);
+                break;
         }
     }
 }
