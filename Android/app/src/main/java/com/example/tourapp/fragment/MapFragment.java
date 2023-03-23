@@ -1,8 +1,8 @@
 package com.example.tourapp.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.text.method.ScrollingMovementMethod;
@@ -11,11 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
@@ -29,8 +28,8 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
-import com.example.tourapp.DetailActivity;
 import com.example.tourapp.R;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 
 public class MapFragment extends Fragment implements View.OnClickListener {
@@ -38,15 +37,16 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
     private MapView mapView = null;
     private BaiduMap mBaiduMap;
-    private Button recommendBtu;
-    private Button pathBtu;
+
     private View pop_upsView;
+    private BottomSheetBehavior behavior;
     private TextView detailText;
     private ImageView heartiv;
     private LinearLayout recommendLY;
     private LinearLayout pathLY;
     private Boolean flag = true;
     private int longAnimationDuration;
+
     public MapFragment() {
 
     }
@@ -99,10 +99,10 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             case R.id.Lypath:
                 break;
             case R.id.heart:
-                if(flag){
+                if (flag) {
                     heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart1, null));
                     flag = false;
-                }else {
+                } else {
                     heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart));
                     flag = true;
                 }
@@ -112,19 +112,20 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                pop_upsView.setVisibility(View.VISIBLE);
-                setAnimation(pop_upsView);
+//                pop_upsView.setVisibility(View.VISIBLE);
+//                setAnimation(pop_upsView);
+                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 return true;
             }
         });
     }
 
     //设置弹窗动画
-    public void setAnimation(View view){
+    public void setAnimation(View view) {
         TranslateAnimation translateAnimation;
-        if(view.getVisibility()==View.VISIBLE){
+        if (view.getVisibility() == View.VISIBLE) {
             translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 1.0f, Animation.RELATIVE_TO_PARENT, 0.0f);
-        }else{
+        } else {
             translateAnimation = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 1.0f);
         }
         translateAnimation.setDuration(250);
@@ -132,44 +133,58 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     }
 
     //初始化视图
-    public void initView(View view){
+    public void initView(View view) {
         mapView = (MapView) view.findViewById(R.id.mapview);
         mBaiduMap = mapView.getMap();
         MapStatus.Builder builder = new MapStatus.Builder();
         builder.zoom(18.0f);
         mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
         mBaiduMap.setIndoorEnable(true);
+
         BaiduMap.OnMapClickListener listener = new BaiduMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                if(pop_upsView.getVisibility()==View.VISIBLE){
-                    pop_upsView.setVisibility(View.GONE);
-                    setAnimation(pop_upsView);
-                }
+//                if (pop_upsView.getVisibility() == View.VISIBLE) {
+//                    pop_upsView.setVisibility(View.GONE);
+//                    setAnimation(pop_upsView);
+//                }jl
+                behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             }
+
             @Override
             public void onMapPoiClick(MapPoi mapPoi) {
-
             }
         };
         mBaiduMap.setOnMapClickListener(listener);
         UiSettings uiSettings = mBaiduMap.getUiSettings();
         uiSettings.setEnlargeCenterWithDoubleClickEnable(true);
-        pop_upsView = (LinearLayout) view.findViewById(R.id.markerPop_ups);
+        pop_upsView = (FrameLayout) view.findViewById(R.id.markerPop_ups);
+        behavior = BottomSheetBehavior.from(pop_upsView);
+        behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        behavior.setBottomSheetCallback(new MyBottomSheetCallback());
         detailText = pop_upsView.findViewById(R.id.detailtext);
         detailText.setMovementMethod(ScrollingMovementMethod.getInstance());
         heartiv = pop_upsView.findViewById(R.id.heart);
         heartiv.setOnClickListener(this);
-        //recommendBtu = (Button) view.findViewById(R.id.recommendbtu);
-        //pathBtu = (Button) view.findViewById(R.id.pathbtu);
-        recommendLY = (LinearLayout)view.findViewById(R.id.Lyre) ;
+        recommendLY = (LinearLayout) view.findViewById(R.id.Lyre);
         pathLY = (LinearLayout) view.findViewById(R.id.Lypath);
         recommendLY.setOnClickListener(this);
         pathLY.setOnClickListener(this);
-        //recommendBtu.setOnClickListener(this);
-        //pathBtu.setOnClickListener(this);
+
 
     }
 
 
+    private class MyBottomSheetCallback extends BottomSheetBehavior.BottomSheetCallback {
+        @Override
+        public void onStateChanged(@NonNull View bottomSheet, int newState) {
+//            if(newState==BottomSheetBehavior.STATE_DRAGGING){
+//                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+//            }
+        }
+
+        @Override
+        public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+        }
+    }
 }
