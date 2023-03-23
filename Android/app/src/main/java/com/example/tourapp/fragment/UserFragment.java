@@ -10,11 +10,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,8 +24,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.tourapp.EditNickNameActivity;
-import com.example.tourapp.MainActivity;
 import com.example.tourapp.R;
 import com.example.tourapp.viewAndItem.ItemGroup;
 
@@ -38,7 +33,6 @@ public class UserFragment extends Fragment implements View.OnClickListener {
 
     private TextView tv_nickname;
     private TextView tv_username;
-    private ItemGroup ig_nickname;
     private ItemGroup ig_arrive;
     private ItemGroup ig_like;
     private ImageView iv_portrait;
@@ -59,9 +53,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user, container, false);
-        tv_nickname = view.findViewById(R.id.tv_nickname);
         tv_username = view.findViewById(R.id.tv_username);
-        ig_nickname = view.findViewById(R.id.ig_nickname);
         ig_arrive = view.findViewById(R.id.ig_arrive);
         ig_like = view.findViewById(R.id.ig_like);
         iv_portrait = view.findViewById(R.id.iv_portrait);
@@ -69,7 +61,6 @@ public class UserFragment extends Fragment implements View.OnClickListener {
          //TODO
          tv_username.setText(?);
          */
-        ig_nickname.setOnClickListener(this);
         ig_arrive.setOnClickListener(this);
         ig_like.setOnClickListener(this);
         iv_portrait.setOnClickListener(this);
@@ -83,10 +74,6 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             case R.id.ig_arrive:
                 break;
             case R.id.ig_like:
-                break;
-            case R.id.ig_nickname:
-                Intent intent = new Intent(getActivity(), EditNickNameActivity.class);
-                startActivityForResult(intent, 1);
                 break;
             case R.id.iv_backward:
                 getActivity().finish();
@@ -157,11 +144,6 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         switch (requestCode){
-            case 1:
-            String nickname = data.getStringExtra("nickname");
-            ig_nickname.getContentEdt().setText(nickname);
-            tv_nickname.setText(nickname);
-            break;
             case 2:
                 if(data != null) {
                     Bundle bundle = data.getExtras();
