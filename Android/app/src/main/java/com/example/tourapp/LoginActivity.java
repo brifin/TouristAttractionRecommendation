@@ -1,5 +1,6 @@
 package com.example.tourapp;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -11,6 +12,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.gyf.immersionbar.BarHide;
+import com.gyf.immersionbar.ImmersionBar;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -42,6 +46,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         String lastPassword = login_sp.getString("password", "");
         Boolean choseRemember = login_sp.getBoolean("mRememberCheck", false);
 
+        hideStable();
         if (choseRemember) {
             et_username.setText(lastUsername);
             et_password.setText(lastPassword);
@@ -107,5 +112,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             return false;
         }
         return true;
+    }
+    //隐藏状态栏
+    public void hideStable() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+        ImmersionBar.with(this)
+                .transparentBar()
+                .statusBarDarkFont(true)
+                .statusBarAlpha(0.0f)
+                .hideBar(BarHide.FLAG_HIDE_BAR)
+                .init();
     }
 }

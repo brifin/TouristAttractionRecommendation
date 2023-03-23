@@ -38,7 +38,6 @@ public class UserFragment extends Fragment implements View.OnClickListener {
 
     private TextView tv_nickname;
     private TextView tv_username;
-    private ItemGroup ig_id;
     private ItemGroup ig_nickname;
     private ItemGroup ig_arrive;
     private ItemGroup ig_like;
@@ -62,14 +61,12 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_user, container, false);
         tv_nickname = view.findViewById(R.id.tv_nickname);
         tv_username = view.findViewById(R.id.tv_username);
-        ig_id = view.findViewById(R.id.ig_id);
         ig_nickname = view.findViewById(R.id.ig_nickname);
         ig_arrive = view.findViewById(R.id.ig_arrive);
         ig_like = view.findViewById(R.id.ig_like);
         iv_portrait = view.findViewById(R.id.iv_portrait);
         /**id通过后端查询返回设置
          //TODO
-         ig_id.getContentEdt().setText(?);
          tv_username.setText(?);
          */
         ig_nickname.setOnClickListener(this);

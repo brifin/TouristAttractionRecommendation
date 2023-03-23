@@ -1,5 +1,6 @@
 package com.example.tourapp;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,6 +9,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.gyf.immersionbar.BarHide;
+import com.gyf.immersionbar.ImmersionBar;
+
 public class EditNickNameActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText et_nickname;
@@ -15,6 +19,7 @@ public class EditNickNameActivity extends AppCompatActivity implements View.OnCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        hideStable();
         setContentView(R.layout.activity_edit_nick_name);
         findViewById(R.id.iv_backward2).setOnClickListener(this);
         findViewById(R.id.tv_save).setOnClickListener(this);
@@ -38,5 +43,16 @@ public class EditNickNameActivity extends AppCompatActivity implements View.OnCl
                     finish();
                 }
         }
+    }
+    //隐藏状态栏
+    public void hideStable() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+        ImmersionBar.with(this)
+                .transparentBar()
+                .statusBarDarkFont(true)
+                .statusBarAlpha(0.0f)
+                .hideBar(BarHide.FLAG_HIDE_BAR)
+                .init();
     }
 }

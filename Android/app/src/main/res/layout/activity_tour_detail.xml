@@ -50,13 +50,13 @@
                 android:text="介绍"
                 android:textSize="18sp"
                 android:textColor="@color/black"
-                android:background="@drawable/textView_border"/>
+                android:background="@drawable/text_view_border"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:text="@string/tour_record"
-                android:background="@drawable/textView_border"
+                android:background="@drawable/text_view_border"
                 android:gravity="center"
                 android:textSize="20sp"/>
 
