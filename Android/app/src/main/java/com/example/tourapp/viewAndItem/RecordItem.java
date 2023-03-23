@@ -7,12 +7,13 @@ import java.util.Date;
 public class RecordItem {
     private int id;
     private String place;
-    private Date time;
+    private String time;
+
 
     public RecordItem() {
     }
 
-    public RecordItem(int id, String place, Date time) {
+    public RecordItem(int id, String place, String time) {
         this.id = id;
         this.place = place;
         this.time = time;
@@ -54,7 +55,7 @@ public class RecordItem {
      * 获取
      * @return time
      */
-    public Date getTime() {
+    public String getTime() {
         return time;
     }
 
@@ -62,7 +63,7 @@ public class RecordItem {
      * 设置
      * @param time
      */
-    public void setTime(Date time) {
+    public void setTime(String time) {
         this.time = time;
     }
 

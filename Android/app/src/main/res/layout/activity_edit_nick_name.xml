@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     tools:context=".EditNickNameActivity"
     android:orientation="vertical">
 
@@ -12,39 +12,40 @@
         android:layout_height="60dp"
         android:background="@color/white"
         android:orientation="horizontal">
-    <ImageView
-        android:id="@+id/iv_backward2"
-        android:layout_width="60dp"
-        android:layout_height="match_parent"
-        android:ellipsize="none"
-        android:layout_gravity="center"
-        android:singleLine="true"
-        android:src="@drawable/back" />
+        <ImageView
+            android:id="@+id/iv_backward2"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:ellipsize="none"
+            android:layout_gravity="center"
+            android:singleLine="true"
+            android:padding="12dp"
+            android:src="@drawable/back" />
 
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:ellipsize="marquee"
-        android:gravity="center_horizontal|center"
-        android:singleLine="true"
-        android:text="编辑昵称"
-        android:textColor="@android:color/black"
-        android:textSize="20dp" />
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:ellipsize="marquee"
+            android:gravity="center_horizontal|center"
+            android:singleLine="true"
+            android:text="编辑昵称"
+            android:textColor="@android:color/black"
+            android:textSize="20dp" />
 
-    <TextView
-        android:id="@+id/tv_save"
-        android:layout_width="60dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:paddingRight="5dp"
-        android:singleLine="true"
-        android:text="保存"
-        android:textColor="@android:color/black"
-        android:textSize="18dp"/>
+        <TextView
+            android:id="@+id/tv_save"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:paddingRight="5dp"
+            android:singleLine="true"
+            android:text="保存"
+            android:textColor="@android:color/black"
+            android:textSize="18dp"/>
     </LinearLayout>
 
     <View
@@ -57,7 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:hint="请输入昵称"
-        android:background=""
+        android:background="@null"
         android:inputType="text"/>
 
     <View

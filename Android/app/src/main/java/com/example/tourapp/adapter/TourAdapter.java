@@ -57,7 +57,7 @@ public class TourAdapter extends ArrayAdapter<TourItem> implements View.OnClickL
         mListener.itemClick(v);
     }
 
-    public final static class ViewHolder {
+    public final class ViewHolder {
         ImageView iv_collection;
         TextView tv_tourName;
     }

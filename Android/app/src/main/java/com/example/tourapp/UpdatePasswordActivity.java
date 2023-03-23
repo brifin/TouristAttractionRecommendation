@@ -1,5 +1,6 @@
 package com.example.tourapp;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,6 +9,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.gyf.immersionbar.BarHide;
+import com.gyf.immersionbar.ImmersionBar;
 
 public class UpdatePasswordActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -28,6 +32,7 @@ public class UpdatePasswordActivity extends AppCompatActivity implements View.On
         et_new_password_check = findViewById(R.id.et_new_password_check);
         reset_btn_cancel = findViewById(R.id.reset_btn_cancel);
         reset_btn_sure = findViewById(R.id.reset_btn_sure);
+        hideStable();
 
         reset_btn_cancel.setOnClickListener(this);
         reset_btn_sure.setOnClickListener(this);
@@ -76,6 +81,17 @@ public class UpdatePasswordActivity extends AppCompatActivity implements View.On
 
     }
 
+    //隐藏状态栏
+    public void hideStable() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+        ImmersionBar.with(this)
+                .transparentBar()
+                .statusBarDarkFont(true)
+                .statusBarAlpha(0.0f)
+                .hideBar(BarHide.FLAG_HIDE_BAR)
+                .init();
+    }
     //接受后端数据并判断用户名与密码是否匹配
     public boolean findByUsernameAndPassword(String username,String password) {
         //TODO

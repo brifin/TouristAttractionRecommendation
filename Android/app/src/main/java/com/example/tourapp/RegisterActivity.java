@@ -1,5 +1,6 @@
 package com.example.tourapp;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,6 +9,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.gyf.immersionbar.BarHide;
+import com.gyf.immersionbar.ImmersionBar;
 
 import java.text.Format;
 
@@ -28,6 +32,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         et_new_password = findViewById(R.id.et_new_password);
         btn_sure = findViewById(R.id.btn_sure);
         btn_cancel = findViewById(R.id.btn_cancel);
+        hideStable();
 
         btn_cancel.setOnClickListener(this);
         btn_sure.setOnClickListener(this);
@@ -88,5 +93,16 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             return false;
         }
         return true;
+    }
+    //隐藏状态栏
+    public void hideStable() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+        ImmersionBar.with(this)
+                .transparentBar()
+                .statusBarDarkFont(true)
+                .statusBarAlpha(0.0f)
+                .hideBar(BarHide.FLAG_HIDE_BAR)
+                .init();
     }
 }

@@ -64,13 +64,13 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
         String tourName;
         for(int i = 1;i < 12;i++) {
             tourName = "旅游团"+ i;
+            TourItem tourItem;
             if((i & 1) == 1) {
-                TourItem tourItem  = new TourItem(tourName,R.drawable.collection,i,true);
-                tourItemList.add(tourItem);
+                tourItem = new TourItem(tourName, R.drawable.collection, i, true);
             }else {
-                TourItem tourItem = new TourItem(tourName,R.drawable.uncollection,i,false);
-                tourItemList.add(tourItem);
+                tourItem = new TourItem(tourName, R.drawable.uncollection, i, false);
             }
+            tourItemList.add(tourItem);
         }
     }
 

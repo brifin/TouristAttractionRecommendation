@@ -127,16 +127,10 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="24dp"
+        android:layout_height="48dp"
         android:background="#E0E5E8"/>
 
-    <com.example.tourapp.viewAndItem.ItemGroup
-        android:id="@+id/ig_id"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:jt_visible="false"
-        app:paddingLeft="5dp"
-        app:title="ID号" />
+
 
     <com.example.tourapp.viewAndItem.ItemGroup
         android:id="@+id/ig_nickname"
