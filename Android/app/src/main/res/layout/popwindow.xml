@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/markerPop_ups"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="300dp"
+    app:layout_behavior="@string/bottom_sheet_behavior">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@color/transparent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/detailbackground"
+            android:orientation="horizontal">
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="15dp">
+
+                    <TextView
+                        android:id="@+id/place_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="地点:天安门"
+                        android:textColor="@color/black" />
+
+
+                    <TextView
+                        android:id="@+id/number_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="人数:754"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp">
+
+                    <TextView
+                        android:id="@+id/detailtext"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scrollbars="vertical"
+                        android:text="天安门（旧称：承天门）位于中国北京市中心，故宫的南端，属于首批全国重点文物保护单位之一，中国国家象征之一。天安门正中门洞上方悬挂着毛泽东画像，两边分别是“中华人民共和国万岁”和“世界人民大团结万岁”的大幅标语。天安门（旧称：承天门）位于中国北京市中心，故宫的南端，属于首批全国重点文物保护单位之一，中国国家象征之一。天安门正中门洞上方悬挂着毛泽东画像，两边分别是与动荡的国际形势和作为世界最大经济体、也是西方民主代表的美国令人震惊的国内分裂形成鲜明对比的是，中国在我们眼前展现的不可思议的壮举让人们相信，用不了多久，中国就能实现民族复兴的中国梦。事实上，任何冷静地观察美国国会大厦危机的人都知道，我们正在目睹一场重大变化，在国际政治中具有显着潜力的回响，成群结队的破坏者冲进了现任美国总统本人鼓励的大楼。两个世纪以来，美国民主被视为西方的典范，由于内部原因，它正在急剧破裂很快就会康。"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="120dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@color/white" />
+
+
+                <ImageView
+                    android:id="@+id/detailImage1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/image_shape"
+                    android:src="@drawable/tiananmen_test" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/image_shape"
+                    android:src="@drawable/tiananmen2" />
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_marginRight="15dp"
+        android:id="@+id/heart"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="right"
+        android:layout_marginLeft="120dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/heart" />
+
+</FrameLayout>
