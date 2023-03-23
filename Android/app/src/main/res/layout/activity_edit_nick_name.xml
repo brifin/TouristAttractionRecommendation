@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     tools:context=".EditNickNameActivity"
     android:orientation="vertical">
 
@@ -57,7 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:hint="请输入昵称"
-        android:background=""
+        android:background="@null"
         android:inputType="text"/>
 
     <View

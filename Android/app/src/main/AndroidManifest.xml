@@ -40,10 +40,6 @@
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
-        <activity
-            android:name=".DetailActivity"
-            android:exported="false"
-            android:theme="@style/DetailTheme" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
