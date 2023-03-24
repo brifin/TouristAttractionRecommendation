@@ -30,13 +30,12 @@ import com.example.tourapp.viewAndItem.ItemGroup;
 
 public class UserFragment extends Fragment implements View.OnClickListener {
 
-
-    private TextView tv_nickname;
     private TextView tv_username;
     private ItemGroup ig_arrive;
     private ItemGroup ig_like;
     private ImageView iv_portrait;
     private PopupWindow popupWindow;
+    private ImageView iv_backward;
 
     public UserFragment() {
     }
@@ -57,13 +56,15 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         ig_arrive = view.findViewById(R.id.ig_arrive);
         ig_like = view.findViewById(R.id.ig_like);
         iv_portrait = view.findViewById(R.id.iv_portrait);
-        /**id通过后端查询返回设置
+        iv_backward = view.findViewById(R.id.iv_backward);
+        /**通过后端查询返回设置
          //TODO
-         tv_username.setText(?);
+
          */
         ig_arrive.setOnClickListener(this);
         ig_like.setOnClickListener(this);
         iv_portrait.setOnClickListener(this);
+        iv_backward.setOnClickListener(this);
         view.findViewById(R.id.iv_backward).setOnClickListener(this);
         return view;
     }
@@ -76,6 +77,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             case R.id.ig_like:
                 break;
             case R.id.iv_backward:
+                Toast.makeText(getActivity(), "退出应用", Toast.LENGTH_SHORT).show();
                 getActivity().finish();
                 break;
             case R.id.iv_portrait:

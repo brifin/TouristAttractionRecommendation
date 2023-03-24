@@ -25,10 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class TourFragment extends Fragment implements AdapterView.OnItemClickListener, TourAdapter.InnerItemOnclickListener {
+public class TourFragment extends Fragment implements AdapterView.OnItemClickListener,View.OnClickListener{
 
     private List<TourItem> tourItemList = new ArrayList<>();
     private TourAdapter tourAdapter;
+    private ImageView iv_back3;
 
     public TourFragment() {}
 
@@ -51,10 +52,11 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tour, container, false);
+        iv_back3 = view.findViewById(R.id.iv_back3);
         ListView list_view = view.findViewById(R.id.list_view);
-        tourAdapter.setInnerItemOnclickListener(this);
         list_view.setAdapter(tourAdapter);
         list_view.setOnItemClickListener(this);
+        iv_back3.setOnClickListener(this);
         return view;
     }
 
@@ -82,14 +84,10 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
     }
 
     @Override
-    public void itemClick(View v) {
-        int position = (Integer) v.getTag();
-        switch (v.getId()) {
-            case R.id.tv_tourName:
-                Intent intent = new Intent(getActivity(), TourDetailActivity.class);
-                intent.putExtra("tour_id",tourItemList.get(position).getTourId());
-                startActivity(intent);
-                break;
+    public void onClick(View v) {
+        if(v.getId() == R.id.iv_back3) {
+            Toast.makeText(getActivity(), "退出应用", Toast.LENGTH_SHORT).show();
+            getActivity().finish();
         }
     }
 }

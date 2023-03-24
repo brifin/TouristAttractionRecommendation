@@ -2,6 +2,7 @@ package com.example.tourapp.viewAndItem;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,7 @@ import com.example.tourapp.R;
 public class ItemGroup extends FrameLayout {
 
     private LinearLayout itemGroupLayout; //组合控件的布局
-    private TextView titleTv; //标题
+    private ImageView iv_pic; //图标
     private TextView contentEdt; //输入框
     private ImageView jtRightIv; //向右的箭头
 
@@ -48,7 +49,7 @@ public class ItemGroup extends FrameLayout {
     private void initView(Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_group_layout, null);
         itemGroupLayout = (LinearLayout) view.findViewById(R.id.item_group_layout);
-        titleTv = (TextView) view.findViewById(R.id.title_tv);
+        iv_pic = (ImageView) view.findViewById(R.id.iv_pic);
         contentEdt = (TextView) view.findViewById(R.id.content_edt);
         jtRightIv = (ImageView) view.findViewById(R.id.jt_right_iv);
         addView(view); //把自定义的这个组合控件的布局加入到当前FramLayout
@@ -68,13 +69,10 @@ public class ItemGroup extends FrameLayout {
         int defaultHintColor = context.getResources().getColor(R.color.gray_);
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ItemGroup);
-        String title = typedArray.getString(R.styleable.ItemGroup_title);
         float paddingLeft = typedArray.getDimension(R.styleable.ItemGroup_paddingLeft, 15);
         float paddingRight = typedArray.getDimension(R.styleable.ItemGroup_paddingRight, 15);
         float paddingTop = typedArray.getDimension(R.styleable.ItemGroup_paddingTop, 5);
         float paddingBottom = typedArray.getDimension(R.styleable.ItemGroup_paddingTop, 5);
-        float titleSize = typedArray.getDimension(R.styleable.ItemGroup_title_size, 15);
-        int titleColor = typedArray.getColor(R.styleable.ItemGroup_title_color, defaultTitleColor);
         String content = typedArray.getString(R.styleable.ItemGroup_edt_content);
         float contentSize = typedArray.getDimension(R.styleable.ItemGroup_edt_text_size, 13);
         int contentColor = typedArray.getColor(R.styleable.ItemGroup_edt_text_color, defaultEdtColor);
@@ -89,9 +87,7 @@ public class ItemGroup extends FrameLayout {
         //设置数据
         //设置item的内边距
         itemGroupLayout.setPadding((int) paddingLeft, (int) paddingTop, (int) paddingRight, (int) paddingBottom);
-        titleTv.setText(title);
-        titleTv.setTextSize(titleSize);
-        titleTv.setTextColor(titleColor);
+        Drawable src = typedArray.getDrawable(R.styleable.ItemGroup_src);
 
         contentEdt.setText(content);
         contentEdt.setTextSize(contentSize);
@@ -102,5 +98,6 @@ public class ItemGroup extends FrameLayout {
 //        contentEdt.setClickable(true);
 //        contentEdt.setKeyListener(null);
         jtRightIv.setVisibility(showJtIcon ? View.VISIBLE : View.GONE);  //设置向右的箭头图标是否可见
+        iv_pic.setImageDrawable(src);
     }
 }

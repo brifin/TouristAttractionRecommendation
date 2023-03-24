@@ -1,27 +1,23 @@
 package com.example.tourapp.adapter;
 
 import android.content.Context;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tourapp.R;
 import com.example.tourapp.viewAndItem.TourItem;
 
 import java.util.List;
 
-public class TourAdapter extends ArrayAdapter<TourItem> implements View.OnClickListener {
+public class TourAdapter extends ArrayAdapter<TourItem>{
     private int resourceId;
-    private InnerItemOnclickListener mListener;
     public TourAdapter(@NonNull Context context, int textViewResourceId, @NonNull List<TourItem> objects) {
         super(context, textViewResourceId, objects);
         this.resourceId = textViewResourceId;
@@ -45,24 +41,16 @@ public class TourAdapter extends ArrayAdapter<TourItem> implements View.OnClickL
         }
         viewHolder.iv_collection.setImageResource(tourItem.getImageId());
         viewHolder.tv_tourName.setText(tourItem.getTourName());
-        viewHolder.iv_collection.setOnClickListener(this);
+        //标记
         viewHolder.iv_collection.setTag(position);
-        viewHolder.tv_tourName.setOnClickListener(this);
         viewHolder.tv_tourName.setTag(position);
         return view;
     }
 
-    @Override
-    public void onClick(View v) {
-        mListener.itemClick(v);
-    }
 
-    public final class ViewHolder {
+    public final static class ViewHolder {
         ImageView iv_collection;
         TextView tv_tourName;
-    }
-    public interface InnerItemOnclickListener {
-        void itemClick(View v);
     }
 
     @Nullable
@@ -70,10 +58,5 @@ public class TourAdapter extends ArrayAdapter<TourItem> implements View.OnClickL
     public TourItem getItem(int position) {
         return super.getItem(position);
     }
-
-    public void setInnerItemOnclickListener(InnerItemOnclickListener listener) {
-        this.mListener = listener;
-    }
-
 
 }

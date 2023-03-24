@@ -5,8 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
+
 
 import com.example.tourapp.adapter.TourDetailAdapter;
 import com.example.tourapp.viewAndItem.RecordItem;
@@ -22,17 +23,21 @@ public class TourDetailActivity extends AppCompatActivity {
 
     private List<RecordItem> recordItemList = new ArrayList<>();
     private TourDetailAdapter adapter;
-    private TextView introduction_tv;
+    private ImageView iv_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tour_detail);
         initTourDetailItems();
-        //introduction_tv = findViewById(R.id.introduction_tv);
+        iv_back = findViewById(R.id.iv_back);
         ListView listView = findViewById(R.id.list_item_detail);
         adapter = new TourDetailAdapter(this,R.layout.record_item,recordItemList);
         listView.setAdapter(adapter);
+        iv_back.setOnClickListener(v->{
+            finish();
+        });
+
         hideStable();
     }
 
@@ -51,7 +56,6 @@ public class TourDetailActivity extends AppCompatActivity {
             recordItem = new RecordItem(i,place,time);
             recordItemList.add(recordItem);
         }
-        //introduction_tv.setText("天安门（旧称：承天门）位于中国北京市中心，故宫的南端，属于首批全国重点文物保护单位之一，中国国家象征之一。天安门正中门洞上方悬挂着毛泽东画像，两边分别是“中华人民共和国万岁”和“世界人民大团结万岁”的大幅标语。");
     }
     //隐藏状态栏
     public void hideStable() {
