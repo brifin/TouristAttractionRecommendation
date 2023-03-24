@@ -10,18 +10,18 @@
     <LinearLayout
         android:id="@+id/item_group_layout"
         android:layout_width="match_parent"
-        android:layout_height="54dp"
+        android:layout_height="68dp"
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal">
-        <ImageView
-            android:id="@+id/iv_pic"
+        <TextView
+            android:id="@+id/title_tv"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textColor="@color/gray"
-            android:src="@drawable/dianzan"
+            android:text="旅游点"
             android:layout_margin="9dp"
             />
 
@@ -41,7 +41,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="25dp"
-            android:layout_marginRight="7dp"
+            android:layout_margin="12dp"
             android:padding="8dp"
             android:scaleType="centerCrop"
             android:src="@drawable/forward" />
@@ -49,6 +49,6 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="12dp"
-        android:background="#E0E5E8" />
+        android:background="#EBEEEF"
+        android:layout_height="14dp"/>
 </LinearLayout>

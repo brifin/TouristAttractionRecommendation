@@ -6,58 +6,67 @@
     android:orientation="vertical"
     tools:context=".TourDetailActivity">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/white" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:orientation="horizontal">
+
         <ImageView
             android:id="@+id/iv_back"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
-            android:src="@drawable/back"/>
+            android:layout_weight="1"
+            android:src="@drawable/back" />
+
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="5"
             android:layout_height="match_parent"
+            android:layout_weight="5"
             android:gravity="center"
-            android:textSize="25sp"
-            android:text="旅游团"/>
+            android:text="旅游团"
+            android:textSize="25sp" />
+
         <ImageView
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:src="@drawable/collection"
-            android:layout_margin="15dp"/>
+            android:layout_margin="15dp"
+            android:layout_weight="1"
+            android:src="@drawable/collection" />
+
         <ImageView
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_margin="14dp"
-            android:src="@drawable/tour_flag"/>
+            android:layout_weight="1"
+            android:src="@drawable/tour_flag" />
     </LinearLayout>
 
-        <LinearLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="30dp"
+            android:background="@drawable/text_view_border"
+            android:gravity="center"
+            android:text="@string/tour_record"
+            android:textSize="20sp" />
 
+        <ListView
+            android:id="@+id/list_item_detail"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:text="@string/tour_record"
-                android:background="@drawable/text_view_border"
-                android:gravity="center"
-                android:textSize="20sp"/>
-
-            <ListView
-                android:id="@+id/list_item_detail"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-
-        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

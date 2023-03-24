@@ -121,12 +121,9 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             popupWindow.dismiss();
         });
         //取消按钮监听
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (popupWindow != null && popupWindow.isShowing()) {
-                    popupWindow.dismiss();
-                }
+        cancel.setOnClickListener(view -> {
+            if (popupWindow != null && popupWindow.isShowing()) {
+                popupWindow.dismiss();
             }
         });
     }
