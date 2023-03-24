@@ -59,7 +59,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="210dp"
+        android:layout_height="216dp"
         android:orientation="vertical"
         android:background="@color/white">
         <de.hdodenhof.circleimageview.CircleImageView
@@ -68,7 +68,7 @@
             android:layout_width="120dp"
             android:layout_gravity="center"
             android:layout_height="0dp"
-            android:layout_weight="5"
+            android:layout_weight="3"
             android:src="@drawable/user_demo_imageview"
             app:civ_border_width="2dp"
             app:civ_border_color="#C0BACA"/>
@@ -79,11 +79,12 @@
             android:layout_gravity="center"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_margin="10dp"
-            android:hint="@string/user"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:text="@string/user"
             android:textColor="@color/gray"
             android:textSize="24sp"
-            android:background="@drawable/text_view_border"/>
+            android:background="@color/white"/>
 
     </LinearLayout>
 
@@ -94,18 +95,18 @@
         android:layout_height="wrap_content"
         app:jt_visible="true"
         app:paddingLeft="5dp"
-        app:edt_text_size="6dp"
-       app:title="旅游点"
-        app:edt_content="我点赞过"/>
+        app:edt_content="我点赞过"
+        app:edt_text_size="8dp"
+       app:img="@drawable/dianzan"/>
 
     <com.example.tourapp.viewAndItem.ItemGroup
         android:id="@+id/ig_arrive"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:jt_visible="true"
-        app:edt_text_size="6dp"
+        app:edt_text_size="8dp"
         app:paddingLeft="5dp"
-        app:title="旅游点"
+        app:img="@drawable/arrival"
         app:edt_content="我浏览过"/>
 
 </LinearLayout>

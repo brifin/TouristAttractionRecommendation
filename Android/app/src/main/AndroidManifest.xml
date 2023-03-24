@@ -36,8 +36,13 @@
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
+            android:exported="true" />
+        <activity
+            android:name=".RegisterActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".UpdatePasswordActivity"
+            android:exported="false" />
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="Q2hgRZo3cVX5ceHsSG3Z3yPTSns1GLdK" />

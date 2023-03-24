@@ -14,24 +14,24 @@
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal">
-        <TextView
-            android:id="@+id/title_tv"
+        <ImageView
+            android:id="@+id/picture_iv"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content"
+            android:layout_height="34dp"
             android:textSize="18sp"
+            android:layout_gravity="center"
             android:textColor="@color/gray"
-            android:text="旅游点"
-            android:layout_margin="9dp"
+            android:src="@drawable/dianzan"
             />
 
         <TextView
             android:id="@+id/content_edt"
             android:layout_width="0dp"
             android:layout_weight="4"
-            android:layout_height="wrap_content"
             android:textColor="@color/gray_"
-            android:textSize="18sp"
+            android:textSize="24sp"
+            android:layout_height="31dp"
             android:hint="我点赞的" />
 
 

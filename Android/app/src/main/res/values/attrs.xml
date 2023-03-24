@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="ItemGroup">
-        <!--标题的文字-->
-        <attr name="title" format="string" />
-        <!--标题的字体大小-->
-        <attr name="title_size" format="dimension" />
-        <!--标题的字体颜色-->
-        <attr name="title_color" format="color" />
+        <attr name="img" format="reference"/>
         <!--输入框的内容-->
         <attr name="edt_content" format="string" />
         <!--输入框的字体大小-->
