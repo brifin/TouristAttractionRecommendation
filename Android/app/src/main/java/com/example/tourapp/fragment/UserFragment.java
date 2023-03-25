@@ -24,6 +24,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.tourapp.MyBrowseActivity;
+import com.example.tourapp.MyLoveActivity2;
 import com.example.tourapp.R;
 import com.example.tourapp.viewAndItem.ItemGroup;
 
@@ -73,8 +75,12 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ig_arrive:
+                Intent intent_browse = new Intent(getContext(), MyBrowseActivity.class);
+                startActivity(intent_browse);
                 break;
             case R.id.ig_like:
+                Intent intent_love = new Intent(getContext(), MyLoveActivity2.class);
+                startActivity(intent_love);
                 break;
             case R.id.iv_backward:
                 Toast.makeText(getActivity(), "退出应用", Toast.LENGTH_SHORT).show();
