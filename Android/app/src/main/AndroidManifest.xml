@@ -13,11 +13,8 @@
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" /> <!-- 写外置存储。如果开发者使用了离线地图，并且数据写在外置存储区域，则需要申请该权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 控制弹窗代码 -->
     <uses-permission android:name="android.permission.READ_CONTACTS" /> <!-- 读取手机状态 -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
-    <!-- 配置相机权限 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 配置相机权限 -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <!-- 配置相机权限 -->
 
     <application
         android:name=".application.MyApplication"
@@ -31,6 +28,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TourApp"
         tools:targetApi="31">
+        <activity
+            android:name=".MyBrowseActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MyLoveActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".MyLoveActivity"
+            android:exported="false" />
         <activity
             android:name=".TourDetailActivity"
             android:exported="false" />

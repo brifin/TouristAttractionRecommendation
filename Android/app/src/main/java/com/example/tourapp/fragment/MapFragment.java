@@ -44,6 +44,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     private ImageView heartiv;
     private LinearLayout recommendLY;
     private LinearLayout pathLY;
+    private LinearLayout attraLY;
     private Boolean flag = true;
     private int longAnimationDuration;
 
@@ -98,6 +99,10 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.Lypath:
                 break;
+
+            case R.id.LyAttra:
+                break;
+
             case R.id.heart:
                 if (flag) {
                     heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart1, null));
@@ -112,8 +117,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-//                pop_upsView.setVisibility(View.VISIBLE);
-//                setAnimation(pop_upsView);
+
                 behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 return true;
             }
@@ -144,10 +148,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         BaiduMap.OnMapClickListener listener = new BaiduMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-//                if (pop_upsView.getVisibility() == View.VISIBLE) {
-//                    pop_upsView.setVisibility(View.GONE);
-//                    setAnimation(pop_upsView);
-//                }jl
                 behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             }
 
@@ -168,8 +168,10 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         heartiv.setOnClickListener(this);
         recommendLY = (LinearLayout) view.findViewById(R.id.Lyre);
         pathLY = (LinearLayout) view.findViewById(R.id.Lypath);
+        attraLY = (LinearLayout) view.findViewById(R.id.LyAttra);
         recommendLY.setOnClickListener(this);
         pathLY.setOnClickListener(this);
+        attraLY.setOnClickListener(this);
 
 
     }
@@ -178,9 +180,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     private class MyBottomSheetCallback extends BottomSheetBehavior.BottomSheetCallback {
         @Override
         public void onStateChanged(@NonNull View bottomSheet, int newState) {
-//            if(newState==BottomSheetBehavior.STATE_DRAGGING){
-//                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-//            }
         }
 
         @Override

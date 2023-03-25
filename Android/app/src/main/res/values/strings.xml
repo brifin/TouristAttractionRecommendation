@@ -28,4 +28,6 @@
     <string name="is_nickname_valid">昵称为空或包含空格</string>
     <string name="set_invalid">设置失败</string>
     <string name="tour_record">行程记录</string>
+    <string name="Mylove">我的点赞</string>
+    <string name="MyBrowse">我的浏览</string>
 </resources>
