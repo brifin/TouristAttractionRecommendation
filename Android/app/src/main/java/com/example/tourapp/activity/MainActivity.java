@@ -1,4 +1,4 @@
-package com.example.tourapp;
+package com.example.tourapp.activity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.tourapp.R;
 import com.example.tourapp.adapter.ViewPagerAdapter;
 import com.example.tourapp.application.MyApplication;
 import com.example.tourapp.fragment.MapFragment;

@@ -1,4 +1,4 @@
-package com.example.tourapp;
+package com.example.tourapp.activity;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,8 +13,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.tourapp.R;
+import com.example.tourapp.httpInterface.UserInterface;
+import com.example.tourapp.reception.Result;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -77,31 +86,52 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (isUsernameAndPwdValid()) {
             String username = et_username.getText().toString();
             String password = et_password.getText().toString();
-            SharedPreferences.Editor editor = login_sp.edit();
-            if (isFindByUsernameAndPwd(username, password)) {
-                editor.putString("username", username);
-                editor.putString("password", password);
-                if (cb_remember.isChecked()) {
-                    editor.putBoolean("mRememberCheck", true);
-                }else {
-                    editor.putBoolean("mRememberCheck",false);
+
+            //后端查询数据返回结果，然后再做相应判断
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            UserInterface userInterface = retrofit.create(UserInterface.class);
+            Call<Result> resultCall = userInterface.login(username, password);
+            resultCall.enqueue(new Callback<Result>() {
+                @Override
+                public void onResponse(Call<Result> call, Response<Result> response) {
+                    Result result = response.body();
+                    int code = result.getCode();
+                    if (code == 200) {
+                        SharedPreferences.Editor editor = login_sp.edit();
+                        editor.putString("username", username);
+                        editor.putString("password", password);
+                        if (cb_remember.isChecked()) {
+                            editor.putBoolean("mRememberCheck", true);
+                        } else {
+                            editor.putBoolean("mRememberCheck", false);
+                        }
+                        editor.apply();
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("username",username);
+                        Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(LoginActivity.this, getString(R.string.login_failed), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+
                 }
-                editor.apply();
-                Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                startActivity(intent);
-                finish();
-                Toast.makeText(this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
-            }else {
-                Toast.makeText(this, getString(R.string.login_failed), Toast.LENGTH_SHORT).show();
-            }
+
+                @Override
+                public void onFailure(Call<Result> call, Throwable t) {
+                    System.out.println("连接失败！");
+                    System.out.println(t.getMessage());
+                }
+            });
         }
     }
 
-    public boolean isFindByUsernameAndPwd(String username, String password) {
-        //TODO
-        //后端查询数据返回结果，然后再做相应判断
-        return true;
-    }
 
     public boolean isUsernameAndPwdValid() {
         if (et_username.getText().toString().trim().isEmpty() || et_username.getText().toString().contains(" ")) {
@@ -113,6 +143,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         return true;
     }
+
     //隐藏状态栏
     public void hideStable() {
         ActionBar actionBar = getSupportActionBar();

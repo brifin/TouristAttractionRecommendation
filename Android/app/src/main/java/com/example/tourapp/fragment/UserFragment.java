@@ -3,6 +3,7 @@ package com.example.tourapp.fragment;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,11 +13,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.textclassifier.TextLinks;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -24,10 +28,27 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.tourapp.MyBrowseActivity;
-import com.example.tourapp.MyLoveActivity2;
+import com.example.tourapp.activity.MyBrowseActivity;
+import com.example.tourapp.activity.MyLoveActivity2;
 import com.example.tourapp.R;
+import com.example.tourapp.httpInterface.UserInterface;
+import com.example.tourapp.reception.Result;
 import com.example.tourapp.viewAndItem.ItemGroup;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class UserFragment extends Fragment implements View.OnClickListener {
@@ -59,15 +80,16 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         ig_like = view.findViewById(R.id.ig_like);
         iv_portrait = view.findViewById(R.id.iv_portrait);
         iv_backward = view.findViewById(R.id.iv_backward);
-        /**通过后端查询返回设置
-         //TODO
 
-         */
         ig_arrive.setOnClickListener(this);
         ig_like.setOnClickListener(this);
         iv_portrait.setOnClickListener(this);
         iv_backward.setOnClickListener(this);
         view.findViewById(R.id.iv_backward).setOnClickListener(this);
+
+        Intent intent = getActivity().getIntent();
+        String username = intent.getStringExtra("username");
+        tv_username.setText(username);
         return view;
     }
 
@@ -111,7 +133,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                 requestPermissions(new String[]{
                         Manifest.permission.CAMERA,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
-                },10);
+                }, 10);
                 //去除选择框
                 popupWindow.dismiss();
             }
@@ -122,7 +144,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_PICK);
             intent.setType("image/*");
-            startActivityForResult(intent,3);
+            startActivityForResult(intent, 1);
             //去除选择框
             popupWindow.dismiss();
         });
@@ -137,31 +159,94 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == 10) {
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == 10) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Intent intent = new Intent();
                 intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent,2);
+                startActivityForResult(intent, 2);
             }
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        switch (requestCode){
+        switch (requestCode) {
             case 2:
-                if(data != null) {
+                if (data != null) {
                     Bundle bundle = data.getExtras();
-                    Bitmap bitmap = bundle.getParcelable("data");
-                    iv_portrait.setImageBitmap(bitmap);
-                }else {
+                    if (bundle != null) {
+                        Bitmap bitmap = bundle.getParcelable("data");
+                        if (bitmap != null) {
+                            iv_portrait.setImageBitmap(bitmap);
+                            File file = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg");
+                            try {
+                                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                                bitmap.compress(Bitmap.CompressFormat.JPEG,100,fileOutputStream);
+                                fileOutputStream.flush();
+                                fileOutputStream.close();
+                                uploadImage(file);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }else {
+                            Toast.makeText(getActivity(), getString(R.string.set_invalid), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                } else {
                     Toast.makeText(getActivity(), getString(R.string.set_invalid), Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case 3:
+            case 1:
                 Uri uri = data.getData();
                 iv_portrait.setImageURI(uri);
+
+                String img_path;
+                String[] proj = {MediaStore.Images.Media.DATA};
+                Cursor actualImageCursor = getActivity().managedQuery(uri, proj, null,
+                        null, null);
+                if (actualImageCursor == null) {
+                    img_path = uri.getPath();
+                } else {
+                    int actual_image_column_index = actualImageCursor
+                            .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    actualImageCursor.moveToFirst();
+                    img_path = actualImageCursor
+                            .getString(actual_image_column_index);
+                }
+                File file = new File(img_path);
+                uploadImage(file);
                 break;
         }
+    }
+
+    private void uploadImage(File file) {
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpg"), file);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestBody);//file为key值
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        UserInterface userInterface = retrofit.create(UserInterface.class);
+        Call<Result> resultCall = userInterface.uploadFile(part);
+        resultCall.enqueue(new Callback<Result>() {
+            @Override
+            public void onResponse(Call<Result> call, Response<Result> response) {
+                Result result = response.body();
+                int code = result.getCode();
+                if(code == 200) {
+                    Log.d("YANG","文件上传成功");
+                }else if(code == 400){
+                    Log.d("YANG","文件上传失败");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Result> call, Throwable t) {
+                System.out.println("请求失败！");
+                t.printStackTrace();
+            }
+        });
     }
 }

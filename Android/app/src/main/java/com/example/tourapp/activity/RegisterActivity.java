@@ -1,4 +1,4 @@
-package com.example.tourapp;
+package com.example.tourapp.activity;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,10 +10,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.tourapp.R;
+import com.example.tourapp.httpInterface.UserInterface;
+import com.example.tourapp.reception.Result;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
-import java.text.Format;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -33,7 +40,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         btn_sure = findViewById(R.id.btn_sure);
         btn_cancel = findViewById(R.id.btn_cancel);
         hideStable();
-
         btn_cancel.setOnClickListener(this);
         btn_sure.setOnClickListener(this);
     }
@@ -58,27 +64,47 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             String new_password = et_new_password.getText().toString();
             String reset_username = et_reset_username.getText().toString();
 
-            if(findUserByUsername(reset_username)) {
-                String str = reset_username + "已存在";
-                Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
-                return;
-            }
-
             if(!et_old_password.equals(new_password)) {
                 Toast.makeText(this, "两次密码输入不一致", Toast.LENGTH_SHORT).show();
                 return;
             }else {
                 //TODO
                 //传入后端，进行注册，并返回登录界面
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                UserInterface userInterface = retrofit.create(UserInterface.class);
+                Call<Result> resultCall = userInterface.register(reset_username, new_password);
+                resultCall.enqueue(new Callback<Result>() {
+                    @Override
+                    public void onResponse(Call<Result> call, Response<Result> response) {
+                        Result result = response.body();
+                        int code = result.getCode();
+                        if(code == 200) {
+                            Toast.makeText(RegisterActivity.this, getString(R.string.register_success), Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+                        }else {
+                            Toast.makeText(RegisterActivity.this, getString(R.string.reset_username_failed), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Result> call, Throwable t) {
+                        System.out.println("请求失败！");
+                        System.out.println(t.getMessage());
+                    }
+                });
+
+
             }
 
         }
-    }
-
-    //接受后端数据并判断用户是否存在
-    private boolean findUserByUsername(String username) {
-        //TODO
-        return true;
     }
 
     public boolean isUsernameAndPasswordValid() {

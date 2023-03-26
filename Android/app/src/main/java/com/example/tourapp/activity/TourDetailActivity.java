@@ -1,4 +1,4 @@
-package com.example.tourapp;
+package com.example.tourapp.activity;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 
+import com.example.tourapp.R;
 import com.example.tourapp.adapter.TourDetailAdapter;
 import com.example.tourapp.viewAndItem.RecordItem;
 import com.gyf.immersionbar.BarHide;

@@ -1,4 +1,4 @@
-package com.example.tourapp;
+package com.example.tourapp.activity;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,34 +6,34 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
 
-import com.example.tourapp.adapter.LoveAdapter;
-import com.example.tourapp.viewAndItem.LoveItem;
+import com.example.tourapp.R;
+import com.example.tourapp.adapter.BrowseAdapter;
+import com.example.tourapp.viewAndItem.BrowseItem;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyLoveActivity2 extends AppCompatActivity {
+public class MyBrowseActivity extends AppCompatActivity {
 
-    private List<LoveItem> mdatd;
+    private List<BrowseItem> mdata;
+    private BrowseAdapter adapter;
     private ListView listView;
-    private LoveAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_love2);
+        setContentView(R.layout.activity_my_browse);
         initView();
-
     }
 
-    public void initView() {
+    public void initView(){
         hideStable();
-        mdatd = new ArrayList<LoveItem>();
-        getdata();
-        adapter = new LoveAdapter(mdatd);
-        listView = (ListView) findViewById(R.id.love_listView);
+        mdata = new ArrayList<BrowseItem>();
+        getData();
+        adapter = new BrowseAdapter(mdata);
+        listView = (ListView) findViewById(R.id.browse_listView);
         listView.setAdapter(adapter);
     }
 
@@ -49,14 +49,8 @@ public class MyLoveActivity2 extends AppCompatActivity {
     }
 
     //网络请求获取数据
-    public void getdata() {
-        for (int i = 0; i < 15; i++) {
-            LoveItem item = new LoveItem();
-            item.setPhoto(R.drawable.tiananmen_test);
-            item.setPlace("天安门");
-            item.setTime("2022年3月24日");
-            mdatd.add(item);
-        }
+    public Boolean getData(){
 
+        return false;
     }
 }
