@@ -20,7 +20,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.textclassifier.TextLinks;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -32,17 +31,14 @@ import com.example.tourapp.activity.MyBrowseActivity;
 import com.example.tourapp.activity.MyLoveActivity2;
 import com.example.tourapp.R;
 import com.example.tourapp.httpInterface.UserInterface;
-import com.example.tourapp.reception.Result;
+import com.example.tourapp.data.Result;
 import com.example.tourapp.viewAndItem.ItemGroup;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,6 +55,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     private ImageView iv_portrait;
     private PopupWindow popupWindow;
     private ImageView iv_backward;
+    private Retrofit retrofit;
 
     public UserFragment() {
     }
@@ -67,6 +64,10 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        retrofit = new Retrofit.Builder()
+                .baseUrl("")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
     }
 
@@ -224,10 +225,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     private void uploadImage(File file) {
         RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpg"), file);
         MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestBody);//file为key值
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+
         UserInterface userInterface = retrofit.create(UserInterface.class);
         Call<Result> resultCall = userInterface.uploadFile(part);
         resultCall.enqueue(new Callback<Result>() {

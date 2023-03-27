@@ -52,6 +52,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/introduce"
+            android:layout_gravity="center"
+            android:layout_margin="20dp"
+            android:background="@drawable/text_view_border"
+            android:textSize="24dp"/>
 
         <TextView
             android:layout_width="match_parent"

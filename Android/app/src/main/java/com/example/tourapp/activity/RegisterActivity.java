@@ -5,17 +5,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.tourapp.R;
+import com.example.tourapp.data.User;
 import com.example.tourapp.httpInterface.UserInterface;
-import com.example.tourapp.reception.Result;
+import com.example.tourapp.data.Result;
+import com.google.gson.Gson;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -76,12 +81,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         .build();
 
                 UserInterface userInterface = retrofit.create(UserInterface.class);
-                Call<Result> resultCall = userInterface.register(reset_username, new_password);
+                User user = new User();
+                user.setAccount(reset_username);
+                user.setPassword(new_password);
+
+                Gson gson = new Gson();
+                String json = gson.toJson(user);
+                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                Call<Result> resultCall = userInterface.register(requestBody);
                 resultCall.enqueue(new Callback<Result>() {
                     @Override
                     public void onResponse(Call<Result> call, Response<Result> response) {
                         Result result = response.body();
                         int code = result.getCode();
+                        Log.d("TAG",result.getMsg());
                         if(code == 200) {
                             Toast.makeText(RegisterActivity.this, getString(R.string.register_success), Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);

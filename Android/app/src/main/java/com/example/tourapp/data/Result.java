@@ -1,4 +1,4 @@
-package com.example.tourapp.reception;
+package com.example.tourapp.data;
 
 public class Result {
     private int code;

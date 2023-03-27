@@ -28,4 +28,5 @@
     <string name="reset_username_failed">用户名已存在,注册失败</string>
     <string name="Mylove">我的点赞</string>
     <string name="MyBrowse">我的浏览</string>
+    <string name="introduce">  旅游团介绍</string>
 </resources>

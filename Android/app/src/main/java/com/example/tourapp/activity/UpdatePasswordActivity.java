@@ -5,17 +5,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.tourapp.R;
+import com.example.tourapp.data.User;
 import com.example.tourapp.httpInterface.UserInterface;
-import com.example.tourapp.reception.Result;
+import com.example.tourapp.data.Result;
+import com.google.gson.Gson;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -73,23 +78,37 @@ public class UpdatePasswordActivity extends AppCompatActivity implements View.On
                     .baseUrl("")
                     .build();
             UserInterface userInterface = retrofit.create(UserInterface.class);
-            Call<Result> resultCall = userInterface.login(username, oldPassword);
+            User user = new User();
+            user.setAccount(username);
+            user.setPassword(oldPassword);
+
+            Gson gson = new Gson();
+            String json = gson.toJson(user);
+            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+            Call<Result> resultCall = userInterface.login(requestBody);
             resultCall.enqueue(new Callback<Result>() {
                 @Override
                 public void onResponse(Call<Result> call, Response<Result> response) {
                     Result result = response.body();
                     int code = result.getCode();
+                    Log.d("TAG",result.getMsg());
                     if (code == 200) {
                         if (!newPassword.equals(newPasswordCheck)) {
                             Toast.makeText(UpdatePasswordActivity.this, getString(R.string.mismatching_password), Toast.LENGTH_SHORT).show();
                             return;
                         } else {
-                            Call<Result> updatePwdCall = userInterface.updatePwd(username, newPassword);
+                            User user_ = new User();
+                            user_.setAccount(username);
+                            user_.setPassword(newPassword);
+                            String json_ = gson.toJson(user_);
+                            RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json_);
+                            Call<Result> updatePwdCall = userInterface.updatePwd(body);
                             updatePwdCall.enqueue(new Callback<Result>() {
                                 @Override
                                 public void onResponse(Call<Result> call, Response<Result> response) {
                                     Result updateResult = response.body();
                                     int updateResultCode = updateResult.getCode();
+                                    Log.d("TAG",updateResult.getMsg());
                                     if (updateResultCode == 200) {
                                         Toast.makeText(UpdatePasswordActivity.this, getString(R.string.update_success), Toast.LENGTH_SHORT).show();
                                         Intent intent_forgetPassword_to_login = new Intent(UpdatePasswordActivity.this, LoginActivity.class);

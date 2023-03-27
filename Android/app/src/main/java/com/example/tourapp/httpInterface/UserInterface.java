@@ -1,12 +1,12 @@
 package com.example.tourapp.httpInterface;
 
-import com.example.tourapp.reception.Result;
+import com.example.tourapp.data.Result;
 
 import okhttp3.MultipartBody;
-import okhttp3.ResponseBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Body;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -14,16 +14,16 @@ import retrofit2.http.Part;
 public interface UserInterface {
 
     @POST("login")
-    @FormUrlEncoded
-    Call<Result> login(@Field("account") String username, @Field("password") String password);
+    @Headers({"Content-Type: application/json","Accept: application/json"})
+    Call<Result> login(@Body RequestBody user);
 
     @POST("register")
-    @FormUrlEncoded
-    Call<Result> register(@Field("account") String username,@Field("password") String password);
+    @Headers({"Content-Type: application/json","Accept: application/json"})
+    Call<Result> register(@Body RequestBody user);
 
     @POST("update")
-    @FormUrlEncoded
-    Call<Result> updatePwd(@Field("account") String username,@Field("password") String password);
+    @Headers({"Content-Type: application/json","Accept: application/json"})
+    Call<Result> updatePwd(@Body RequestBody user);
 
     @POST("upload")
     @Multipart
