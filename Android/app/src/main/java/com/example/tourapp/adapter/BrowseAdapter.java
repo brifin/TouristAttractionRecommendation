@@ -14,15 +14,15 @@ import com.example.tourapp.viewAndItem.BrowseItem;
 import java.util.List;
 
 public class BrowseAdapter extends BaseAdapter {
-    private List<BrowseItem> mdata;
+    private List<BrowseItem> mData;
 
     public BrowseAdapter(List<BrowseItem> data) {
-        mdata = data;
+        mData = data;
     }
 
     @Override
     public int getCount() {
-        return mdata.size();
+        return mData.size();
     }
 
     @Override
@@ -37,24 +37,24 @@ public class BrowseAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Viewholder viewholder = null;
+        viewHolder viewholder = null;
         if (convertView == null) {
             convertView = LayoutInflater.from(MyApplication.getContext()).inflate(R.layout.browse_item_layout2, parent, false);
-            viewholder = new Viewholder();
+            viewholder = new viewHolder();
             viewholder.imageView = convertView.findViewById(R.id.browse_item_iv);
             viewholder.textViewPlace = convertView.findViewById(R.id.browse_item_place);
             viewholder.textViewTime = convertView.findViewById(R.id.browse_item_time);
             convertView.setTag(viewholder);
         } else {
-            viewholder = (Viewholder) convertView.getTag();
+            viewholder = (viewHolder) convertView.getTag();
         }
-        viewholder.imageView.setImageResource(mdata.get(position).getPhoto());
-        viewholder.textViewPlace.setText(mdata.get(position).getPlace());
-        viewholder.textViewTime.setText(mdata.get(position).getTime());
+        viewholder.imageView.setImageResource(mData.get(position).getPhoto());
+        viewholder.textViewPlace.setText(mData.get(position).getPlace());
+        viewholder.textViewTime.setText(mData.get(position).getTime());
         return convertView;
     }
 
-    public static class Viewholder {
+    public static class viewHolder {
         public ImageView imageView;
         public TextView textViewPlace;
         public TextView textViewTime;

@@ -14,15 +14,15 @@ import com.example.tourapp.viewAndItem.LoveItem;
 import java.util.List;
 
 public class LoveAdapter extends BaseAdapter {
-    private List<LoveItem> mdata;
+    private List<LoveItem> mData;
 
     public LoveAdapter(List<LoveItem> data) {
-        mdata = data;
+        mData = data;
     }
 
     @Override
     public int getCount() {
-        return mdata.size();
+        return mData.size();
     }
 
     @Override
@@ -48,9 +48,9 @@ public class LoveAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.imageView.setImageResource(mdata.get(position).getPhoto());
-        holder.textViewPlace.setText(mdata.get(position).getPlace());
-        holder.textViewTime.setText(mdata.get(position).getTime());
+        holder.imageView.setImageResource(mData.get(position).getPhoto());
+        holder.textViewPlace.setText(mData.get(position).getPlace());
+        holder.textViewTime.setText(mData.get(position).getTime());
         return convertView;
     }
 

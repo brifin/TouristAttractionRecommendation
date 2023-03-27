@@ -44,7 +44,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class UserFragment extends Fragment implements View.OnClickListener {
@@ -56,6 +55,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     private PopupWindow popupWindow;
     private ImageView iv_backward;
     private Retrofit retrofit;
+    private String username;
 
     public UserFragment() {
     }
@@ -64,11 +64,11 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        retrofit = new Retrofit.Builder()
-                .baseUrl("")
+        /*retrofit = new Retrofit.Builder()
+                .baseUrl("") //待测试
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-
+*/
     }
 
     @Override
@@ -89,7 +89,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         view.findViewById(R.id.iv_backward).setOnClickListener(this);
 
         Intent intent = getActivity().getIntent();
-        String username = intent.getStringExtra("username");
+        username = intent.getStringExtra("username");
         tv_username.setText(username);
         return view;
     }
@@ -99,10 +99,12 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.ig_arrive:
                 Intent intent_browse = new Intent(getContext(), MyBrowseActivity.class);
+                intent_browse.putExtra("nickname",username);
                 startActivity(intent_browse);
                 break;
             case R.id.ig_like:
                 Intent intent_love = new Intent(getContext(), MyLoveActivity2.class);
+                intent_love.putExtra("nickname",username);
                 startActivity(intent_love);
                 break;
             case R.id.iv_backward:
@@ -185,7 +187,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                                 bitmap.compress(Bitmap.CompressFormat.JPEG,100,fileOutputStream);
                                 fileOutputStream.flush();
                                 fileOutputStream.close();
-                                uploadImage(file);
+                                //uploadImage(file);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -217,7 +219,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                             .getString(actual_image_column_index);
                 }
                 File file = new File(img_path);
-                uploadImage(file);
+                //uploadImage(file);
                 break;
         }
     }
