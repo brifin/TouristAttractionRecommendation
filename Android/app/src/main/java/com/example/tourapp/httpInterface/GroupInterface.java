@@ -16,4 +16,8 @@ public interface GroupInterface {
     @POST("historyView")
     @Headers({"Content-Type: application/x-www-form-urlencoded"})
     Call<String> HistoryView(@Body RequestBody nickname);
+
+    @POST("groupclass")
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    Call<String> groupClass(@Body RequestBody data);
 }
