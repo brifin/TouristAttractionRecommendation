@@ -10,6 +10,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 
 public interface UserInterface {
 
@@ -25,7 +26,7 @@ public interface UserInterface {
     @Headers({"Content-Type: application/json","Accept: application/json"})
     Call<Result> updatePwd(@Body RequestBody user);
 
-    @POST("upload")
+    @POST("updatePng")
     @Multipart
     Call<Result> uploadFile(@Part MultipartBody.Part file);
 }

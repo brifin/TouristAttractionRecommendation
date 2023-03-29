@@ -44,6 +44,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class UserFragment extends Fragment implements View.OnClickListener {
@@ -56,6 +57,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     private ImageView iv_backward;
     private Retrofit retrofit;
     private String username;
+    private int userId;
 
     public UserFragment() {
     }
@@ -64,11 +66,11 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*retrofit = new Retrofit.Builder()
-                .baseUrl("") //待测试
+        retrofit = new Retrofit.Builder()
+                .baseUrl("http://47.107.38.208:8090/user/") //待测试
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-*/
+
     }
 
     @Override
@@ -90,6 +92,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
 
         Intent intent = getActivity().getIntent();
         username = intent.getStringExtra("username");
+        userId = intent.getIntExtra("userId",-1);
         tv_username.setText(username);
         return view;
     }
@@ -226,7 +229,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
 
     private void uploadImage(File file) {
         RequestBody requestBody = RequestBody.create(MediaType.parse("image/png"), file);
-        MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestBody);//file为key值
+        MultipartBody.Part part = MultipartBody.Part.createFormData("applyFiles", file.getName(), requestBody);
 
         UserInterface userInterface = retrofit.create(UserInterface.class);
         Call<Result> resultCall = userInterface.uploadFile(part);
@@ -246,7 +249,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onFailure(Call<Result> call, Throwable t) {
                 System.out.println("请求失败！");
-                t.printStackTrace();
+                Log.e("YANG",t.getMessage());
             }
         });
     }

@@ -111,7 +111,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void onFailure(Call<Result> call, Throwable t) {
                         System.out.println("请求失败！");
-                        System.out.println(t.getMessage());
+                        Log.e("YANG",t.getMessage());
                     }
                 });
 

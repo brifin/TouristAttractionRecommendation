@@ -118,7 +118,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         SharedPreferences.Editor editor = login_sp.edit();
                         editor.putString("username", data.account);
                         editor.putString("password", data.password);
-                        editor.putInt("userId",data.id);
                         if (cb_remember.isChecked()) {
                             editor.putBoolean("mRememberCheck", true);
                         } else {
@@ -128,6 +127,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.putExtra("username",data.account);
+                        intent.putExtra("userId",data.id);
                         Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                         startActivity(intent);
                         finish();
@@ -142,7 +142,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onFailure(Call<Result> call, Throwable t) {
                     System.out.println("连接失败！");
-                    Log.d("YANG",t.getMessage());
+                    Log.e("YANG",t.getMessage());
                 }
             });
         }
