@@ -4,6 +4,7 @@
     <!-- 访问网络，进行地图相关业务数据请求，包括地图数据，路线规划，POI检索等 -->
     <uses-permission android:name="android.permission.INTERNET" /> <!-- 获取网络状态，根据网络状态切换进行数据请求网络转换 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 读取外置存储。如果开发者使用了so动态加载功能并且把so文件放在了外置存储区域，则需要申请该权限，否则不需要 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <!-- <uses-permission -->
     <!-- android:name="android.permission.READ_EXTERNAL_STORAGE" -->
     <!-- android:maxSdkVersion="32" /> -->
@@ -16,6 +17,15 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 配置相机权限 -->
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <!--    全景图屏幕及版本支持-->
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true" />
+    <uses-sdk android:minSdkVersion="26" />
+
     <application
         android:name=".application.MyApplication"
         android:allowBackup="true"
@@ -27,15 +37,18 @@
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.TourApp"
+        tools:replace="android:icon"
         tools:targetApi="31">
+        <activity
+            android:name=".TestActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:exported="false"
+            android:screenOrientation="sensor" />
         <activity
             android:name=".MyBrowseActivity"
             android:exported="false" />
         <activity
             android:name=".MyLoveActivity2"
-            android:exported="false" />
-        <activity
-            android:name=".MyLoveActivity"
             android:exported="false" />
         <activity
             android:name=".TourDetailActivity"

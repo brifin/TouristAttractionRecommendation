@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private final String[] permissionArray = new String[]{
             Manifest.permission.INTERNET,
             Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.ACCESS_WIFI_STATE,
             Manifest.permission.READ_CONTACTS,
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.READ_MEDIA_AUDIO,
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
             public void onActivityResult(Map<String, Boolean> result) {
                 boolean internet = Boolean.TRUE.equals(result.get(Manifest.permission.INTERNET));
                 boolean accessNetWork = Boolean.TRUE.equals(result.get(Manifest.permission.ACCESS_NETWORK_STATE));
+                boolean accessWifistate = Boolean.TRUE.equals(result.get(Manifest.permission.ACCESS_WIFI_STATE));
                 boolean readContacts = Boolean.TRUE.equals(result.get(Manifest.permission.READ_CONTACTS));
                 boolean readPhoneState = Boolean.TRUE.equals(result.get(Manifest.permission.READ_PHONE_STATE));
                 boolean readAudio = Boolean.TRUE.equals(result.get(Manifest.permission.READ_MEDIA_AUDIO));
@@ -172,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //版本检测
     private void checkVersion() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             for (int i = 0; i < permissionArray.length; i++) {

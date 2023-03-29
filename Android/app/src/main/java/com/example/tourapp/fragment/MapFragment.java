@@ -1,8 +1,10 @@
 package com.example.tourapp.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.text.method.ScrollingMovementMethod;
@@ -15,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
@@ -26,10 +29,29 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
+import com.example.tourapp.MainActivity;
+import com.example.tourapp.MyLoveActivity2;
 import com.example.tourapp.R;
+import com.example.tourapp.ServiceCreator;
+import com.example.tourapp.TestActivity;
+import com.example.tourapp.data.PlaceData;
+import com.example.tourapp.data.RouteData;
+import com.example.tourapp.service.GetRecommendService;
+import com.example.tourapp.service.GetRouteService;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class MapFragment extends Fragment implements View.OnClickListener {
@@ -89,18 +111,83 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            //推荐
             case R.id.Lyre:
-                LatLng point = new LatLng(39.90, 116.28);
-                BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
-                OverlayOptions option = new MarkerOptions()
-                        .icon(bitmap)
-                        .position(point);
-                mBaiduMap.addOverlay(option);
+                mBaiduMap.clear();
+                getPoiStarts();
+                GetRecommendService recommendService = (GetRecommendService) ServiceCreator.creatService(GetRecommendService.class);
+                recommendService.getRecommendData().enqueue(new Callback<List<PlaceData>>() {
+                    @Override
+                    public void onResponse(Call<List<PlaceData>> call, Response<List<PlaceData>> response) {
+                        List<PlaceData> data = response.body();
+                        for (int i = 0; i < data.size(); i++) {
+                            LatLng point = new LatLng(data.get(i).getLatitude(), data.get(i).getLongitde());
+                            BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker);
+                            OverlayOptions option = new MarkerOptions()
+                                    .position(point)
+                                    .icon(bitmapDescriptor)
+                                    .animateType(MarkerOptions.MarkerAnimateType.drop);
+                            mBaiduMap.addOverlay(option);
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<PlaceData>> call, Throwable t) {
+                        Toast.makeText(getContext(), "请求失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
                 break;
+            //生成路线
             case R.id.Lypath:
+                mBaiduMap.clear();
+                BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker);
+                GetRouteService getRouteService = (GetRouteService) ServiceCreator.creatService(GetRouteService.class);
+                getRouteService.getRoute().enqueue(new Callback<List<RouteData>>() {
+                    @Override
+                    public void onResponse(Call<List<RouteData>> call, Response<List<RouteData>> response) {
+                        List<RouteData> routeDataList = response.body();
+                        List<OverlayOptions> options = new ArrayList<OverlayOptions>();
+                        List<LatLng> latLngList = new ArrayList<LatLng>();
+                        List<PlaceData> placeDataList;
+                        for (int i = 0; i < routeDataList.size(); i++) {
+                            latLngList.clear();
+                            options.clear();
+                            placeDataList = routeDataList.get(i).getRoute();
+                            for (int j = 0; j < placeDataList.size(); j++) {
+                                LatLng point = new LatLng(placeDataList.get(j).getLatitude(), placeDataList.get(j).getLongitde());
+                                latLngList.add(point);
+                                OverlayOptions options1 = new MarkerOptions()
+                                        .position(point)
+                                        .icon(bitmapDescriptor)
+                                        .animateType(MarkerOptions.MarkerAnimateType.drop);
+                                options.add(options1);
+
+                            }
+                            OverlayOptions overlayOptions = new PolylineOptions()
+                                    .width(7)
+                                    .color(0xAAFF0000)
+                                    .points(latLngList);
+                            mBaiduMap.addOverlay(overlayOptions);
+                            mBaiduMap.addOverlays(options);
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<RouteData>> call, Throwable t) {
+                        Toast.makeText(getContext(), "网络请求失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
                 break;
 
+            //生成附近景点
             case R.id.LyAttra:
+                //测试全景图
+                Intent intent = new Intent(getContext(), TestActivity.class);
+                startActivity(intent);
                 break;
 
             case R.id.heart:
@@ -114,14 +201,25 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             default:
                 break;
         }
+
+        //设置地图监听事件
         mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-
-                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                    mBaiduMap.clear();
+                } else {
+                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }
                 return true;
             }
         });
+    }
+
+    //获取我的点赞中景点的POI序号
+    private void getPoiStarts() {
+        List<String> poiStarts = new ArrayList<String>();
+        MyLoveActivity2.getdata();
     }
 
     //设置弹窗动画
