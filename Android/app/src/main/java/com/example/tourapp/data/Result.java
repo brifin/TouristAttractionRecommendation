@@ -1,18 +1,18 @@
 package com.example.tourapp.data;
 
 public class Result {
-    private int code;
+    private Integer code;
+    private Integer total;
     private String msg;
-    private Long total;
-    private Object data;
+    private Data data;
 
     public Result() {
     }
 
-    public Result(int code, String msg, Long total, Object data) {
+    public Result(Integer code, Integer total, String msg, Data data) {
         this.code = code;
-        this.msg = msg;
         this.total = total;
+        this.msg = msg;
         this.data = data;
     }
 
@@ -20,7 +20,7 @@ public class Result {
      * 获取
      * @return code
      */
-    public int getCode() {
+    public Integer getCode() {
         return code;
     }
 
@@ -28,8 +28,24 @@ public class Result {
      * 设置
      * @param code
      */
-    public void setCode(int code) {
+    public void setCode(Integer code) {
         this.code = code;
+    }
+
+    /**
+     * 获取
+     * @return total
+     */
+    public Integer getTotal() {
+        return total;
+    }
+
+    /**
+     * 设置
+     * @param total
+     */
+    public void setTotal(Integer total) {
+        this.total = total;
     }
 
     /**
@@ -50,25 +66,9 @@ public class Result {
 
     /**
      * 获取
-     * @return total
-     */
-    public Long getTotal() {
-        return total;
-    }
-
-    /**
-     * 设置
-     * @param total
-     */
-    public void setTotal(Long total) {
-        this.total = total;
-    }
-
-    /**
-     * 获取
      * @return data
      */
-    public Object getData() {
+    public Data getData() {
         return data;
     }
 
@@ -76,11 +76,21 @@ public class Result {
      * 设置
      * @param data
      */
-    public void setData(Object data) {
+    public void setData(Data data) {
         this.data = data;
     }
 
     public String toString() {
-        return "Result{code = " + code + ", msg = " + msg + ", total = " + total + ", data = " + data + "}";
+        return "Result{code = " + code + ", total = " + total + ", msg = " + msg + ", data = " + data + "}";
     }
+
+    public class Data {
+        public Integer id;
+        public String nickname;
+        public String account;
+        public String password;
+        public String stars;
+        public String gone;
+    }
+
 }

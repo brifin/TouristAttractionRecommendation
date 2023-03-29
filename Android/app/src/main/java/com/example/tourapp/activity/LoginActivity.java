@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             //后端查询数据返回结果，然后再做相应判断
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("")
+                    .baseUrl("http://47.107.38.208:8090/user/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
             UserInterface userInterface = retrofit.create(UserInterface.class);
@@ -112,11 +112,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 public void onResponse(Call<Result> call, Response<Result> response) {
                     Result result = response.body();
                     int code = result.getCode();
-                    Log.d("TAG",result.getMsg());
+                    Log.d("YANG",result.getMsg());
+                    Result.Data data = result.getData();
                     if (code == 200) {
                         SharedPreferences.Editor editor = login_sp.edit();
-                        editor.putString("username", username);
-                        editor.putString("password", password);
+                        editor.putString("username", data.account);
+                        editor.putString("password", data.password);
+                        editor.putInt("userId",data.id);
                         if (cb_remember.isChecked()) {
                             editor.putBoolean("mRememberCheck", true);
                         } else {
@@ -125,7 +127,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         editor.apply();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra("username",username);
+                        intent.putExtra("username",data.account);
                         Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                         startActivity(intent);
                         finish();
@@ -140,7 +142,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onFailure(Call<Result> call, Throwable t) {
                     System.out.println("连接失败！");
-                    System.out.println(t.getMessage());
+                    Log.d("YANG",t.getMessage());
                 }
             });
         }

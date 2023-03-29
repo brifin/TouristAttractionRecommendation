@@ -69,14 +69,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             String new_password = et_new_password.getText().toString();
             String reset_username = et_reset_username.getText().toString();
 
-            if(!et_old_password.equals(new_password)) {
+            if(!old_password.equals(new_password)) {
                 Toast.makeText(this, "两次密码输入不一致", Toast.LENGTH_SHORT).show();
                 return;
             }else {
                 //TODO
                 //传入后端，进行注册，并返回登录界面
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("")
+                        .baseUrl("http://47.107.38.208:8090/user/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
@@ -84,6 +84,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 User user = new User();
                 user.setAccount(reset_username);
                 user.setPassword(new_password);
+                user.setNickname(null);
 
                 Gson gson = new Gson();
                 String json = gson.toJson(user);

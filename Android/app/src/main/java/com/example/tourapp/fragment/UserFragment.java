@@ -181,13 +181,13 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                         Bitmap bitmap = bundle.getParcelable("data");
                         if (bitmap != null) {
                             iv_portrait.setImageBitmap(bitmap);
-                            File file = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg");
+                            File file = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".png");
                             try {
                                 FileOutputStream fileOutputStream = new FileOutputStream(file);
                                 bitmap.compress(Bitmap.CompressFormat.JPEG,100,fileOutputStream);
                                 fileOutputStream.flush();
                                 fileOutputStream.close();
-                                //uploadImage(file);
+                                uploadImage(file);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -219,13 +219,13 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                             .getString(actual_image_column_index);
                 }
                 File file = new File(img_path);
-                //uploadImage(file);
+                uploadImage(file);
                 break;
         }
     }
 
     private void uploadImage(File file) {
-        RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpg"), file);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/png"), file);
         MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestBody);//file为key值
 
         UserInterface userInterface = retrofit.create(UserInterface.class);
@@ -235,9 +235,10 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             public void onResponse(Call<Result> call, Response<Result> response) {
                 Result result = response.body();
                 int code = result.getCode();
+                Log.d("YANG",result.getMsg());
                 if(code == 200) {
                     Log.d("YANG","文件上传成功");
-                }else if(code == 400){
+                }else {
                     Log.d("YANG","文件上传失败");
                 }
             }

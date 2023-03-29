@@ -17,7 +17,7 @@ public interface UserInterface {
     @Headers({"Content-Type: application/json","Accept: application/json"})
     Call<Result> login(@Body RequestBody user);
 
-    @POST("register")
+    @POST("login")
     @Headers({"Content-Type: application/json","Accept: application/json"})
     Call<Result> register(@Body RequestBody user);
 

@@ -2,14 +2,17 @@ package com.example.tourapp.data;
 
 public class User {
     private Integer id;
+    private String nickname;
     private String account;
     private String password;
+
 
     public User() {
     }
 
-    public User(Integer id, String account, String password) {
+    public User(Integer id, String nickname, String account, String password) {
         this.id = id;
+        this.nickname = nickname;
         this.account = account;
         this.password = password;
     }
@@ -28,6 +31,22 @@ public class User {
      */
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    /**
+     * 获取
+     * @return nickname
+     */
+    public String getNickname() {
+        return nickname;
+    }
+
+    /**
+     * 设置
+     * @param nickname
+     */
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     /**
@@ -63,6 +82,6 @@ public class User {
     }
 
     public String toString() {
-        return "User{id = " + id + ", account = " + account + ", password = " + password + "}";
+        return "User{id = " + id + ", nickname = " + nickname + ", account = " + account + ", password = " + password + "}";
     }
 }
