@@ -90,7 +90,7 @@ public class TourDetailActivity extends AppCompatActivity {
             int lat = 19 + i;
             int lon = 16 + i;
             place = "(" + lat + "," + lon + ")";
-            recordItem = new RecordItem(i,place,time);
+            recordItem = new RecordItem(i,place,time,6+i);
             recordItemList.add(recordItem);
         }
     }

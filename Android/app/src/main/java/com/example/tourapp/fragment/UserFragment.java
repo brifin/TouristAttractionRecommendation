@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,8 +32,11 @@ import android.widget.Toast;
 import com.example.tourapp.activity.MyBrowseActivity;
 import com.example.tourapp.activity.MyLoveActivity2;
 import com.example.tourapp.R;
+import com.example.tourapp.application.MyApplication;
+import com.example.tourapp.data.GetImageResult;
 import com.example.tourapp.httpInterface.UserInterface;
 import com.example.tourapp.data.Result;
+import com.example.tourapp.interceptor.AddCookiesInterceptor;
 import com.example.tourapp.viewAndItem.ItemGroup;
 
 import java.io.File;
@@ -39,6 +44,7 @@ import java.io.FileOutputStream;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,7 +63,6 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     private ImageView iv_backward;
     private Retrofit retrofit;
     private String username;
-    private int userId;
 
     public UserFragment() {
     }
@@ -66,8 +71,12 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new AddCookiesInterceptor())
+                .build();
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://47.107.38.208:8090/user/") //待测试
+                .baseUrl("http://47.107.38.208:8090/user/")
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -90,10 +99,43 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         iv_backward.setOnClickListener(this);
         view.findViewById(R.id.iv_backward).setOnClickListener(this);
 
+        //设置用户名
         Intent intent = getActivity().getIntent();
         username = intent.getStringExtra("username");
-        userId = intent.getIntExtra("userId",-1);
         tv_username.setText(username);
+
+        //设置头像
+        UserInterface userInterface = retrofit.create(UserInterface.class);
+        Call<GetImageResult> imageResultCall = userInterface.getImage();
+        imageResultCall.enqueue(new Callback<GetImageResult>() {
+            @Override
+            public void onResponse(Call<GetImageResult> call, Response<GetImageResult> response) {
+                GetImageResult getImageResult = response.body();
+                Integer code = getImageResult.getCode();
+                Log.d("YANG",getImageResult.getMsg());
+                if(code == 200) {
+                    String data = getImageResult.getData();
+                    Bitmap bitmap = null;
+                    try {
+                        byte[] bitmapArray = Base64.decode(data.split(",")[1], Base64.DEFAULT);
+                        bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
+                        iv_portrait.setImageBitmap(bitmap);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }else {
+                    Toast.makeText(MyApplication.getContext(), "头像获取失败", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetImageResult> call, Throwable t) {
+                System.out.println("请求失败！");
+                Log.e("YANG",t.getMessage());
+            }
+        });
         return view;
     }
 

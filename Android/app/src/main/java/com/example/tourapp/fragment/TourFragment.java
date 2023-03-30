@@ -18,10 +18,17 @@ import android.widget.Toast;
 import com.example.tourapp.R;
 import com.example.tourapp.activity.TourDetailActivity;
 import com.example.tourapp.adapter.TourAdapter;
+import com.example.tourapp.httpInterface.UserInterface;
 import com.example.tourapp.viewAndItem.TourItem;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class TourFragment extends Fragment implements AdapterView.OnItemClickListener,View.OnClickListener{
@@ -61,7 +68,32 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
 
     private void initTourItems() {
         //TODO 接受后端数据
+        /*Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://47.107.38.208:8090/user/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
+        UserInterface userInterface = retrofit.create(UserInterface.class);
+        Call<String[]> call = userInterface.tourGroup();
+        call.enqueue(new Callback<String[]>() {
+            @Override
+            public void onResponse(Call<String[]> call, Response<String[]> response) {
+                String[] data = response.body();
+                for (String string : data) {
+                    String[] str = string.split("\\s+");
+                    for (int i = 1; i < str.length; i++) {
+                        String[] simple = str[i].split(",");
+
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String[]> call, Throwable t) {
+
+            }
+        });*/
         String tourName;
         for(int i = 1;i < 12;i++) {
             tourName = "旅游团"+ i;

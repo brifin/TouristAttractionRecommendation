@@ -18,11 +18,14 @@ import com.example.tourapp.R;
 import com.example.tourapp.data.User;
 import com.example.tourapp.httpInterface.UserInterface;
 import com.example.tourapp.data.Result;
+import com.example.tourapp.interceptor.AddCookiesInterceptor;
+import com.example.tourapp.interceptor.ReceivedCookiesInterceptor;
 import com.google.gson.Gson;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
 import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -92,10 +95,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             String username = et_username.getText().toString();
             String password = et_password.getText().toString();
 
+            OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                    .addInterceptor(new ReceivedCookiesInterceptor())
+                    .build();
+
             //后端查询数据返回结果，然后再做相应判断
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://47.107.38.208:8090/user/")
                     .addConverterFactory(GsonConverterFactory.create())
+                    .client(okHttpClient)
                     .build();
             UserInterface userInterface = retrofit.create(UserInterface.class);
             User user = new User();
@@ -127,7 +135,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.putExtra("username",data.account);
-                        intent.putExtra("userId",data.id);
                         Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                         startActivity(intent);
                         finish();

@@ -1,11 +1,14 @@
 package com.example.tourapp.httpInterface;
 
+import com.example.tourapp.data.GetImageResult;
 import com.example.tourapp.data.Result;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -18,7 +21,7 @@ public interface UserInterface {
     @Headers({"Content-Type: application/json","Accept: application/json"})
     Call<Result> login(@Body RequestBody user);
 
-    @POST("login")
+    @POST("save")
     @Headers({"Content-Type: application/json","Accept: application/json"})
     Call<Result> register(@Body RequestBody user);
 
@@ -29,4 +32,10 @@ public interface UserInterface {
     @POST("updatePng")
     @Multipart
     Call<Result> uploadFile(@Part MultipartBody.Part file);
+
+    @GET("getPng")
+    Call<GetImageResult> getImage();
+
+    @GET("tourGroup")
+    Call<String[]> tourGroup();
 }
