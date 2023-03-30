@@ -1,5 +1,6 @@
 package com.example.tourapp.httpInterface;
 
+import com.example.tourapp.data.DataResult;
 import com.example.tourapp.data.GetImageResult;
 import com.example.tourapp.data.Result;
 
@@ -37,5 +38,5 @@ public interface UserInterface {
     Call<GetImageResult> getImage();
 
     @GET("tourGroup")
-    Call<String[]> tourGroup();
+    Call<DataResult> tourGroup();
 }

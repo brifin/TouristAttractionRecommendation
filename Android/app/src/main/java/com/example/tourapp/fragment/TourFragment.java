@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,17 @@ import android.widget.Toast;
 import com.example.tourapp.R;
 import com.example.tourapp.activity.TourDetailActivity;
 import com.example.tourapp.adapter.TourAdapter;
+import com.example.tourapp.data.DataResult;
+import com.example.tourapp.httpInterface.GroupInterface;
 import com.example.tourapp.httpInterface.UserInterface;
 import com.example.tourapp.viewAndItem.TourItem;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -74,24 +80,45 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                 .build();
 
         UserInterface userInterface = retrofit.create(UserInterface.class);
-        Call<String[]> call = userInterface.tourGroup();
-        call.enqueue(new Callback<String[]>() {
+        Call<DataResult> dataResultCall = userInterface.tourGroup();
+        dataResultCall.enqueue(new Callback<DataResult>() {
             @Override
-            public void onResponse(Call<String[]> call, Response<String[]> response) {
-                String[] data = response.body();
-                for (String string : data) {
-                    String[] str = string.split("\\s+");
-                    for (int i = 1; i < str.length; i++) {
-                        String[] simple = str[i].split(",");
+            public void onResponse(Call<DataResult> call, Response<DataResult> response) {
+                DataResult dataResult = response.body();
+                Integer code = dataResult.getCode();
+                Log.d("YANG",dataResult.getMsg());
+                if(code == 200) {
+                    String[] schedule = dataResult.getData();
+                    Gson gson = new Gson();
+                    String json = gson.toJson(schedule);
+                    RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    Retrofit build = new Retrofit.Builder()
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .baseUrl("http://121.37.67.235:8000/app01")
+                            .build();
 
-                    }
+                    GroupInterface groupInterface = build.create(GroupInterface.class);
+                    Call<String> stringCall = groupInterface.groupClass(requestBody);
 
+                    stringCall.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+                            System.out.println("请求失败！");
+                            Log.d("YANG",t.getMessage());
+                        }
+                    });
                 }
             }
 
             @Override
-            public void onFailure(Call<String[]> call, Throwable t) {
-
+            public void onFailure(Call<DataResult> call, Throwable t) {
+                System.out.println("请求失败！");
+                Log.e("YANG",t.getMessage());
             }
         });*/
         String tourName;
