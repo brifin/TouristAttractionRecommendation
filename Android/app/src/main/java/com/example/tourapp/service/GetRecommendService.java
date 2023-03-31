@@ -12,5 +12,5 @@ import retrofit2.http.POST;
 public interface GetRecommendService {
 
     @POST("recommend")
-    Call<List<Double[]>> getRecommendData(@Body RequestBody poiStarts);
+    Call<List<double[]>> getRecommendData(@Body RequestBody poiStarts);
 }

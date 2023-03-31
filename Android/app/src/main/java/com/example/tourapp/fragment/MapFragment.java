@@ -127,30 +127,29 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 GetRecommendService recommendService = (GetRecommendService) ServiceCreator_app01.creatService(GetRecommendService.class);
                 String json = new Gson().toJson(poiStarts);
                 RequestBody requestBody = RequestBody.create(MediaType.get("application/json; charset=utf-8"), json);
-                recommendService.getRecommendData(requestBody).enqueue(new Callback<List<Double[]>>() {
+                recommendService.getRecommendData(requestBody).enqueue(new Callback<List<double[]>>() {
                     @Override
-                    public void onResponse(Call<List<Double[]>> call, Response<List<Double[]>> response) {
-                        List<Double[]> data = response.body();
-                        for (int i = 0; i < data.size(); i++) {
-                            Double[] doubles = data.get(i);
+                    public void onResponse(Call<List<double[]>> call, Response<List<double[]>> response) {
+                        List<double[]> data = response.body();
+                        List<double[]> realData = filterPoints(currentPoint, data);
+                        for (int i = 0; i < realData.size(); i++) {
+                            double[] doubles = realData.get(i);
                             LatLng point = new LatLng(doubles[0], doubles[1]);
-                            BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker);
+                            BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
                             OverlayOptions option = new MarkerOptions()
                                     .position(point)
                                     .icon(bitmapDescriptor)
-                                    .animateType(MarkerOptions.MarkerAnimateType.drop);
+                                    .animateType(MarkerOptions.MarkerAnimateType.none);
                             mBaiduMap.addOverlay(option);
 
                         }
                     }
-
                     @Override
-                    public void onFailure(Call<List<Double[]>> call, Throwable t) {
+                    public void onFailure(Call<List<double[]>> call, Throwable t) {
                         Toast.makeText(getContext(), "网络请求失败", Toast.LENGTH_SHORT).show();
                         System.out.println(t.toString());
                     }
                 });
-
                 break;
             //生成路线
             case R.id.Lypath:
@@ -199,12 +198,14 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             //生成附近景点
             case R.id.LyAttra:
                 mBaiduMap.clear();
+                currentPoint[0] = 30.263607974299997;
+                currentPoint[1] = -97.7395677567;
                 GetNearlyAttra getNearlyAttra = (GetNearlyAttra) ServiceCreator_user.creatService(GetNearlyAttra.class);
                 getNearlyAttra.getNearlyAttra(String.valueOf(currentPoint[0]), String.valueOf(currentPoint[1])).enqueue(new Callback<NearlyAttra>() {
                     @Override
                     public void onResponse(Call<NearlyAttra> call, Response<NearlyAttra> response) {
                         List<OverlayOptions> options = new ArrayList<OverlayOptions>();
-                        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker);
+                        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
                         NearlyAttra nearlyAttra = response.body();
                         String[] data = nearlyAttra.getData();
                         List<double[]> realPoints = new ArrayList<double[]>();
@@ -222,8 +223,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                             nearlypoint1 = nearlypoint.get(i);
                             LatLng point = new LatLng(nearlypoint1[0], nearlypoint1[1]);
                             Bundle bundle = new Bundle();
-                            bundle.putLong("poi", Long.parseLong(String.valueOf(nearlypoint1[2])));
+                            bundle.putLong("poi", Double.doubleToLongBits(nearlypoint1[2]));
                             OverlayOptions options1 = new MarkerOptions()
+                                    .animateType(MarkerOptions.MarkerAnimateType.none)
                                     .position(point)
                                     .icon(bitmapDescriptor)
                                     .extraInfo(bundle);
@@ -269,7 +271,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                if (behavior.getState() != BottomSheetBehavior.STATE_HIDDEN) {
+                if (behavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
                     behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
                 //记录marker信息
