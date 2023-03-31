@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -43,6 +44,12 @@ public class TourDetailActivity extends AppCompatActivity {
     private ImageView iv_back;
     private ImageView iv_ScatteredGroups;
     private TextView tv_introduce;
+    private String[] introduce = {
+            "遇见最美希腊——雅典+圣托里尼+梅黛奥拉天空之城六日游;希腊6日跟团游。",
+            "冰与火之歌，冰岛六日五晚深度游;冰岛6日跟团游。",
+            "7日纵贯拉普兰极光破冰之旅;瑞典+芬兰7日跟团游。",
+            "北欧之珠四国六日游 ; 德国+丹麦+瑞典+芬兰+挪威6日跟团游。"
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +65,10 @@ public class TourDetailActivity extends AppCompatActivity {
         iv_back.setOnClickListener(v -> {
             finish();
         });
+
+        Random random = new Random();
+        int nextInt = random.nextInt(3);
+        tv_introduce.setText(introduce[nextInt]);
 
         hideStable();
     }
@@ -133,15 +144,15 @@ public class TourDetailActivity extends AppCompatActivity {
                             String latStr;
                             String lonStr;
                             if(lat >= 0) {
-                                latStr = String.format("%.2f N", lat);
+                                latStr = String.format("%.2f° N", lat);
                             }else {
-                                latStr = String.format("%.2f S", -lat);
+                                latStr = String.format("%.2f° S", -lat);
                             }
 
                             if(lon >= 0) {
-                                lonStr = String.format("%.2f E", lon);
+                                lonStr = String.format("%.2f° E", lon);
                             }else {
-                                lonStr = String.format("%.2f W", -lon);
+                                lonStr = String.format("%.2f° W", -lon);
                             }
 
 

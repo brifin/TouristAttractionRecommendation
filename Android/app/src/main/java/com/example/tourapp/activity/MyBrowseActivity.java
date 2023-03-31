@@ -10,14 +10,17 @@ import android.widget.ListView;
 
 import com.example.tourapp.R;
 import com.example.tourapp.adapter.BrowseAdapter;
+import com.example.tourapp.data.MyLoveData;
 import com.example.tourapp.httpInterface.GroupInterface;
 import com.example.tourapp.viewAndItem.BrowseItem;
+import com.example.tourapp.viewAndItem.LoveItem;
 import com.google.gson.Gson;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -29,7 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MyBrowseActivity extends AppCompatActivity {
 
-    private List<BrowseItem> mdata;
+    private List<BrowseItem> mData;
     private BrowseAdapter adapter;
     private ListView listView;
     private String nickname;
@@ -45,9 +48,9 @@ public class MyBrowseActivity extends AppCompatActivity {
 
     public void initView() {
         hideStable();
-        mdata = new ArrayList<BrowseItem>();
+        mData = new ArrayList<BrowseItem>();
         getData();
-        adapter = new BrowseAdapter(mdata);
+        adapter = new BrowseAdapter(mData);
         listView = (ListView) findViewById(R.id.browse_listView);
         listView.setAdapter(adapter);
     }
@@ -65,7 +68,7 @@ public class MyBrowseActivity extends AppCompatActivity {
 
     //网络请求获取数据
     public void getData() {
-        /*Retrofit retrofit = new Retrofit.Builder()
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://121.37.67.235:8000/app01/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -74,19 +77,28 @@ public class MyBrowseActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String nicknameJson = gson.toJson(nickname);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), nicknameJson);
-        Call<String> dataCall = groupInterface.HistoryView(requestBody);
-        dataCall.enqueue(new Callback<String>() {
+        Call<List<MyLoveData>> historyViewCall = groupInterface.HistoryView(requestBody);
+        historyViewCall.enqueue(new Callback<List<MyLoveData>>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                String data = response.body();
-                Log.e("TAG",data);//测试
+            public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
+                List<MyLoveData> data = response.body();
+
+                for (int i = 0; i< Objects.requireNonNull(data).size(); i++){
+                    BrowseItem browseItem = new BrowseItem();
+                    browseItem.setLatitude(data.get(i).getLatitude());
+                    browseItem.setLongitude(data.get(i).getLongitude());
+                    browseItem.setPoi(data.get(i).getPoi());
+                    browseItem.setTimestamp(data.get(i).getTimestamp());
+                    mData.add(browseItem);
+                }
+
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<List<MyLoveData>> call, Throwable t) {
                 System.out.println("请求失败！");
-                System.out.println(t.getMessage());
+                Log.e("YANG",t.getMessage());
             }
-        });*/
+        });
     }
 }
