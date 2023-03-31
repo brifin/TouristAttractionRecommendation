@@ -5,25 +5,26 @@ import android.provider.ContactsContract;
 import java.util.Date;
 
 public class RecordItem {
-    private int id;
+    private Integer id;
     private String place;
     private String time;
-
+    private Integer peoples;
 
     public RecordItem() {
     }
 
-    public RecordItem(int id, String place, String time) {
+    public RecordItem(Integer id, String place, String time, Integer peoples) {
         this.id = id;
         this.place = place;
         this.time = time;
+        this.peoples = peoples;
     }
 
     /**
      * 获取
      * @return id
      */
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -31,7 +32,7 @@ public class RecordItem {
      * 设置
      * @param id
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -67,7 +68,23 @@ public class RecordItem {
         this.time = time;
     }
 
+    /**
+     * 获取
+     * @return peoples
+     */
+    public Integer getPeoples() {
+        return peoples;
+    }
+
+    /**
+     * 设置
+     * @param peoples
+     */
+    public void setPeoples(Integer peoples) {
+        this.peoples = peoples;
+    }
+
     public String toString() {
-        return "RecordItem{id = " + id + ", place = " + place + ", time = " + time + "}";
+        return "RecordItem{id = " + id + ", place = " + place + ", time = " + time + ", peoples = " + peoples + "}";
     }
 }

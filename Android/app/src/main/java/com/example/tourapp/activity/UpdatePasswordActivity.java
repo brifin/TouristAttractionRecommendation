@@ -75,7 +75,7 @@ public class UpdatePasswordActivity extends AppCompatActivity implements View.On
 
             Retrofit retrofit = new Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl("")
+                    .baseUrl("http://47.107.38.208:8090/user/")
                     .build();
             UserInterface userInterface = retrofit.create(UserInterface.class);
             User user = new User();
@@ -115,7 +115,7 @@ public class UpdatePasswordActivity extends AppCompatActivity implements View.On
                                         intent_forgetPassword_to_login.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(intent_forgetPassword_to_login);
                                         finish();
-                                    } else if (updateResultCode == 400) {
+                                    } else{
                                         Toast.makeText(UpdatePasswordActivity.this, getString(R.string.update_failed), Toast.LENGTH_SHORT).show();
                                     }
                                 }
@@ -127,7 +127,7 @@ public class UpdatePasswordActivity extends AppCompatActivity implements View.On
                                 }
                             });
                         }
-                    } else if (code == 400) {
+                    } else {
                         Toast.makeText(UpdatePasswordActivity.this, getString(R.string.mismatching), Toast.LENGTH_SHORT).show();
                         return;
                     }

@@ -23,7 +23,7 @@
         android:background="@drawable/text_view_border"
         android:gravity="center"
         android:text="(20.5,19.8)"
-        android:textSize="24sp" />
+        android:textSize="21sp" />
 
     <TextView
         android:id="@+id/tv_time"
@@ -34,4 +34,14 @@
         android:gravity="center"
         android:text="time"
         android:textSize="21sp" />
+
+    <TextView
+        android:id="@+id/tv_people"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:background="@drawable/text_view_border"
+        android:gravity="center"
+        android:text="12人"
+        android:textSize="14sp"/>
 </LinearLayout>

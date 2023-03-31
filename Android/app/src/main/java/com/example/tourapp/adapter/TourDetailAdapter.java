@@ -30,20 +30,22 @@ public class TourDetailAdapter extends ArrayAdapter<RecordItem> {
         RecordItem recordItem = getItem(position);
         View view;
         final ViewHolder viewHolder;
-        if(convertView == null) {
-            view = LayoutInflater.from(getContext()).inflate(resourceId,parent,false);
+        if (convertView == null) {
+            view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.tv_id = view.findViewById(R.id.tv_id);
             viewHolder.tv_place = view.findViewById(R.id.tv_place);
             viewHolder.tv_time = view.findViewById(R.id.tv_time);
+            viewHolder.tv_peoples = view.findViewById(R.id.tv_people);
             view.setTag(viewHolder);
-        }else {
+        } else {
             view = convertView;
             viewHolder = (ViewHolder) view.getTag();
         }
-        viewHolder.tv_id.setText(recordItem.getId()+"");
+        viewHolder.tv_id.setText(recordItem.getId() + "");
         viewHolder.tv_place.setText(recordItem.getPlace());
         viewHolder.tv_time.setText(recordItem.getTime());
+        viewHolder.tv_peoples.setText(recordItem.getPeoples() + "人");
 
         return view;
     }
@@ -58,5 +60,6 @@ public class TourDetailAdapter extends ArrayAdapter<RecordItem> {
         TextView tv_id;
         TextView tv_place;
         TextView tv_time;
+        TextView tv_peoples;
     }
 }

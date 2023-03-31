@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,8 +32,11 @@ import android.widget.Toast;
 import com.example.tourapp.activity.MyBrowseActivity;
 import com.example.tourapp.activity.MyLoveActivity2;
 import com.example.tourapp.R;
+import com.example.tourapp.application.MyApplication;
+import com.example.tourapp.data.GetImageResult;
 import com.example.tourapp.httpInterface.UserInterface;
 import com.example.tourapp.data.Result;
+import com.example.tourapp.interceptor.AddCookiesInterceptor;
 import com.example.tourapp.viewAndItem.ItemGroup;
 
 import java.io.File;
@@ -39,11 +44,13 @@ import java.io.FileOutputStream;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class UserFragment extends Fragment implements View.OnClickListener {
@@ -64,11 +71,15 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*retrofit = new Retrofit.Builder()
-                .baseUrl("") //待测试
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new AddCookiesInterceptor())
+                .build();
+        retrofit = new Retrofit.Builder()
+                .baseUrl("http://47.107.38.208:8090/user/")
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-*/
+
     }
 
     @Override
@@ -88,9 +99,43 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         iv_backward.setOnClickListener(this);
         view.findViewById(R.id.iv_backward).setOnClickListener(this);
 
+        //设置用户名
         Intent intent = getActivity().getIntent();
         username = intent.getStringExtra("username");
         tv_username.setText(username);
+
+        //设置头像
+        UserInterface userInterface = retrofit.create(UserInterface.class);
+        Call<GetImageResult> imageResultCall = userInterface.getImage();
+        imageResultCall.enqueue(new Callback<GetImageResult>() {
+            @Override
+            public void onResponse(Call<GetImageResult> call, Response<GetImageResult> response) {
+                GetImageResult getImageResult = response.body();
+                Integer code = getImageResult.getCode();
+                Log.d("YANG",getImageResult.getMsg());
+                if(code == 200) {
+                    String data = getImageResult.getData();
+                    Bitmap bitmap = null;
+                    try {
+                        byte[] bitmapArray = Base64.decode(data.split(",")[1], Base64.DEFAULT);
+                        bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
+                        iv_portrait.setImageBitmap(bitmap);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }else {
+                    Toast.makeText(MyApplication.getContext(), "头像获取失败", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetImageResult> call, Throwable t) {
+                System.out.println("请求失败！");
+                Log.e("YANG",t.getMessage());
+            }
+        });
         return view;
     }
 
@@ -181,13 +226,13 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                         Bitmap bitmap = bundle.getParcelable("data");
                         if (bitmap != null) {
                             iv_portrait.setImageBitmap(bitmap);
-                            File file = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg");
+                            File file = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".png");
                             try {
                                 FileOutputStream fileOutputStream = new FileOutputStream(file);
                                 bitmap.compress(Bitmap.CompressFormat.JPEG,100,fileOutputStream);
                                 fileOutputStream.flush();
                                 fileOutputStream.close();
-                                //uploadImage(file);
+                                uploadImage(file);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -219,14 +264,14 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                             .getString(actual_image_column_index);
                 }
                 File file = new File(img_path);
-                //uploadImage(file);
+                uploadImage(file);
                 break;
         }
     }
 
     private void uploadImage(File file) {
-        RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpg"), file);
-        MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestBody);//file为key值
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/png"), file);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("applyFiles", file.getName(), requestBody);
 
         UserInterface userInterface = retrofit.create(UserInterface.class);
         Call<Result> resultCall = userInterface.uploadFile(part);
@@ -235,9 +280,10 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             public void onResponse(Call<Result> call, Response<Result> response) {
                 Result result = response.body();
                 int code = result.getCode();
+                Log.d("YANG",result.getMsg());
                 if(code == 200) {
                     Log.d("YANG","文件上传成功");
-                }else if(code == 400){
+                }else {
                     Log.d("YANG","文件上传失败");
                 }
             }
@@ -245,7 +291,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onFailure(Call<Result> call, Throwable t) {
                 System.out.println("请求失败！");
-                t.printStackTrace();
+                Log.e("YANG",t.getMessage());
             }
         });
     }

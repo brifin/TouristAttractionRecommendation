@@ -18,11 +18,14 @@ import com.example.tourapp.R;
 import com.example.tourapp.data.User;
 import com.example.tourapp.httpInterface.UserInterface;
 import com.example.tourapp.data.Result;
+import com.example.tourapp.interceptor.AddCookiesInterceptor;
+import com.example.tourapp.interceptor.ReceivedCookiesInterceptor;
 import com.google.gson.Gson;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
 import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -92,10 +95,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             String username = et_username.getText().toString();
             String password = et_password.getText().toString();
 
+            OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                    .addInterceptor(new ReceivedCookiesInterceptor())
+                    .build();
+
             //后端查询数据返回结果，然后再做相应判断
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("")
+                    .baseUrl("http://47.107.38.208:8090/user/")
                     .addConverterFactory(GsonConverterFactory.create())
+                    .client(okHttpClient)
                     .build();
             UserInterface userInterface = retrofit.create(UserInterface.class);
             User user = new User();
@@ -112,11 +120,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 public void onResponse(Call<Result> call, Response<Result> response) {
                     Result result = response.body();
                     int code = result.getCode();
-                    Log.d("TAG",result.getMsg());
+                    Log.d("YANG",result.getMsg());
+                    Result.Data data = result.getData();
                     if (code == 200) {
                         SharedPreferences.Editor editor = login_sp.edit();
-                        editor.putString("username", username);
-                        editor.putString("password", password);
+                        editor.putString("username", data.account);
+                        editor.putString("password", data.password);
                         if (cb_remember.isChecked()) {
                             editor.putBoolean("mRememberCheck", true);
                         } else {
@@ -125,7 +134,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         editor.apply();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra("username",username);
+                        intent.putExtra("username",data.account);
                         Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
                         startActivity(intent);
                         finish();
@@ -140,7 +149,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onFailure(Call<Result> call, Throwable t) {
                     System.out.println("连接失败！");
-                    System.out.println(t.getMessage());
+                    Log.e("YANG",t.getMessage());
                 }
             });
         }
