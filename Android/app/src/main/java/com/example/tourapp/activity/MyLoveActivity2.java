@@ -86,14 +86,17 @@ public class MyLoveActivity2 extends AppCompatActivity {
             public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
                 List<MyLoveData> data = response.body();
 
-                for (int i = 0; i< Objects.requireNonNull(data).size(); i++){
-                    LoveItem loveItem = new LoveItem();
-                    loveItem.setLatitude(data.get(i).getLatitude());
-                    loveItem.setLongitude(data.get(i).getLongitude());
-                    loveItem.setPoi(data.get(i).getPoi());
-                    loveItem.setTimestamp(data.get(i).getTimestamp());
-                    mData.add(loveItem);
+                if (data != null) {
+                    for (int i = 0; i < Objects.requireNonNull(data).size(); i++) {
+                        LoveItem loveItem = new LoveItem();
+                        loveItem.setLatitude(data.get(i).getLatitude());
+                        loveItem.setLongitude(data.get(i).getLongitude());
+                        loveItem.setPoi(data.get(i).getPoi());
+                        loveItem.setTimestamp(data.get(i).getTimestamp());
+                        mData.add(loveItem);
+                    }
                 }
+
 
             }
 

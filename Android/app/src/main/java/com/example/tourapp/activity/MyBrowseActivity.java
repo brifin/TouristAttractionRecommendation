@@ -83,13 +83,16 @@ public class MyBrowseActivity extends AppCompatActivity {
             public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
                 List<MyLoveData> data = response.body();
 
-                for (int i = 0; i< Objects.requireNonNull(data).size(); i++){
-                    BrowseItem browseItem = new BrowseItem();
-                    browseItem.setLatitude(data.get(i).getLatitude());
-                    browseItem.setLongitude(data.get(i).getLongitude());
-                    browseItem.setPoi(data.get(i).getPoi());
-                    browseItem.setTimestamp(data.get(i).getTimestamp());
-                    mData.add(browseItem);
+                if (data != null) {
+                    for (int i = 0; i < data.size(); i++) {
+                        BrowseItem browseItem = new BrowseItem();
+                        browseItem.setLatitude(data.get(i).getLatitude());
+                        browseItem.setLongitude(data.get(i).getLongitude());
+                        browseItem.setPoi(data.get(i).getPoi());
+                        browseItem.setTimestamp(data.get(i).getTimestamp());
+                        mData.add(browseItem);
+                    }
+
                 }
 
             }
@@ -97,7 +100,7 @@ public class MyBrowseActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<MyLoveData>> call, Throwable t) {
                 System.out.println("请求失败！");
-                Log.e("YANG",t.getMessage());
+                Log.e("YANG", t.getMessage());
             }
         });
     }

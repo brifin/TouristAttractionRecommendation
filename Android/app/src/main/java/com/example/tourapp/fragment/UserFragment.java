@@ -111,23 +111,26 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onResponse(Call<GetImageResult> call, Response<GetImageResult> response) {
                 GetImageResult getImageResult = response.body();
-                Integer code = getImageResult.getCode();
-                Log.d("YANG",getImageResult.getMsg());
-                if(code == 200) {
-                    String data = getImageResult.getData();
-                    Bitmap bitmap = null;
-                    try {
-                        byte[] bitmapArray = Base64.decode(data.split(",")[1], Base64.DEFAULT);
-                        bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
-                        iv_portrait.setImageBitmap(bitmap);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                if(getImageResult != null) {
+                    Integer code = getImageResult.getCode();
+                    Log.d("YANG",getImageResult.getMsg());
+                    if(code == 200) {
+                        String data = getImageResult.getData();
+                        Bitmap bitmap = null;
+                        try {
+                            byte[] bitmapArray = Base64.decode(data.split(",")[1], Base64.DEFAULT);
+                            bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
+                            iv_portrait.setImageBitmap(bitmap);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
-                }else {
-                    Toast.makeText(MyApplication.getContext(), "头像获取失败", Toast.LENGTH_SHORT).show();
-                    return;
+                    }else {
+                        Toast.makeText(MyApplication.getContext(), "头像获取失败", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                 }
+
             }
 
             @Override

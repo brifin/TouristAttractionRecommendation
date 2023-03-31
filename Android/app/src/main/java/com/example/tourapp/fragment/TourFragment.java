@@ -38,13 +38,14 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class TourFragment extends Fragment implements AdapterView.OnItemClickListener,View.OnClickListener{
+public class TourFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
 
     private List<TourItem> tourItemList = new ArrayList<>();
     private TourAdapter tourAdapter;
     private ImageView iv_back3;
 
-    public TourFragment() {}
+    public TourFragment() {
+    }
 
 
     @Override
@@ -57,7 +58,7 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         initTourItems();
-        tourAdapter = new TourAdapter(context,R.layout.tour_item,tourItemList);
+        tourAdapter = new TourAdapter(context, R.layout.tour_item, tourItemList);
     }
 
     @Override
@@ -86,60 +87,66 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
             @Override
             public void onResponse(Call<DataResult> call, Response<DataResult> response) {
                 DataResult dataResult = response.body();
-                Integer code = dataResult.getCode();
-                Log.d("YANG",dataResult.getMsg());
-                if(code == 200) {
-                    int i = 1;
-                    String[] schedules = dataResult.getData();
-                    Gson gson = new Gson();
+                if (dataResult != null) {
+                    Integer code = dataResult.getCode();
+                    Log.d("YANG", dataResult.getMsg());
+                    if (code == 200) {
+                        int i = 1;
+                        String[] schedules = dataResult.getData();
+                        Gson gson = new Gson();
 
-                    for (String schedule : schedules) {
-                        String json = gson.toJson(schedule);
+                        for (String schedule : schedules) {
+                            String json = gson.toJson(schedule);
 
-                        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
-                        Retrofit build = new Retrofit.Builder()
-                                .addConverterFactory(GsonConverterFactory.create())
-                                .baseUrl("http://121.37.67.235:8000/app01")
-                                .build();
+                            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                            Retrofit build = new Retrofit.Builder()
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .baseUrl("http://121.37.67.235:8000/app01")
+                                    .build();
 
-                        GroupInterface groupInterface = build.create(GroupInterface.class);
-                        Call<String> stringCall = groupInterface.groupClass(requestBody);
+                            GroupInterface groupInterface = build.create(GroupInterface.class);
+                            Call<String> stringCall = groupInterface.groupClass(requestBody);
 
-                        int I = i;
-                        stringCall.enqueue(new Callback<String>() {
-                            @Override
-                            public void onResponse(Call<String> call, Response<String> response) {
-                                String str = response.body();
-                                String tourName = "旅游团"+ I;
-                                TourItem tourItem;
-                                if(str.contains("false")) {
-                                    tourItem = new TourItem(tourName, R.drawable.collection, I, false);
-                                }else {
-                                    tourItem = new TourItem(tourName, R.drawable.uncollection, I, true);
+                            int I = i;
+                            stringCall.enqueue(new Callback<String>() {
+                                @Override
+                                public void onResponse(Call<String> call, Response<String> response) {
+                                    String str = response.body();
+                                    String tourName = "旅游团" + I;
+                                    TourItem tourItem;
+                                    if (!str.isEmpty()) {
+                                        if (str.contains("false")) {
+                                            tourItem = new TourItem(tourName, R.drawable.collection, I, false);
+                                        } else {
+                                            tourItem = new TourItem(tourName, R.drawable.uncollection, I, true);
+                                        }
+
+                                        tourItemList.add(tourItem);
+                                    }
+
                                 }
 
-                                tourItemList.add(tourItem);
-                            }
+                                @Override
+                                public void onFailure(Call<String> call, Throwable t) {
+                                    System.out.println("请求失败！");
+                                    Log.d("YANG", t.getMessage());
+                                }
+                            });
+                            i++;
+                        }
 
-                            @Override
-                            public void onFailure(Call<String> call, Throwable t) {
-                                System.out.println("请求失败！");
-                                Log.d("YANG",t.getMessage());
-                            }
-                        });
-                        i++;
+                    } else {
+                        Toast.makeText(MyApplication.getContext(), "加载失败", Toast.LENGTH_SHORT).show();
+                        return;
                     }
-
-                }else {
-                    Toast.makeText(MyApplication.getContext(), "加载失败", Toast.LENGTH_SHORT).show();
-                    return;
                 }
+
             }
 
             @Override
             public void onFailure(Call<DataResult> call, Throwable t) {
                 System.out.println("请求失败！");
-                Log.e("YANG",t.getMessage());
+                Log.e("YANG", t.getMessage());
             }
         });
 
@@ -148,13 +155,13 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getActivity(), TourDetailActivity.class);
-        intent.putExtra("tour_id",tourItemList.get(position).getTourId());
+        intent.putExtra("tour_id", tourItemList.get(position).getTourId());
         startActivity(intent);
     }
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.iv_back3) {
+        if (v.getId() == R.id.iv_back3) {
             Toast.makeText(getActivity(), "退出应用", Toast.LENGTH_SHORT).show();
             getActivity().finish();
         }

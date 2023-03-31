@@ -119,30 +119,33 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onResponse(Call<Result> call, Response<Result> response) {
                     Result result = response.body();
-                    int code = result.getCode();
-                    Log.d("YANG",result.getMsg());
-                    Result.Data data = result.getData();
-                    if (code == 200) {
-                        SharedPreferences.Editor editor = login_sp.edit();
-                        editor.putString("username", data.account);
-                        editor.putString("password", data.password);
-                        if (cb_remember.isChecked()) {
-                            editor.putBoolean("mRememberCheck", true);
+                    if(result != null) {
+                        int code = result.getCode();
+                        Log.d("YANG",result.getMsg());
+                        Result.Data data = result.getData();
+                        if (code == 200) {
+                            SharedPreferences.Editor editor = login_sp.edit();
+                            editor.putString("username", data.account);
+                            editor.putString("password", data.password);
+                            if (cb_remember.isChecked()) {
+                                editor.putBoolean("mRememberCheck", true);
+                            } else {
+                                editor.putBoolean("mRememberCheck", false);
+                            }
+                            editor.apply();
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("username",data.account);
+                            Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
+                            startActivity(intent);
+                            finish();
                         } else {
-                            editor.putBoolean("mRememberCheck", false);
+                            Toast.makeText(LoginActivity.this, getString(R.string.login_failed), Toast.LENGTH_SHORT).show();
+                            return;
                         }
-                        editor.apply();
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra("username",data.account);
-                        Toast.makeText(LoginActivity.this, getString(R.string.login_success), Toast.LENGTH_SHORT).show();
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Toast.makeText(LoginActivity.this, getString(R.string.login_failed), Toast.LENGTH_SHORT).show();
-                        return;
-                    }
 
+
+                    }
 
                 }
 
