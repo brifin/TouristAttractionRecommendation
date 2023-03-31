@@ -94,18 +94,21 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void onResponse(Call<Result> call, Response<Result> response) {
                         Result result = response.body();
-                        int code = result.getCode();
-                        Log.d("TAG",result.getMsg());
-                        if(code == 200) {
-                            Toast.makeText(RegisterActivity.this, getString(R.string.register_success), Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            finish();
-                        }else {
-                            Toast.makeText(RegisterActivity.this, getString(R.string.reset_username_failed), Toast.LENGTH_SHORT).show();
-                            return;
+                        if(result != null) {
+                            int code = result.getCode();
+                            Log.d("TAG",result.getMsg());
+                            if(code == 200) {
+                                Toast.makeText(RegisterActivity.this, getString(R.string.register_success), Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                finish();
+                            }else {
+                                Toast.makeText(RegisterActivity.this, getString(R.string.reset_username_failed), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                         }
+
                     }
 
                     @Override

@@ -1,18 +1,15 @@
 package com.example.tourapp.activity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ListView;
 
 import com.example.tourapp.R;
 import com.example.tourapp.adapter.LoveAdapter;
-import com.example.tourapp.data.MyLovedata;
+import com.example.tourapp.data.MyLoveData;
 import com.example.tourapp.httpInterface.GroupInterface;
 import com.example.tourapp.viewAndItem.LoveItem;
 import com.google.gson.Gson;
@@ -20,10 +17,8 @@ import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
+import java.util.Objects;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -85,26 +80,28 @@ public class MyLoveActivity2 extends AppCompatActivity {
         Gson gson = new Gson();
         String nicknameJson = gson.toJson(nickname);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), nicknameJson);
-        Call<List<MyLovedata>> historyStarCall = groupInterface.HistoryStar(requestBody);
-        historyStarCall.enqueue(new Callback<List<MyLovedata>>() {
+        Call<List<MyLoveData>> historyStarCall = groupInterface.HistoryStar(requestBody);
+        historyStarCall.enqueue(new Callback<List<MyLoveData>>() {
             @Override
-            public void onResponse(Call<List<MyLovedata>> call, Response<List<MyLovedata>> response) {
-                List<MyLovedata> data = new ArrayList<MyLovedata>();
-                data = response.body();
-                //Log.e("TAG", data);//待测试
-                for (int i=0;i<data.size();i++){
-                    LoveItem loveItem = new LoveItem();
-                    loveItem.setLatitude(data.get(i).getLatitude());
-                    loveItem.setLongitude(data.get(i).getLongitude());
-                    loveItem.setPoi(data.get(i).getPoi());
-                    loveItem.setTimestamp(data.get(i).getTimestamp());
-                    mData.add(loveItem);
+            public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
+                List<MyLoveData> data = response.body();
+
+                if (data != null) {
+                    for (int i = 0; i < Objects.requireNonNull(data).size(); i++) {
+                        LoveItem loveItem = new LoveItem();
+                        loveItem.setLatitude(data.get(i).getLatitude());
+                        loveItem.setLongitude(data.get(i).getLongitude());
+                        loveItem.setPoi(data.get(i).getPoi());
+                        loveItem.setTimestamp(data.get(i).getTimestamp());
+                        mData.add(loveItem);
+                    }
                 }
+
 
             }
 
             @Override
-            public void onFailure(Call<List<MyLovedata>> call, Throwable t) {
+            public void onFailure(Call<List<MyLoveData>> call, Throwable t) {
                 System.out.println("请求失败！");
                 System.out.println(t.getMessage());
             }

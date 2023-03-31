@@ -1,6 +1,6 @@
 package com.example.tourapp.data;
 
-public class MyLovedata {
+public class MyLoveData {
     private long poi;
     private double latitude;
 

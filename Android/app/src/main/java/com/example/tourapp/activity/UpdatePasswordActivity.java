@@ -90,47 +90,50 @@ public class UpdatePasswordActivity extends AppCompatActivity implements View.On
                 @Override
                 public void onResponse(Call<Result> call, Response<Result> response) {
                     Result result = response.body();
-                    int code = result.getCode();
-                    Log.d("TAG",result.getMsg());
-                    if (code == 200) {
-                        if (!newPassword.equals(newPasswordCheck)) {
-                            Toast.makeText(UpdatePasswordActivity.this, getString(R.string.mismatching_password), Toast.LENGTH_SHORT).show();
-                            return;
-                        } else {
-                            User user_ = new User();
-                            user_.setAccount(username);
-                            user_.setPassword(newPassword);
-                            String json_ = gson.toJson(user_);
-                            RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json_);
-                            Call<Result> updatePwdCall = userInterface.updatePwd(body);
-                            updatePwdCall.enqueue(new Callback<Result>() {
-                                @Override
-                                public void onResponse(Call<Result> call, Response<Result> response) {
-                                    Result updateResult = response.body();
-                                    int updateResultCode = updateResult.getCode();
-                                    Log.d("TAG",updateResult.getMsg());
-                                    if (updateResultCode == 200) {
-                                        Toast.makeText(UpdatePasswordActivity.this, getString(R.string.update_success), Toast.LENGTH_SHORT).show();
-                                        Intent intent_forgetPassword_to_login = new Intent(UpdatePasswordActivity.this, LoginActivity.class);
-                                        intent_forgetPassword_to_login.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        startActivity(intent_forgetPassword_to_login);
-                                        finish();
-                                    } else{
-                                        Toast.makeText(UpdatePasswordActivity.this, getString(R.string.update_failed), Toast.LENGTH_SHORT).show();
+                    if(result != null) {
+                        int code = result.getCode();
+                        Log.d("TAG",result.getMsg());
+                        if (code == 200) {
+                            if (!newPassword.equals(newPasswordCheck)) {
+                                Toast.makeText(UpdatePasswordActivity.this, getString(R.string.mismatching_password), Toast.LENGTH_SHORT).show();
+                                return;
+                            } else {
+                                User user_ = new User();
+                                user_.setAccount(username);
+                                user_.setPassword(newPassword);
+                                String json_ = gson.toJson(user_);
+                                RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json_);
+                                Call<Result> updatePwdCall = userInterface.updatePwd(body);
+                                updatePwdCall.enqueue(new Callback<Result>() {
+                                    @Override
+                                    public void onResponse(Call<Result> call, Response<Result> response) {
+                                        Result updateResult = response.body();
+                                        int updateResultCode = updateResult.getCode();
+                                        Log.d("TAG",updateResult.getMsg());
+                                        if (updateResultCode == 200) {
+                                            Toast.makeText(UpdatePasswordActivity.this, getString(R.string.update_success), Toast.LENGTH_SHORT).show();
+                                            Intent intent_forgetPassword_to_login = new Intent(UpdatePasswordActivity.this, LoginActivity.class);
+                                            intent_forgetPassword_to_login.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            startActivity(intent_forgetPassword_to_login);
+                                            finish();
+                                        } else{
+                                            Toast.makeText(UpdatePasswordActivity.this, getString(R.string.update_failed), Toast.LENGTH_SHORT).show();
+                                        }
                                     }
-                                }
 
-                                @Override
-                                public void onFailure(Call<Result> call, Throwable t) {
-                                    System.out.println("请求失败！");
-                                    System.out.println(t.getMessage());
-                                }
-                            });
+                                    @Override
+                                    public void onFailure(Call<Result> call, Throwable t) {
+                                        System.out.println("请求失败！");
+                                        System.out.println(t.getMessage());
+                                    }
+                                });
+                            }
+                        } else {
+                            Toast.makeText(UpdatePasswordActivity.this, getString(R.string.mismatching), Toast.LENGTH_SHORT).show();
+                            return;
                         }
-                    } else {
-                        Toast.makeText(UpdatePasswordActivity.this, getString(R.string.mismatching), Toast.LENGTH_SHORT).show();
-                        return;
                     }
+
                 }
 
                 @Override
