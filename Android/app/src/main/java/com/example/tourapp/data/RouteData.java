@@ -3,13 +3,13 @@ package com.example.tourapp.data;
 import java.util.List;
 
 public class RouteData {
-    private List<PlaceData> route;
+    private List<RecommendPlaceData> route;
 
-    public List<PlaceData> getRoute() {
+    public List<RecommendPlaceData> getRoute() {
         return route;
     }
 
-    public void setRoute(List<PlaceData> route) {
+    public void setRoute(List<RecommendPlaceData> route) {
         this.route = route;
     }
 }

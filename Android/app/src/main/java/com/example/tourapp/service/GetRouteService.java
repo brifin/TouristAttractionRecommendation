@@ -10,6 +10,6 @@ import retrofit2.http.POST;
 
 public interface GetRouteService {
     @POST("route")
-    @Headers("Content-Type: application/x-www-form-urlencoded")
+
     Call<List<RouteData>> getRoute();
 }

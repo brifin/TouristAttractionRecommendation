@@ -1,34 +1,34 @@
 package com.example.tourapp.data;
 
 public class MyLovedata {
-    private String poi;
-    private double lat;
+    private long poi;
+    private double latitude;
 
-    private double lon;
+    private double longitude;
     private String timestamp;
 
-    public String getPoi() {
+    public long getPoi() {
         return poi;
     }
 
-    public void setPoi(String poi) {
+    public void setPoi(long poi) {
         this.poi = poi;
     }
 
-    public double getLat() {
-        return lat;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
-    public double getLon() {
-        return lon;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setLon(double lon) {
-        this.lon = lon;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public String getTimestamp() {

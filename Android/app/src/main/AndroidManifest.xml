@@ -45,16 +45,24 @@
             android:exported="false"
             android:screenOrientation="sensor" />
         <activity
-            android:name=".MyBrowseActivity"
+            android:name=".activity.MyBrowseActivity"
             android:exported="false" />
         <activity
-            android:name=".MyLoveActivity2"
+            android:name=".activity.MyLoveActivity2"
+            android:exported="false" />
+
+        <activity
+            android:name=".activity.TourDetailActivity"
+
             android:exported="false" />
         <activity
-            android:name=".TourDetailActivity"
+            android:name=".activity.LoginActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activity.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".activity.UpdatePasswordActivity"
             android:exported="false" />
 
         <meta-data
@@ -62,7 +70,7 @@
             android:value="Q2hgRZo3cVX5ceHsSG3Z3yPTSns1GLdK" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

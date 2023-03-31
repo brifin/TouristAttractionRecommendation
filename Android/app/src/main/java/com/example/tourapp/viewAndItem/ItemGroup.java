@@ -2,6 +2,7 @@ package com.example.tourapp.viewAndItem;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,7 @@ import com.example.tourapp.R;
 public class ItemGroup extends FrameLayout {
 
     private LinearLayout itemGroupLayout; //组合控件的布局
-    private TextView titleTv; //标题
+    private ImageView img; //标题
     private TextView contentEdt; //输入框
     private ImageView jtRightIv; //向右的箭头
 
@@ -48,7 +49,7 @@ public class ItemGroup extends FrameLayout {
     private void initView(Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_group_layout, null);
         itemGroupLayout = (LinearLayout) view.findViewById(R.id.item_group_layout);
-        titleTv = (TextView) view.findViewById(R.id.title_tv);
+        img = (ImageView) view.findViewById(R.id.picture_iv);
         contentEdt = (TextView) view.findViewById(R.id.content_edt);
         jtRightIv = (ImageView) view.findViewById(R.id.jt_right_iv);
         addView(view); //把自定义的这个组合控件的布局加入到当前FramLayout
@@ -68,9 +69,7 @@ public class ItemGroup extends FrameLayout {
         int defaultHintColor = context.getResources().getColor(R.color.gray_);
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ItemGroup);
-        String title = typedArray.getString(R.styleable.ItemGroup_title);
-        float titleSize = typedArray.getDimension(R.styleable.ItemGroup_title_size, 15);
-        int titleColor = typedArray.getColor(R.styleable.ItemGroup_title_color, defaultTitleColor);
+        int resourceId = typedArray.getResourceId(R.styleable.ItemGroup_img, R.drawable.dianzan);
         float paddingLeft = typedArray.getDimension(R.styleable.ItemGroup_paddingLeft, 15);
         float paddingRight = typedArray.getDimension(R.styleable.ItemGroup_paddingRight, 15);
         float paddingTop = typedArray.getDimension(R.styleable.ItemGroup_paddingTop, 5);
@@ -89,9 +88,7 @@ public class ItemGroup extends FrameLayout {
         //设置数据
         //设置item的内边距
         itemGroupLayout.setPadding((int) paddingLeft, (int) paddingTop, (int) paddingRight, (int) paddingBottom);
-        titleTv.setText(title);
-        titleTv.setTextSize(titleSize);
-        titleTv.setTextColor(titleColor);
+        img.setImageResource(resourceId);
 
         contentEdt.setText(content);
         contentEdt.setTextSize(contentSize);

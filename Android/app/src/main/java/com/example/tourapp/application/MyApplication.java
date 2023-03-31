@@ -14,8 +14,8 @@ import com.baidu.mapapi.common.BaiduMapSDKException;
 public class MyApplication extends Application {
 
     private static Context mcontext;
+
     private static MyApplication mApp = null;
-    public  BMapManager mapManager = null;
 
 
     @Override
@@ -25,6 +25,10 @@ public class MyApplication extends Application {
         mcontext = this;
 //      设置用户同意隐私策略
 //      true表示同意
+
+
+        mcontext = getApplicationContext();
+
         SDKInitializer.setAgreePrivacy(mcontext, true);
         try {
             SDKInitializer.initialize(mcontext);
@@ -33,27 +37,6 @@ public class MyApplication extends Application {
             e.printStackTrace();
         }
 
-        if (mapManager == null) {
-            mapManager = new BMapManager(mcontext);
-            mapManager.setAgreePrivacy(mcontext,true);
-        }
-//        if (!mapManager.init(new MyGeneralListener())) {
-//            Toast.makeText(mcontext, "初始化错误", Toast.LENGTH_SHORT).show();
-//        }
-
-
-    }
-
-    public static class MyGeneralListener implements MKGeneralListener {
-
-        @Override
-        public void onGetPermissionState(int i) {
-            if (i != 0) {
-
-            } else {
-                Toast.makeText(MyApplication.getInstance().getApplicationContext(), "key认证成功", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     public static Context getContext() {

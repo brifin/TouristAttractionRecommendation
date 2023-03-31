@@ -13,11 +13,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tourapp.R;
-import com.example.tourapp.TourDetailActivity;
+import com.example.tourapp.activity.TourDetailActivity;
 import com.example.tourapp.adapter.TourAdapter;
 import com.example.tourapp.viewAndItem.TourItem;
 

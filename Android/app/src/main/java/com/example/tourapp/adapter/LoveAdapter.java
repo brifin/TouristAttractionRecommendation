@@ -14,15 +14,15 @@ import com.example.tourapp.viewAndItem.LoveItem;
 import java.util.List;
 
 public class LoveAdapter extends BaseAdapter {
-    private List<LoveItem> mdata;
+    private List<LoveItem> mData;
 
     public LoveAdapter(List<LoveItem> data) {
-        mdata = data;
+        mData = data;
     }
 
     @Override
     public int getCount() {
-        return mdata.size();
+        return mData.size();
     }
 
     @Override
@@ -41,16 +41,16 @@ public class LoveAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(MyApplication.getContext()).inflate(R.layout.love_item_layout, parent, false);
             holder = new ViewHolder();
-            holder.imageView = (ImageView) convertView.findViewById(R.id.love_item_iv);
-            holder.textViewPlace = (TextView) convertView.findViewById(R.id.love_item_place);
+           // holder.imageView = (ImageView) convertView.findViewById(R.id.love_item_iv);
+           // holder.textViewPlace = (TextView) convertView.findViewById(R.id.love_item_place);
             holder.textViewTime = (TextView) convertView.findViewById(R.id.love_item_time);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.imageView.setImageResource(mdata.get(position).getPhoto());
-        holder.textViewPlace.setText(mdata.get(position).getPlace());
-        holder.textViewTime.setText(mdata.get(position).getTime());
+        //holder.imageView.setImageResource(mData.get(position).getPhoto());
+       // holder.textViewPlace.setText(mData.get(position).getPlace());
+        holder.textViewTime.setText(mData.get(position).getTimestamp());
         return convertView;
     }
 

@@ -1,6 +1,7 @@
-package com.example.tourapp;
+package com.example.tourapp.activity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
@@ -22,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.tourapp.R;
 import com.example.tourapp.adapter.ViewPagerAdapter;
 import com.example.tourapp.application.MyApplication;
 import com.example.tourapp.fragment.MapFragment;
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     int[] itemLayout;
     int[] itemImgId;
     int[] itemtvId;
+
+    public static String nickname = null;
     int activeColor = R.color.purple_200;
     int normalColor = R.color.black;
 
@@ -90,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         checkVersion();
         initView();
+        Intent intent = getIntent();
+        nickname = intent.getStringExtra("username");
     }
 
     //初始化视图
@@ -213,5 +219,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         mediator.detach();
         super.onDestroy();
+    }
+
+    public String getNickname(){
+        return nickname;
     }
 }
