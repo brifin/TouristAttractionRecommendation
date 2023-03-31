@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.tourapp.R;
 import com.example.tourapp.activity.TourDetailActivity;
 import com.example.tourapp.adapter.TourAdapter;
+import com.example.tourapp.application.MyApplication;
 import com.example.tourapp.data.DataResult;
 import com.example.tourapp.httpInterface.GroupInterface;
 import com.example.tourapp.httpInterface.UserInterface;
@@ -74,7 +75,7 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
 
     private void initTourItems() {
         //TODO 接受后端数据
-        /*Retrofit retrofit = new Retrofit.Builder()
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://47.107.38.208:8090/user/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -88,30 +89,50 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                 Integer code = dataResult.getCode();
                 Log.d("YANG",dataResult.getMsg());
                 if(code == 200) {
-                    String[] schedule = dataResult.getData();
+                    int i = 1;
+                    String[] schedules = dataResult.getData();
                     Gson gson = new Gson();
-                    String json = gson.toJson(schedule);
-                    RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
-                    Retrofit build = new Retrofit.Builder()
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .baseUrl("http://121.37.67.235:8000/app01")
-                            .build();
 
-                    GroupInterface groupInterface = build.create(GroupInterface.class);
-                    Call<String> stringCall = groupInterface.groupClass(requestBody);
+                    for (String schedule : schedules) {
+                        String json = gson.toJson(schedule);
 
-                    stringCall.enqueue(new Callback<String>() {
-                        @Override
-                        public void onResponse(Call<String> call, Response<String> response) {
+                        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                        Retrofit build = new Retrofit.Builder()
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .baseUrl("http://121.37.67.235:8000/app01")
+                                .build();
 
-                        }
+                        GroupInterface groupInterface = build.create(GroupInterface.class);
+                        Call<String> stringCall = groupInterface.groupClass(requestBody);
 
-                        @Override
-                        public void onFailure(Call<String> call, Throwable t) {
-                            System.out.println("请求失败！");
-                            Log.d("YANG",t.getMessage());
-                        }
-                    });
+                        int I = i;
+                        stringCall.enqueue(new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                String str = response.body();
+                                String tourName = "旅游团"+ I;
+                                TourItem tourItem;
+                                if(str.contains("false")) {
+                                    tourItem = new TourItem(tourName, R.drawable.collection, I, false);
+                                }else {
+                                    tourItem = new TourItem(tourName, R.drawable.uncollection, I, true);
+                                }
+
+                                tourItemList.add(tourItem);
+                            }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+                                System.out.println("请求失败！");
+                                Log.d("YANG",t.getMessage());
+                            }
+                        });
+                        i++;
+                    }
+
+                }else {
+                    Toast.makeText(MyApplication.getContext(), "加载失败", Toast.LENGTH_SHORT).show();
+                    return;
                 }
             }
 
@@ -120,18 +141,8 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                 System.out.println("请求失败！");
                 Log.e("YANG",t.getMessage());
             }
-        });*/
-        String tourName;
-        for(int i = 1;i < 12;i++) {
-            tourName = "旅游团"+ i;
-            TourItem tourItem;
-            if((i & 1) == 1) {
-                tourItem = new TourItem(tourName, R.drawable.collection, i, true);
-            }else {
-                tourItem = new TourItem(tourName, R.drawable.uncollection, i, false);
-            }
-            tourItemList.add(tourItem);
-        }
+        });
+
     }
 
     @Override
