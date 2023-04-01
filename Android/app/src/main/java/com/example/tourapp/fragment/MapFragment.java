@@ -300,6 +300,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     clickLoveService.clickLove(requestBodyClickLove2);
                     flag = true;
                 }
+                break;
             default:
                 break;
         }
