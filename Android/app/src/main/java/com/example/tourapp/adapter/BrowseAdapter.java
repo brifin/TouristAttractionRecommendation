@@ -7,6 +7,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.example.tourapp.R;
 import com.example.tourapp.application.MyApplication;
 import com.example.tourapp.viewAndItem.BrowseItem;
@@ -50,7 +56,7 @@ public class BrowseAdapter extends BaseAdapter {
             viewholder = (viewHolder) convertView.getTag();
         }
         //viewholder.imageView.setImageResource(mData.get(position).getPhoto());
-        //viewholder.textViewPlace.setText(mData.get(position).getPlace());
+        viewholder.textViewPlace.setText(mBrowseData.get(position).getPlace());
         viewholder.textViewTime.setText(mBrowseData.get(position).getTimestamp());
 
         String latStr;

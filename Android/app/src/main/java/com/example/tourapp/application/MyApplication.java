@@ -13,7 +13,7 @@ import com.baidu.mapapi.common.BaiduMapSDKException;
 
 public class MyApplication extends Application {
 
-    private static Context mcontext;
+    private static Context mcontext = null;
 
     private static MyApplication mApp = null;
 
@@ -25,9 +25,6 @@ public class MyApplication extends Application {
         mcontext = this;
 //      设置用户同意隐私策略
 //      true表示同意
-
-
-        mcontext = getApplicationContext();
 
         SDKInitializer.setAgreePrivacy(mcontext, true);
         try {

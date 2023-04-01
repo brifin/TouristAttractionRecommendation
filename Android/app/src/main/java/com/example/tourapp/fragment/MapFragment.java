@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapPoi;
@@ -28,23 +27,30 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
 import com.example.tourapp.R;
 import com.example.tourapp.ServiceCreator_app01;
+import com.example.tourapp.ServiceCreator_attractions;
 import com.example.tourapp.ServiceCreator_user;
-import com.example.tourapp.Tool;
+
 import com.example.tourapp.activity.MainActivity;
 import com.example.tourapp.activity.MyLoveActivity2;
+import com.example.tourapp.data.Attraction1;
 import com.example.tourapp.data.Click_love;
+import com.example.tourapp.data.Data;
+import com.example.tourapp.data.MyBrowse;
 import com.example.tourapp.data.NearlyAttra;
-import com.example.tourapp.data.RecommendPlaceData;
 import com.example.tourapp.data.RouteData;
+import com.example.tourapp.data.RouteRecommend;
 import com.example.tourapp.service.ClickLoveService;
+import com.example.tourapp.service.ClickMarkerService;
 import com.example.tourapp.service.GetNearlyAttra;
 import com.example.tourapp.service.GetRecommendService;
+import com.example.tourapp.service.GetRouteRecommend;
 import com.example.tourapp.service.GetRouteService;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.gson.Gson;
@@ -56,6 +62,7 @@ import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -77,6 +84,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     private Boolean flag = true;
     //保存点击marker的信息
     public Click_love clickMarker = new Click_love();
+    public MyBrowse browseData = new MyBrowse();
 
     //当前我的位置
     private double[] currentPoint = new double[2];
@@ -125,7 +133,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             //推荐
             case R.id.Lyre:
-                System.out.println(Tool.geoCoder(30.263607974299997, -97.7395677567));
                 mBaiduMap.clear();
                 List<String> poiStarts = new ArrayList<String>();
                 poiStarts = getPoiStarts();
@@ -136,7 +143,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onResponse(Call<List<double[]>> call, Response<List<double[]>> response) {
                         List<double[]> data = response.body();
-                        if(data!=null){
+                        if (data != null) {
                             List<double[]> realData = filterPoints(currentPoint, data);
                             for (int i = 0; i < realData.size(); i++) {
                                 double[] doubles = realData.get(i);
@@ -150,6 +157,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                             }
                         }
                     }
+
                     @Override
                     public void onFailure(Call<List<double[]>> call, Throwable t) {
                         Toast.makeText(getContext(), "网络请求失败", Toast.LENGTH_SHORT).show();
@@ -157,55 +165,78 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     }
                 });
                 break;
+
             //生成路线
             case R.id.Lypath:
                 mBaiduMap.clear();
-                BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker);
                 GetRouteService getRouteService = (GetRouteService) ServiceCreator_app01.creatService(GetRouteService.class);
-                getRouteService.getRoute().enqueue(new Callback<List<RouteData>>() {
+                RouteData routeData = new RouteData();
+                routeData.setLatitude(currentPoint[0]);
+                routeData.setLongitude(currentPoint[1]);
+                long[] stars = new long[getPoiStarts().size()];
+                List<String> stringspoi = getPoiStarts();
+                for (int i = 0; i < stringspoi.size(); i++) {
+                    stars[i] = Long.parseLong(stringspoi.get(i));
+                }
+                routeData.setStars(stars);
+                String route = new Gson().toJson(routeData);
+                RequestBody requestBody1 = RequestBody.create(MediaType.get("application/json; charset=utf-8"), route);
+                getRouteService.getRoute(requestBody1).enqueue(new Callback<ResponseBody>() {
                     @Override
-                    public void onResponse(Call<List<RouteData>> call, Response<List<RouteData>> response) {
-                        List<RouteData> routeDataList = response.body();
-                        List<OverlayOptions> options = new ArrayList<OverlayOptions>();
-                        List<LatLng> latLngList = new ArrayList<LatLng>();
-                        List<RecommendPlaceData> placeDataList;
-                        for (int i = 0; i < routeDataList.size(); i++) {
-                            latLngList.clear();
-                            options.clear();
-                            placeDataList = routeDataList.get(i).getRoute();
-                            for (int j = 0; j < placeDataList.size(); j++) {
-                                LatLng point = new LatLng(Double.parseDouble(placeDataList.get(j).getLatitude()), Double.parseDouble(placeDataList.get(j).getLongitde()));
-                                latLngList.add(point);
-                                OverlayOptions options1 = new MarkerOptions()
-                                        .position(point)
-                                        .icon(bitmapDescriptor)
-                                        .animateType(MarkerOptions.MarkerAnimateType.drop);
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        GetRouteRecommend getRouteRecommend = (GetRouteRecommend) ServiceCreator_attractions.creatService(GetRouteRecommend.class);
+                        RequestBody requestBody2 = RequestBody.create(MediaType.get("application/json; charset=utf-8"), response.toString());
+                        getRouteRecommend.getRouteRecommend(requestBody2).enqueue(new Callback<RouteRecommend>() {
+                            @Override
+                            public void onResponse(Call<RouteRecommend> call, Response<RouteRecommend> response) {
+                                RouteRecommend routeRecommend = response.body();
+                                Data attractionList = routeRecommend.getData();
+                                List<OverlayOptions> options = new ArrayList<OverlayOptions>();
+                                List<LatLng> latLngList = new ArrayList<LatLng>();
+                                BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
+
+                                LatLng latLng1 = new LatLng(attractionList.getAttraction1().getLatitude(), attractionList.getAttraction1().getLongitude());
+                                latLngList.add(latLng1);
+                                OverlayOptions options1 = new MarkerOptions().position(latLng1).icon(bitmapDescriptor);
                                 options.add(options1);
 
-                            }
-                            OverlayOptions overlayOptions = new PolylineOptions()
-                                    .width(7)
-                                    .color(0xAAFF0000)
-                                    .points(latLngList);
-                            mBaiduMap.addOverlay(overlayOptions);
-                            mBaiduMap.addOverlays(options);
+                                LatLng latLng2 = new LatLng(attractionList.getAttraction2().getLatitude(), attractionList.getAttraction2().getLongitude());
+                                latLngList.add(latLng2);
+                                OverlayOptions options2 = new MarkerOptions().position(latLng2).icon(bitmapDescriptor);
+                                options.add(options2);
 
-                        }
+                                LatLng latLng3 = new LatLng(attractionList.getAttraction3().getLatitude(), attractionList.getAttraction3().getLongitude());
+                                latLngList.add(latLng3);
+                                OverlayOptions options3 = new MarkerOptions().position(latLng3).icon(bitmapDescriptor);
+                                options.add(options3);
+
+                                LatLng latLng4 = new LatLng(attractionList.getAttraction4().getLatitude(), attractionList.getAttraction4().getLongitude());
+                                latLngList.add(latLng4);
+                                OverlayOptions options4 = new MarkerOptions().position(latLng4).icon(bitmapDescriptor);
+                                options.add(options4);
+
+                                mBaiduMap.addOverlays(options);
+                                OverlayOptions mOverlayOptions = new PolylineOptions().width(5).color(0xAAFF0000).points(latLngList);
+                                Overlay overlay = mBaiduMap.addOverlay(mOverlayOptions);
+                            }
+
+                            @Override
+                            public void onFailure(Call<RouteRecommend> call, Throwable t) {
+                                Toast.makeText(getContext(), "网络请求失败", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
 
                     @Override
-                    public void onFailure(Call<List<RouteData>> call, Throwable t) {
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Toast.makeText(getContext(), "网络请求失败", Toast.LENGTH_SHORT).show();
                     }
                 });
-
                 break;
 
             //生成附近景点
             case R.id.LyAttra:
                 mBaiduMap.clear();
-                currentPoint[0] = 30.263607974299997;
-                currentPoint[1] = -97.7395677567;
                 GetNearlyAttra getNearlyAttra = (GetNearlyAttra) ServiceCreator_user.creatService(GetNearlyAttra.class);
                 getNearlyAttra.getNearlyAttra(String.valueOf(currentPoint[0]), String.valueOf(currentPoint[1])).enqueue(new Callback<NearlyAttra>() {
                     @Override
@@ -286,6 +317,15 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 clickMarker.setLon(marker.getPosition().longitude);
                 long poi = marker.getExtraInfo().getLong("poi");
                 clickMarker.setPoi(poi);
+                browseData.setNickname(MainActivity.nickname);
+                browseData.setLat(marker.getPosition().latitude);
+                browseData.setLon(marker.getPosition().longitude);
+                browseData.setPoi(poi);
+                browseData.setTimestamp(getTime());
+                String browDataJson = new Gson().toJson(browseData);
+                ClickMarkerService clickMarkerService = (ClickMarkerService) ServiceCreator_app01.creatService(ClickMarkerService.class);
+                RequestBody requestBody = RequestBody.create(MediaType.get("application/json; charset=utf-8"), browDataJson);
+                clickMarkerService.sendMyBrowse(requestBody);
                 return true;
             }
         });
@@ -338,20 +378,21 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     public void initView(View view) {
         mapView = (MapView) view.findViewById(R.id.mapview);
         mBaiduMap = mapView.getMap();
-        MapStatus.Builder builder = new MapStatus.Builder();
-        builder.zoom(18.0f);
         //禁止地图旋转
         UiSettings settings = mBaiduMap.getUiSettings();
         settings.setRotateGesturesEnabled(false);
         //开启地图定位图层
         mBaiduMap.setMyLocationEnabled(true);
         //显示当前的位置
+        currentPoint[0] = 30.263607974299997;
+        currentPoint[1] = -97.7395677567;
         LatLng latLng = new LatLng(currentPoint[0], currentPoint[1]);
         MapStatusUpdate update = MapStatusUpdateFactory.newLatLng(latLng);
-        mBaiduMap.setMapStatus(update);
+        mBaiduMap.animateMapStatus(update);
         MyLocationData myLocationData = new MyLocationData.Builder().latitude(currentPoint[0]).longitude(currentPoint[1]).build();
         mBaiduMap.setMyLocationData(myLocationData);
-
+        MapStatus.Builder builder = new MapStatus.Builder();
+        builder.zoom(15.0f).target(latLng);
         mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
         mBaiduMap.setIndoorEnable(true);
 
@@ -409,17 +450,18 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     //过滤地点,舍去过远的地点
     public List<double[]> filterPoints(double[] currentPoint, List<double[]> points) {
         List<double[]> realPoints = new ArrayList<double[]>();
-        double[] point ;
+        double[] point;
         for (int i = 0; i < points.size(); i++) {
             point = points.get(i);
-            if((point[0]-currentPoint[0])>(-0.25)&&(point[0]-currentPoint[0])<0.25&&(point[1]-currentPoint[1])<0.4&&(point[1]-currentPoint[1])>(-0.4)){
+            if ((point[0] - currentPoint[0]) > (-0.25) && (point[0] - currentPoint[0]) < 0.25 && (point[1] - currentPoint[1]) < 0.4 && (point[1] - currentPoint[1]) > (-0.4)) {
                 realPoints.add(point);
             }
         }
         return realPoints;
     }
+
     //定位到某一位置
-    public void currentLocation(double latitude, double longitude){
+    public void currentLocation(double latitude, double longitude) {
         LatLng latLng = new LatLng(latitude, longitude);
         MapStatusUpdate update = MapStatusUpdateFactory.newLatLng(latLng);
         mBaiduMap.setMapStatus(update);
