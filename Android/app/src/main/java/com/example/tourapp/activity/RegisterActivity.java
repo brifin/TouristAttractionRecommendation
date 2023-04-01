@@ -84,7 +84,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 User user = new User();
                 user.setAccount(reset_username);
                 user.setPassword(new_password);
-                user.setNickname(null);
+                user.setNickname(reset_username);
 
                 Gson gson = new Gson();
                 String json = gson.toJson(user);
