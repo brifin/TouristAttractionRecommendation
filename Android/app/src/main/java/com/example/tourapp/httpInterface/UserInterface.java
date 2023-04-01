@@ -19,15 +19,12 @@ import retrofit2.http.Path;
 public interface UserInterface {
 
     @POST("login")
-    @Headers({"Content-Type: application/json","Accept: application/json"})
     Call<Result> login(@Body RequestBody user);
 
     @POST("save")
-    @Headers({"Content-Type: application/json","Accept: application/json"})
     Call<Result> register(@Body RequestBody user);
 
     @POST("update")
-    @Headers({"Content-Type: application/json","Accept: application/json"})
     Call<Result> updatePwd(@Body RequestBody user);
 
     @POST("updatePng")
