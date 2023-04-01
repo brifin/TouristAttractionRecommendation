@@ -15,11 +15,13 @@ import com.example.tourapp.R;
 import com.example.tourapp.data.User;
 import com.example.tourapp.httpInterface.UserInterface;
 import com.example.tourapp.data.Result;
+import com.example.tourapp.interceptor.AddCookiesInterceptor;
 import com.google.gson.Gson;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
 import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -73,10 +75,17 @@ public class UpdatePasswordActivity extends AppCompatActivity implements View.On
             String newPassword = et_reset_new_password.getText().toString();
             String newPasswordCheck = et_new_password_check.getText().toString();
 
+            OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                    .addInterceptor(new AddCookiesInterceptor())
+                    .build();
+
+
             Retrofit retrofit = new Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
+                    .client(okHttpClient)
                     .baseUrl("http://47.107.38.208:8090/user/")
                     .build();
+
             UserInterface userInterface = retrofit.create(UserInterface.class);
             User user = new User();
             user.setAccount(username);
@@ -90,9 +99,9 @@ public class UpdatePasswordActivity extends AppCompatActivity implements View.On
                 @Override
                 public void onResponse(Call<Result> call, Response<Result> response) {
                     Result result = response.body();
-                    if(result != null) {
+                    if (result != null) {
                         int code = result.getCode();
-                        Log.d("TAG",result.getMsg());
+                        Log.d("TAG", result.getMsg());
                         if (code == 200) {
                             if (!newPassword.equals(newPasswordCheck)) {
                                 Toast.makeText(UpdatePasswordActivity.this, getString(R.string.mismatching_password), Toast.LENGTH_SHORT).show();
@@ -109,14 +118,14 @@ public class UpdatePasswordActivity extends AppCompatActivity implements View.On
                                     public void onResponse(Call<Result> call, Response<Result> response) {
                                         Result updateResult = response.body();
                                         int updateResultCode = updateResult.getCode();
-                                        Log.d("TAG",updateResult.getMsg());
+                                        Log.d("TAG", updateResult.getMsg());
                                         if (updateResultCode == 200) {
                                             Toast.makeText(UpdatePasswordActivity.this, getString(R.string.update_success), Toast.LENGTH_SHORT).show();
                                             Intent intent_forgetPassword_to_login = new Intent(UpdatePasswordActivity.this, LoginActivity.class);
                                             intent_forgetPassword_to_login.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                             startActivity(intent_forgetPassword_to_login);
                                             finish();
-                                        } else{
+                                        } else {
                                             Toast.makeText(UpdatePasswordActivity.this, getString(R.string.update_failed), Toast.LENGTH_SHORT).show();
                                         }
                                     }
