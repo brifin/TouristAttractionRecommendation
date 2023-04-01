@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.READ_MEDIA_IMAGES,
             Manifest.permission.READ_MEDIA_VIDEO,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
     };
     private ActivityResultLauncher<String[]> requestPermissions;
 
@@ -87,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
                 boolean readImages = Boolean.TRUE.equals(result.get(Manifest.permission.READ_MEDIA_IMAGES));
                 boolean readVideo = Boolean.TRUE.equals(result.get(Manifest.permission.READ_MEDIA_VIDEO));
                 boolean writeStorage = Boolean.TRUE.equals(result.get(Manifest.permission.WRITE_EXTERNAL_STORAGE));
+                boolean coarseLocation = Boolean.TRUE.equals(result.get(Manifest.permission.ACCESS_COARSE_LOCATION));
+                boolean fineLocation = Boolean.TRUE.equals(result.get(Manifest.permission.ACCESS_FINE_LOCATION));
             }
         });
 

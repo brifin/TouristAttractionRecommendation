@@ -17,14 +17,17 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.UiSettings;
@@ -32,6 +35,7 @@ import com.baidu.mapapi.model.LatLng;
 import com.example.tourapp.R;
 import com.example.tourapp.ServiceCreator_app01;
 import com.example.tourapp.ServiceCreator_user;
+import com.example.tourapp.Tool;
 import com.example.tourapp.activity.MainActivity;
 import com.example.tourapp.activity.MyLoveActivity2;
 import com.example.tourapp.data.Click_love;
@@ -121,6 +125,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             //推荐
             case R.id.Lyre:
+                System.out.println(Tool.geoCoder(30.263607974299997, -97.7395677567));
                 mBaiduMap.clear();
                 List<String> poiStarts = new ArrayList<String>();
                 poiStarts = getPoiStarts();
@@ -131,17 +136,18 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onResponse(Call<List<double[]>> call, Response<List<double[]>> response) {
                         List<double[]> data = response.body();
-                        List<double[]> realData = filterPoints(currentPoint, data);
-                        for (int i = 0; i < realData.size(); i++) {
-                            double[] doubles = realData.get(i);
-                            LatLng point = new LatLng(doubles[0], doubles[1]);
-                            BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
-                            OverlayOptions option = new MarkerOptions()
-                                    .position(point)
-                                    .icon(bitmapDescriptor)
-                                    .animateType(MarkerOptions.MarkerAnimateType.none);
-                            mBaiduMap.addOverlay(option);
-
+                        if(data!=null){
+                            List<double[]> realData = filterPoints(currentPoint, data);
+                            for (int i = 0; i < realData.size(); i++) {
+                                double[] doubles = realData.get(i);
+                                LatLng point = new LatLng(doubles[0], doubles[1]);
+                                BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
+                                OverlayOptions option = new MarkerOptions()
+                                        .position(point)
+                                        .icon(bitmapDescriptor)
+                                        .animateType(MarkerOptions.MarkerAnimateType.none);
+                                mBaiduMap.addOverlay(option);
+                            }
                         }
                     }
                     @Override
@@ -334,6 +340,18 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         mBaiduMap = mapView.getMap();
         MapStatus.Builder builder = new MapStatus.Builder();
         builder.zoom(18.0f);
+        //禁止地图旋转
+        UiSettings settings = mBaiduMap.getUiSettings();
+        settings.setRotateGesturesEnabled(false);
+        //开启地图定位图层
+        mBaiduMap.setMyLocationEnabled(true);
+        //显示当前的位置
+        LatLng latLng = new LatLng(currentPoint[0], currentPoint[1]);
+        MapStatusUpdate update = MapStatusUpdateFactory.newLatLng(latLng);
+        mBaiduMap.setMapStatus(update);
+        MyLocationData myLocationData = new MyLocationData.Builder().latitude(currentPoint[0]).longitude(currentPoint[1]).build();
+        mBaiduMap.setMyLocationData(myLocationData);
+
         mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
         mBaiduMap.setIndoorEnable(true);
 
@@ -348,6 +366,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             }
         };
         mBaiduMap.setOnMapClickListener(listener);
+        //设置双击放大
         UiSettings uiSettings = mBaiduMap.getUiSettings();
         uiSettings.setEnlargeCenterWithDoubleClickEnable(true);
         pop_upsView = (FrameLayout) view.findViewById(R.id.markerPop_ups);
@@ -398,5 +417,11 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             }
         }
         return realPoints;
+    }
+    //定位到某一位置
+    public void currentLocation(double latitude, double longitude){
+        LatLng latLng = new LatLng(latitude, longitude);
+        MapStatusUpdate update = MapStatusUpdateFactory.newLatLng(latLng);
+        mBaiduMap.setMapStatus(update);
     }
 }
