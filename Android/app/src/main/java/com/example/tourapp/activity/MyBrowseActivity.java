@@ -8,6 +8,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
 
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.base.LanguageType;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.example.tourapp.R;
 import com.example.tourapp.adapter.BrowseAdapter;
 import com.example.tourapp.data.MyLoveData;
@@ -50,11 +57,37 @@ public class MyBrowseActivity extends AppCompatActivity {
         hideStable();
         mData = new ArrayList<BrowseItem>();
         getData();
+        //逆地理编码
+        GeoCoder mgeoCoder = GeoCoder.newInstance();
+        OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
+            @Override
+            public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
+
+            }
+
+            //逆地理编码
+            @Override
+            public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
+                for (int i = 0; i < mData.size(); i++) {
+                    if(mData.get(i).getLatitude()==reverseGeoCodeResult.getLocation().latitude&&mData.get(i).getLongitude()==reverseGeoCodeResult.getLocation().longitude){
+                        mData.get(i).setPlace(reverseGeoCodeResult.getAddress());
+                    }
+                }
+            }
+        };
+        mgeoCoder.setOnGetGeoCodeResultListener(listener);
+        for (int i = 0; i < mData.size(); i++) {
+            LatLng latLng = new LatLng(mData.get(i).getLatitude(), mData.get(i).getLongitude());
+            mgeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng).newVersion(1).language(LanguageType.LanguageTypeChinese));
+        }
+        mgeoCoder.destroy();
+
         adapter = new BrowseAdapter(mData);
         listView = (ListView) findViewById(R.id.browse_listView);
         listView.setAdapter(adapter);
     }
 
+    //隐藏状态栏
     public void hideStable() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();

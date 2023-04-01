@@ -3,13 +3,31 @@ package com.example.tourapp.data;
 import java.util.List;
 
 public class RouteData {
-    private List<RecommendPlaceData> route;
+    private double latitude;
+    private double longitude;
+    private long[] stars;
 
-    public List<RecommendPlaceData> getRoute() {
-        return route;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setRoute(List<RecommendPlaceData> route) {
-        this.route = route;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public long[] getStars() {
+        return stars;
+    }
+
+    public void setStars(long[] stars) {
+        this.stars = stars;
     }
 }

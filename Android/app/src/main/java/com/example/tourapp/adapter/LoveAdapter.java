@@ -7,6 +7,14 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.UiThread;
+
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.example.tourapp.R;
 import com.example.tourapp.application.MyApplication;
 import com.example.tourapp.viewAndItem.LoveItem;
@@ -50,7 +58,8 @@ public class LoveAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         //holder.imageView.setImageResource(mData.get(position).getPhoto());
-       // holder.textViewPlace.setText(mData.get(position).getPlace());
+
+        holder.textViewPlace.setText(mData.get(position).getPlace());
         holder.textViewTime.setText(mData.get(position).getTimestamp());
 
         String latStr;
