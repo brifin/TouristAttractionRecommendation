@@ -233,7 +233,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                             File file = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".png");
                             try {
                                 FileOutputStream fileOutputStream = new FileOutputStream(file);
-                                bitmap.compress(Bitmap.CompressFormat.JPEG,100,fileOutputStream);
+                                bitmap.compress(Bitmap.CompressFormat.PNG,80,fileOutputStream);
                                 fileOutputStream.flush();
                                 fileOutputStream.close();
                                 uploadImage(file);
