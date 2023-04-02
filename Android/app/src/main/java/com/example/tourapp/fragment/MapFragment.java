@@ -2,6 +2,7 @@ package com.example.tourapp.fragment;
 
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,9 @@ import com.example.tourapp.data.Data;
 import com.example.tourapp.data.MyBrowse;
 import com.example.tourapp.data.NearlyAttra;
 import com.example.tourapp.data.RouteData;
+import com.example.tourapp.data.RouteRe;
 import com.example.tourapp.data.RouteRecommend;
+import com.example.tourapp.data.RouteRecommendData;
 import com.example.tourapp.service.ClickLoveService;
 import com.example.tourapp.service.ClickMarkerService;
 import com.example.tourapp.service.GetNearlyAttra;
@@ -59,6 +62,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -71,6 +75,7 @@ import retrofit2.Response;
 public class MapFragment extends Fragment implements View.OnClickListener {
 
 
+    private static final String LEE = "Lee";
     private MapView mapView = null;
     private BaiduMap mBaiduMap;
 
@@ -141,6 +146,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 poiStarts = getPoiStarts();
                 GetRecommendService recommendService = (GetRecommendService) ServiceCreator_app01.creatService(GetRecommendService.class);
                 String json = new Gson().toJson(poiStarts);
+                //System.out.println(json);
                 RequestBody requestBody = RequestBody.create(MediaType.get("application/json; charset=utf-8"), json);
                 recommendService.getRecommendData(requestBody).enqueue(new Callback<List<double[]>>() {
                     @Override
@@ -183,15 +189,22 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 List<String> stringspoi = getPoiStarts();
                 for (int i = 0; i < stringspoi.size(); i++) {
                     stars[i] = Long.parseLong(stringspoi.get(i));
+                    //System.out.println(stars[i]);
                 }
                 routeData.setStars(stars);
                 String route = new Gson().toJson(routeData);
-                RequestBody requestBody1 = RequestBody.create(MediaType.get("application/json; charset=utf-8"), route);
-                getRouteService.getRoute(requestBody1).enqueue(new Callback<ResponseBody>() {
+                System.out.println("route:"+route);
+
+                RequestBody requestBody1 = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), route);
+                getRouteService.getRoute(requestBody1).enqueue(new Callback<RouteRecommendData>() {
                     @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    public void onResponse(Call<RouteRecommendData> call, Response<RouteRecommendData> response) {
                         GetRouteRecommend getRouteRecommend = (GetRouteRecommend) ServiceCreator_attractions.creatService(GetRouteRecommend.class);
-                        RequestBody requestBody2 = RequestBody.create(MediaType.get("application/json; charset=utf-8"), response.toString());
+                        RouteRecommendData routeRecommendData = response.body();
+
+                        System.out.println("生成路线"+new Gson().toJson(routeRecommendData.getData()));
+
+                        RequestBody requestBody2 = RequestBody.create(MediaType.parse("application/ json;charset=utf-8"), new Gson().toJson(routeRecommendData.getData()));
                         getRouteRecommend.getRouteRecommend(requestBody2).enqueue(new Callback<RouteRecommend>() {
                             @Override
                             public void onResponse(Call<RouteRecommend> call, Response<RouteRecommend> response) {
@@ -228,14 +241,14 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
                             @Override
                             public void onFailure(Call<RouteRecommend> call, Throwable t) {
-                                Toast.makeText(getContext(), "网络请求失败", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "生成路线2网络请求失败", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
 
                     @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(getContext(), "网络请求失败", Toast.LENGTH_SHORT).show();
+                    public void onFailure(Call<RouteRecommendData> call, Throwable t) {
+                        Toast.makeText(getContext(), "生成路线1网络请求失败", Toast.LENGTH_SHORT).show();
                     }
                 });
                 break;
@@ -325,15 +338,15 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
                     behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 }
+
                 behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart));
                 long poi = marker.getExtraInfo().getLong("poi");
                 List<String> MyLovepoi = getPoiStarts();
                 for (int i = 0; i < MyLovepoi.size(); i++) {
-                    //System.out.println(Long.parseLong(MyLovepoi.get(i)));
+                    System.out.println(Long.parseLong(MyLovepoi.get(i)));
                     if (poi==Long.parseLong(MyLovepoi.get(i))){
                         heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart1, null));
-                    }else {
-                        heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart));
                     }
                 }
                 //记录marker信息
@@ -350,6 +363,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 browseData.setPoi(poi);
                 browseData.setTimestamp(getTime());
                 String browDataJson = new Gson().toJson(browseData);
+
+                System.out.println(browDataJson);
                 ClickMarkerService clickMarkerService = (ClickMarkerService) ServiceCreator_app01.creatService(ClickMarkerService.class);
                 RequestBody requestBody = RequestBody.create(MediaType.get("application/json; charset=utf-8"), browDataJson);
                 clickMarkerService.sendMyBrowse(requestBody).enqueue(new Callback<ResponseBody>() {

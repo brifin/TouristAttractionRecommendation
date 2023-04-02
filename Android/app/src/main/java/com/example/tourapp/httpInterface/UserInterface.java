@@ -23,7 +23,7 @@ public interface UserInterface {
     Call<Result> login(@Body RequestBody user);
 
     @POST("save")
-    //@Headers("Cookie:userId=4")
+
     Call<Result> register(@Body RequestBody user);
 
     @POST("update")

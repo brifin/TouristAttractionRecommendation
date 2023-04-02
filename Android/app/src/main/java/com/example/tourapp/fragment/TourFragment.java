@@ -102,7 +102,7 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                             MySchedule mySchedule = new MySchedule(schedule.trim());
                             String json = gson.toJson(mySchedule);
                             System.out.println(json);
-
+                            //System.out.println();
                             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                             Retrofit build = new Retrofit.Builder()
                                     .addConverterFactory(GsonConverterFactory.create())

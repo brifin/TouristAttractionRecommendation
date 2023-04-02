@@ -18,6 +18,8 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.example.tourapp.R;
 import com.example.tourapp.adapter.BrowseAdapter;
 import com.example.tourapp.data.MyLoveData;
+import com.example.tourapp.data.User;
+import com.example.tourapp.data.UserData;
 import com.example.tourapp.httpInterface.GroupInterface;
 import com.example.tourapp.viewAndItem.BrowseItem;
 import com.example.tourapp.viewAndItem.LoveItem;
@@ -108,13 +110,16 @@ public class MyBrowseActivity extends AppCompatActivity {
 
         GroupInterface groupInterface = retrofit.create(GroupInterface.class);
         Gson gson = new Gson();
-        String nicknameJson = gson.toJson(nickname);
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), nicknameJson);
+        //String nicknameJson = gson.toJson(nickname);
+        UserData user = new UserData();
+        user.setNickname(nickname);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"),gson.toJson(user));
         Call<List<MyLoveData>> historyViewCall = groupInterface.HistoryView(requestBody);
         historyViewCall.enqueue(new Callback<List<MyLoveData>>() {
             @Override
             public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
                 List<MyLoveData> data = response.body();
+                System.out.println("111111111"+response.body());
 
                 if (data != null) {
                     for (int i = 0; i < data.size(); i++) {

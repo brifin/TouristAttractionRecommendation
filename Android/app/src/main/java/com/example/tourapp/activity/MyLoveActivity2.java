@@ -18,7 +18,10 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.example.tourapp.R;
 import com.example.tourapp.adapter.LoveAdapter;
 import com.example.tourapp.data.MyLoveData;
+import com.example.tourapp.data.UserData;
 import com.example.tourapp.httpInterface.GroupInterface;
+import com.example.tourapp.interceptor.AddCookiesInterceptor;
+import com.example.tourapp.interceptor.ReceivedCookiesInterceptor;
 import com.example.tourapp.viewAndItem.LoveItem;
 import com.google.gson.Gson;
 import com.gyf.immersionbar.BarHide;
@@ -29,6 +32,7 @@ import java.util.List;
 import java.util.Objects;
 
 import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -105,24 +109,31 @@ public class MyLoveActivity2 extends AppCompatActivity {
 
     //网络请求获取或者更新数据
     public static void getData(String nickname) {
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new AddCookiesInterceptor())
+                .addInterceptor(new ReceivedCookiesInterceptor())
+                .build();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://121.37.67.235:8000/app01/")
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
                 .build();
 
         GroupInterface groupInterface = retrofit.create(GroupInterface.class);
         Gson gson = new Gson();
         String nicknameJson = gson.toJson(nickname);
 
-
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), nicknameJson);
+        UserData userData = new UserData();
+        userData.setNickname(nickname);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), gson.toJson(userData));
         Call<List<MyLoveData>> historyStarCall = groupInterface.HistoryStar(requestBody);
         historyStarCall.enqueue(new Callback<List<MyLoveData>>() {
             @Override
             public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
                 List<MyLoveData> data = response.body();
-                System.out.println(gson.toJson(data));
+
+                //System.out.println("我的点赞"+gson.toJson(data));
 
                 if (data != null) {
                     for (int i = 0; i < Objects.requireNonNull(data).size(); i++) {

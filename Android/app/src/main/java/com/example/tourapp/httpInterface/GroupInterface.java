@@ -8,16 +8,18 @@ import java.util.List;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 public interface GroupInterface {
     @POST("historyStar")
-   // @Headers({"Content-Type: application/x-www-form-urlencoded"})
-    Call<List<MyLoveData>> HistoryStar(@Body RequestBody nickname);
+
+    Call<List<MyLoveData>> HistoryStar(@Body RequestBody requestBody);
 
     @POST("historyView")
-   // @Headers({"Content-Type: application/x-www-form-urlencoded"})
+
     Call<List<MyLoveData>> HistoryView(@Body RequestBody nickname);
 
     @POST("groupclass")
