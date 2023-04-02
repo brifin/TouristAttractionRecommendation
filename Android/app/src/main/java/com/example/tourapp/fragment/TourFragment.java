@@ -100,7 +100,7 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                 DataResult dataResult = response.body();
                 if (dataResult != null) {
                     long code = dataResult.getCode();
-                    Log.d("YANG",dataResult.getMsg());
+                    Log.d("YANG", dataResult.getMsg());
                     if (code == 200) {
                         i = 1;
                         String[] schedules = dataResult.getData();
@@ -146,7 +146,7 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
 
                                 }
 
-                                    @Override
+                                @Override
                                 public void onFailure(Call<GroupResult> call, Throwable t) {
                                     System.out.println("请求失败!");
                                     Log.e("YANG", "app01" + t.getMessage());
@@ -161,6 +161,7 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<DataResult> call, Throwable t) {
                 System.out.println("请求失败！");
@@ -178,9 +179,9 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getActivity(), TourDetailActivity.class);
-intent.putExtra("schedule", tourItemList.get(position).getSchedule());
+        intent.putExtra("schedule", tourItemList.get(position).getSchedule());
         System.out.println("###" + tourItemList.get(position).getSchedule());
-        intent.putExtra("isScatteredGroups",tourItemList.get(position).isIsScatteredGroups());
+        intent.putExtra("isScatteredGroups", tourItemList.get(position).isIsScatteredGroups());
         //valueListener.sendSchedule(tourItemList.get(position).getSchedule());
         //valueListener.sendIsScatteredGroups(tourItemList.get(position).isIsScatteredGroups());
         startActivity(intent);

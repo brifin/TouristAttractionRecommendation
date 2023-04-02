@@ -207,7 +207,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (et_username.getText().toString().trim().isEmpty() || et_username.getText().toString().contains(" ")) {
             Toast.makeText(this, getString(R.string.invalid_username), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (et_password.getText().toString().length() <= 6 || et_password.getText().toString().contains(" ")) {
+        } else if (et_password.getText().toString().length() < 6 || et_password.getText().toString().contains(" ")) {
             Toast.makeText(this, getString(R.string.invalid_password), Toast.LENGTH_SHORT).show();
             return false;
         }
