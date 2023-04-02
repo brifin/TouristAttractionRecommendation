@@ -45,6 +45,7 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
     private List<TourItem> tourItemList = new ArrayList<>();
     private TourAdapter tourAdapter;
     private ImageView iv_back3;
+    private ValueListener valueListener;
     private int i;
 
     public View view;
@@ -56,6 +57,7 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        valueListener = (ValueListener) getActivity();
 
     }
 
@@ -153,9 +155,7 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                         return;
                     }
                 }
-
             }
-
             @Override
             public void onFailure(Call<DataResult> call, Throwable t) {
                 System.out.println("请求失败！");
@@ -165,15 +165,20 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
 
     }
 
+    public interface ValueListener{
+        public void sendSchedule(String str);
+        public void sendIsScatteredGroups(Boolean iScatteredGroups);
+    }
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getActivity(), TourDetailActivity.class);
-        intent.putExtra("schedule", tourItemList.get(position).getSchedule());
+        //intent.putExtra("schedule", tourItemList.get(position).getSchedule());
         //System.out.println("###"+tourItemList.get(position).getSchedule());
-        intent.putExtra("isScatteredGroups",tourItemList.get(position).isIsScatteredGroups());
+        //intent.putExtra("isScatteredGroups",tourItemList.get(position).isIsScatteredGroups());
+        valueListener.sendSchedule(tourItemList.get(position).getSchedule());
+        valueListener.sendIsScatteredGroups(tourItemList.get(position).isIsScatteredGroups());
         startActivity(intent);
     }
-
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.iv_back3) {
