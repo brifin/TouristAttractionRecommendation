@@ -50,8 +50,6 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
 
     public View view;
 
-    private Handler handler = new Handler();
-
     public TourFragment() {
     }
 

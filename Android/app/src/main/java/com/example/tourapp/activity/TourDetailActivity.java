@@ -4,6 +4,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,13 +30,21 @@ public class TourDetailActivity extends AppCompatActivity {
     private ImageView iv_ScatteredGroups;
     private TextView tv_introduce;
     private String[] introduce = {
-            "遇见最美希腊——雅典+圣托里尼+梅黛奥拉天空之城六日游;希腊6日跟团游。",
-            "冰与火之歌，冰岛六日五晚深度游;冰岛6日跟团游。",
-            "7日纵贯拉普兰极光破冰之旅;瑞典+芬兰7日跟团游。",
-            "北欧之珠四国六日游 ; 德国+丹麦+瑞典+芬兰+挪威6日跟团游。"
+            "遇见最美希腊——雅典+圣托里尼+梅黛奥拉天空之城游玩;希腊跟团游。",
+            "冰与火之歌，冰岛欢乐深度游;冰岛跟团游。",
+            "纵贯拉普兰极光破冰之旅;瑞典+芬兰跟团游。",
+            "北欧之珠四国欢乐游 ; 德国+丹麦+瑞典+芬兰+挪威跟团游。"
+    };
+
+    private int[] imageId = {
+            R.drawable.view1,
+            R.drawable.view2,
+            R.drawable.view3,
+            R.drawable.view4
     };
     private String schedule;
     private boolean isScatteredGroups;
+    private ImageView iv_introduce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +52,7 @@ public class TourDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tour_detail);
         iv_back = findViewById(R.id.iv_back);
         tv_introduce = findViewById(R.id.tv_introduce);
+        iv_introduce = findViewById(R.id.iv_introduce);
         iv_ScatteredGroups = findViewById(R.id.iv_ScatteredGroups);
         schedule = getIntent().getStringExtra("schedule");
         isScatteredGroups = getIntent().getBooleanExtra("isScatteredGroups", false);
@@ -57,7 +67,7 @@ public class TourDetailActivity extends AppCompatActivity {
         Random random = new Random();
         int nextInt = random.nextInt(4);
         tv_introduce.setText(introduce[nextInt]);
-
+        iv_introduce.setImageResource(imageId[nextInt]);
         hideStable();
     }
 

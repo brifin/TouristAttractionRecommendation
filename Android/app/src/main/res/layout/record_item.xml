@@ -33,7 +33,7 @@
         android:background="@drawable/text_view_border"
         android:gravity="center"
         android:text="time"
-        android:textSize="21sp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/tv_people"

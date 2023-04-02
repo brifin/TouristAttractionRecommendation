@@ -181,7 +181,6 @@ public class UpdatePasswordActivity extends AppCompatActivity implements View.On
             Toast.makeText(this, getString(R.string.invalid_password), Toast.LENGTH_SHORT).show();
             return false;
         }
-
         return true;
     }
 }
