@@ -2,6 +2,7 @@ package com.example.tourapp.httpInterface;
 
 import com.example.tourapp.data.GroupResult;
 import com.example.tourapp.data.MyLoveData;
+import com.example.tourapp.data.MyLoveDataArray;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ import retrofit2.http.POST;
 public interface GroupInterface {
     @POST("historyStar")
 
-    Call<List<MyLoveData>> HistoryStar(@Body RequestBody requestBody);
+    Call<MyLoveDataArray> HistoryStar(@Body RequestBody requestBody);
 
     @POST("historyView")
 
