@@ -71,6 +71,14 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_user, container, false);
+
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(new AddCookiesInterceptor())
                 .build();
@@ -79,14 +87,6 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_user, container, false);
         tv_username = view.findViewById(R.id.tv_username);
         ig_arrive = view.findViewById(R.id.ig_arrive);
         ig_like = view.findViewById(R.id.ig_like);
@@ -229,7 +229,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                         Bitmap bitmap = bundle.getParcelable("data");
                         if (bitmap != null) {
                             iv_portrait.setImageBitmap(bitmap);
-                            File file = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".png");
+                            File file = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg");
                             try {
                                 FileOutputStream fileOutputStream = new FileOutputStream(file);
                                 bitmap.compress(Bitmap.CompressFormat.JPEG,100,fileOutputStream);
@@ -273,7 +273,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     }
 
     private void uploadImage(File file) {
-        RequestBody requestBody = RequestBody.create(MediaType.parse("image/png"), file);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpg"), file);
         MultipartBody.Part part = MultipartBody.Part.createFormData("applyFiles", file.getName(), requestBody);
 
         UserInterface userInterface = retrofit.create(UserInterface.class);
