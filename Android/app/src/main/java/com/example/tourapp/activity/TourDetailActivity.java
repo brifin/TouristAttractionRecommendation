@@ -41,18 +41,18 @@ public class TourDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tour_detail);
-        initTourDetailItems();
         iv_back = findViewById(R.id.iv_back);
         tv_introduce = findViewById(R.id.tv_introduce);
         iv_ScatteredGroups = findViewById(R.id.iv_ScatteredGroups);
+        schedule = getIntent().getStringExtra("schedule");
+        isScatteredGroups = getIntent().getBooleanExtra("isScatteredGroups", false);
+        initTourDetailItems();
         ListView listView = findViewById(R.id.list_item_detail);
         adapter = new TourDetailAdapter(this, R.layout.record_item, recordItemList);
         listView.setAdapter(adapter);
         iv_back.setOnClickListener(v -> {
             finish();
         });
-        //schedule = getIntent().getStringExtra("schedule");
-        //isScatteredGroups = getIntent().getBooleanExtra("isScatteredGroups", false);
 
         Random random = new Random();
         int nextInt = random.nextInt(4);
@@ -81,12 +81,12 @@ public class TourDetailActivity extends AppCompatActivity {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
             String timeStr = simple[2];
-            long timeOffset = Long.parseLong(timeStr) * 60 * 1000;
-            long time = startTime + timeOffset;
+            double timeOffset = Double.parseDouble(timeStr) * 60 * 1000;
+            long time = (long)(startTime + timeOffset);
             Date date = new Date(time);
             String formatTime = format.format(date);
-            double lat = latStart + Long.parseLong(simple[0]);
-            double lon = lonStart + Long.parseLong(simple[1]);
+            double lat = latStart + Double.parseDouble(simple[0]);
+            double lon = lonStart + Double.parseDouble(simple[1]);
             String latStr;
             String lonStr;
             if (lat >= 0) {

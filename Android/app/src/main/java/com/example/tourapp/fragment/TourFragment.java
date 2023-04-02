@@ -144,8 +144,6 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                                     list_view.setOnItemClickListener(TourFragment.this);
                                     iv_back3.setOnClickListener(TourFragment.this);
 
-
-
                                 }
 
                                     @Override
@@ -180,7 +178,9 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getActivity(), TourDetailActivity.class);
-
+intent.putExtra("schedule", tourItemList.get(position).getSchedule());
+        System.out.println("###" + tourItemList.get(position).getSchedule());
+        intent.putExtra("isScatteredGroups",tourItemList.get(position).isIsScatteredGroups());
         //valueListener.sendSchedule(tourItemList.get(position).getSchedule());
         //valueListener.sendIsScatteredGroups(tourItemList.get(position).isIsScatteredGroups());
         startActivity(intent);
