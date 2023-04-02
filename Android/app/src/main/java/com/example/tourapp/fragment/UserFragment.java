@@ -34,6 +34,7 @@ import com.example.tourapp.activity.MyLoveActivity2;
 import com.example.tourapp.R;
 import com.example.tourapp.application.MyApplication;
 import com.example.tourapp.data.GetImageResult;
+import com.example.tourapp.data.PngResult;
 import com.example.tourapp.httpInterface.UserInterface;
 import com.example.tourapp.data.Result;
 import com.example.tourapp.interceptor.AddCookiesInterceptor;
@@ -277,11 +278,11 @@ public class UserFragment extends Fragment implements View.OnClickListener {
         MultipartBody.Part part = MultipartBody.Part.createFormData("applyFiles", file.getName(), requestBody);
 
         UserInterface userInterface = retrofit.create(UserInterface.class);
-        Call<Result> resultCall = userInterface.uploadFile(part);
-        resultCall.enqueue(new Callback<Result>() {
+        Call<PngResult> resultCall = userInterface.uploadFile(part);
+        resultCall.enqueue(new Callback<PngResult>() {
             @Override
-            public void onResponse(Call<Result> call, Response<Result> response) {
-                Result result = response.body();
+            public void onResponse(Call<PngResult> call, Response<PngResult> response) {
+                PngResult result = response.body();
                 int code = result.getCode();
                 Log.d("YANG",result.getMsg());
                 if(code == 200) {
@@ -292,7 +293,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void onFailure(Call<Result> call, Throwable t) {
+            public void onFailure(Call<PngResult> call, Throwable t) {
                 System.out.println("请求失败！");
                 Log.e("YANG",t.getMessage());
             }
