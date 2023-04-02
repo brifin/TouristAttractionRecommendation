@@ -167,15 +167,16 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 UserData userData = new UserData();
                 userData.setNickname("aasdafadusfic");
                 Gson gson = new Gson();
-                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), gson.toJson(userData));
-                groupInterface.HistoryStar(requestBody).enqueue(new Callback<MyLoveDataArray>() {
+                //RequestBody requestBody = RequestBody.create(MediaType.parse("application/ json;charset=utf-8"), gson.toJson(userData));
+                groupInterface.HistoryStar(userData).enqueue(new Callback<MyLoveDataArray>() {
                     @Override
                     public void onResponse(Call<MyLoveDataArray> call, Response<MyLoveDataArray> response) {
+                        System.out.println("请求1成功");
                         MyLoveDataArray loveDataArray = response.body();
-                        MyLoveData[] data = loveDataArray.getDataArray();
-                        long[] poiStars = new long[data.length];
-                        for (int i = 0; i < data.length; i++) {
-                            poiStars[i] = data[i].getPoi();
+                        List<MyLoveData> data = loveDataArray.getLoveplace();
+                        long[] poiStars = new long[data.size()];
+                        for (int i = 0; i < data.size(); i++) {
+                            poiStars[i] = data.get(i).getPoi();
                         }
                         RecommendStars recommendStars = new RecommendStars();
                         recommendStars.setStars(poiStars);
@@ -184,6 +185,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         getRecommendService.getRecommendData(requestBody1).enqueue(new Callback<RecommendReturn>() {
                             @Override
                             public void onResponse(Call<RecommendReturn> call, Response<RecommendReturn> response) {
+                                System.out.println("请求2成功");
                                 RecommendReturn recommendReturn = response.body();
                                 Place[] places = recommendReturn.getRecommend();
                                 for (int i = 0; i < places.length; i++) {
@@ -373,106 +375,106 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         }
 
         //设置marker监听事件
-        mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
-                    behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                }
-
-                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart));
-                //----
-                OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                        .addInterceptor(new AddCookiesInterceptor())
-                        .addInterceptor(new ReceivedCookiesInterceptor())
-                        .build();
-
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("http://121.37.67.235:8000/app01/")
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .client(okHttpClient)
-                        .build();
-
-                GroupInterface groupInterface = retrofit.create(GroupInterface.class);
-                Gson gson = new Gson();
-                String nicknameJson = gson.toJson(nickname);
-
-                UserData userData = new UserData();
-                userData.setNickname(nickname);
-                System.out.println(gson.toJson(userData));
-                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), gson.toJson(userData));
-                Call<MyLoveDataArray> historyStarCall = groupInterface.HistoryStar(requestBody);
-                historyStarCall.enqueue(new Callback<MyLoveDataArray>() {
-                    @Override
-                    public void onResponse(Call<MyLoveDataArray> call, Response<MyLoveDataArray> response) {
-                        MyLoveDataArray loveData = response.body();
-                        MyLoveData[] data = loveData.getDataArray();
-                        //System.out.println("我的点赞"+gson.toJson(data));
-
-                        if (data != null) {
-                            for (int i = 0; i < data.length; i++) {
-                                //System.out.println("####");
-                                //System.out.println(data[i].getPoi());
-                                LoveItem loveItem = new LoveItem();
-                                loveItem.setLatitude(data[i].getLatitude());
-                                loveItem.setLongitude(data[i].getLongitude());
-                                loveItem.setPoi(data[i].getPoi());
-                                loveItem.setTimestamp(data[i].getTimestamp());
-                                //mData.add(loveItem);
-                            }
-                        }
-                        System.out.println("我的点赞数据请求成功");
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<MyLoveDataArray> call, Throwable t) {
-                        System.out.println("我的点赞数据请求失败！");
-                        System.out.println(t.getMessage());
-                    }
-                });
-
-                long poi = marker.getExtraInfo().getLong("poi");
-                List<String> MyLovepoi = getPoiStarts();
-                for (int i = 0; i < MyLovepoi.size(); i++) {
-                    System.out.println(Long.parseLong(MyLovepoi.get(i)));
-                    if (poi == Long.parseLong(MyLovepoi.get(i))) {
-                        heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart1, null));
-                    }
-                }
-                //记录marker信息
-                clickMarker.setNickname(MainActivity.nickname);
-                clickMarker.setLat(marker.getPosition().latitude);
-                clickMarker.setLon(marker.getPosition().longitude);
-                clickMarker.setPoi(poi);
-                System.out.println("poi:");
-
-                System.out.println(poi);
-                browseData.setNickname(MainActivity.nickname);
-                browseData.setLat(marker.getPosition().latitude);
-                browseData.setLon(marker.getPosition().longitude);
-                browseData.setPoi(poi);
-                browseData.setTimestamp(getTime());
-                String browDataJson = new Gson().toJson(browseData);
-
-                System.out.println(browDataJson);
-                ClickMarkerService clickMarkerService = (ClickMarkerService) ServiceCreator_app01.creatService(ClickMarkerService.class);
-                RequestBody requestBody1 = RequestBody.create(MediaType.get("application/json; charset=utf-8"), browDataJson);
-                clickMarkerService.sendMyBrowse(requestBody1).enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        System.out.println("marker点击网络请求成功");
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        System.out.println("marker点击网络请求失败:" + t.toString());
-                    }
-                });
-                return true;
-            }
-        });
+//        mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
+//            @Override
+//            public boolean onMarkerClick(Marker marker) {
+//                if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+//                    behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+//                }
+//
+//                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+//                heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart));
+//                //----
+//                OkHttpClient okHttpClient = new OkHttpClient.Builder()
+//                        .addInterceptor(new AddCookiesInterceptor())
+//                        .addInterceptor(new ReceivedCookiesInterceptor())
+//                        .build();
+//
+//                Retrofit retrofit = new Retrofit.Builder()
+//                        .baseUrl("http://121.37.67.235:8000/app01/")
+//                        .addConverterFactory(GsonConverterFactory.create())
+//                        .client(okHttpClient)
+//                        .build();
+//
+//                GroupInterface groupInterface = retrofit.create(GroupInterface.class);
+//                Gson gson = new Gson();
+//                String nicknameJson = gson.toJson(nickname);
+//
+//                UserData userData = new UserData();
+//                userData.setNickname(nickname);
+//                System.out.println(gson.toJson(userData));
+//                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), gson.toJson(userData));
+//                Call<MyLoveDataArray> historyStarCall = groupInterface.HistoryStar(requestBody);
+//                historyStarCall.enqueue(new Callback<MyLoveDataArray>() {
+//                    @Override
+//                    public void onResponse(Call<MyLoveDataArray> call, Response<MyLoveDataArray> response) {
+//                        MyLoveDataArray loveData = response.body();
+//                        List<MyLoveData> data = loveData.getLoveplace();
+//                        //System.out.println("我的点赞"+gson.toJson(data));
+//
+//                        if (data != null) {
+//                            for (int i = 0; i < data.length; i++) {
+//                                //System.out.println("####");
+//                                //System.out.println(data[i].getPoi());
+//                                LoveItem loveItem = new LoveItem();
+//                                loveItem.setLatitude(data[i].getLatitude());
+//                                loveItem.setLongitude(data[i].getLongitude());
+//                                loveItem.setPoi(data[i].getPoi());
+//                                loveItem.setTimestamp(data[i].getTimestamp());
+//                                //mData.add(loveItem);
+//                            }
+//                        }
+//                        System.out.println("我的点赞数据请求成功");
+//
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<MyLoveDataArray> call, Throwable t) {
+//                        System.out.println("我的点赞数据请求失败！");
+//                        System.out.println(t.getMessage());
+//                    }
+//                });
+//
+//                long poi = marker.getExtraInfo().getLong("poi");
+//                List<String> MyLovepoi = getPoiStarts();
+//                for (int i = 0; i < MyLovepoi.size(); i++) {
+//                    System.out.println(Long.parseLong(MyLovepoi.get(i)));
+//                    if (poi == Long.parseLong(MyLovepoi.get(i))) {
+//                        heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart1, null));
+//                    }
+//                }
+//                //记录marker信息
+//                clickMarker.setNickname(MainActivity.nickname);
+//                clickMarker.setLat(marker.getPosition().latitude);
+//                clickMarker.setLon(marker.getPosition().longitude);
+//                clickMarker.setPoi(poi);
+//                System.out.println("poi:");
+//
+//                System.out.println(poi);
+//                browseData.setNickname(MainActivity.nickname);
+//                browseData.setLat(marker.getPosition().latitude);
+//                browseData.setLon(marker.getPosition().longitude);
+//                browseData.setPoi(poi);
+//                browseData.setTimestamp(getTime());
+//                String browDataJson = new Gson().toJson(browseData);
+//
+//                System.out.println(browDataJson);
+//                ClickMarkerService clickMarkerService = (ClickMarkerService) ServiceCreator_app01.creatService(ClickMarkerService.class);
+//                RequestBody requestBody1 = RequestBody.create(MediaType.get("application/json; charset=utf-8"), browDataJson);
+//                clickMarkerService.sendMyBrowse(requestBody1).enqueue(new Callback<ResponseBody>() {
+//                    @Override
+//                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                        System.out.println("marker点击网络请求成功");
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                        System.out.println("marker点击网络请求失败:" + t.toString());
+//                    }
+//                });
+//                return true;
+//            }
+//        });
 
         //设置地图监听事件
         mBaiduMap.setOnMapClickListener(new BaiduMap.OnMapClickListener() {

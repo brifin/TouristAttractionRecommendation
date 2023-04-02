@@ -18,6 +18,7 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.example.tourapp.R;
 import com.example.tourapp.adapter.BrowseAdapter;
 import com.example.tourapp.data.MyLoveData;
+import com.example.tourapp.data.MyLoveDataArray;
 import com.example.tourapp.data.User;
 import com.example.tourapp.data.UserData;
 import com.example.tourapp.httpInterface.GroupInterface;
@@ -59,34 +60,6 @@ public class MyBrowseActivity extends AppCompatActivity {
         hideStable();
         mData = new ArrayList<BrowseItem>();
         getData();
-        //逆地理编码
-        GeoCoder mgeoCoder = GeoCoder.newInstance();
-        OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
-            @Override
-            public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
-
-            }
-
-            //逆地理编码
-            @Override
-            public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
-                for (int i = 0; i < mData.size(); i++) {
-                    if(mData.get(i).getLatitude()==reverseGeoCodeResult.getLocation().latitude&&mData.get(i).getLongitude()==reverseGeoCodeResult.getLocation().longitude){
-                        mData.get(i).setPlace(reverseGeoCodeResult.getAddress());
-                    }
-                }
-            }
-        };
-        mgeoCoder.setOnGetGeoCodeResultListener(listener);
-        for (int i = 0; i < mData.size(); i++) {
-            LatLng latLng = new LatLng(mData.get(i).getLatitude(), mData.get(i).getLongitude());
-            mgeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng).newVersion(1).language(LanguageType.LanguageTypeChinese));
-        }
-        mgeoCoder.destroy();
-
-        adapter = new BrowseAdapter(mData);
-        listView = (ListView) findViewById(R.id.browse_listView);
-        listView.setAdapter(adapter);
     }
 
     //隐藏状态栏
@@ -110,16 +83,16 @@ public class MyBrowseActivity extends AppCompatActivity {
 
         GroupInterface groupInterface = retrofit.create(GroupInterface.class);
         Gson gson = new Gson();
-        //String nicknameJson = gson.toJson(nickname);
+
         UserData user = new UserData();
         user.setNickname(nickname);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"),gson.toJson(user));
-        Call<List<MyLoveData>> historyViewCall = groupInterface.HistoryView(requestBody);
-        historyViewCall.enqueue(new Callback<List<MyLoveData>>() {
+        Call<MyLoveDataArray> historyViewCall = groupInterface.HistoryView(requestBody);
+        historyViewCall.enqueue(new Callback<MyLoveDataArray>() {
             @Override
-            public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
-                List<MyLoveData> data = response.body();
-                System.out.println("111111111"+response.body());
+            public void onResponse(Call<MyLoveDataArray> call, Response<MyLoveDataArray> response) {
+                MyLoveDataArray loveDataArray = response.body();
+                List<MyLoveData> data = loveDataArray.getLoveplace();
 
                 if (data != null) {
                     for (int i = 0; i < data.size(); i++) {
@@ -132,11 +105,38 @@ public class MyBrowseActivity extends AppCompatActivity {
                     }
 
                 }
+                GeoCoder mgeoCoder = GeoCoder.newInstance();
+                OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
+                    @Override
+                    public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
+
+                    }
+
+                    //逆地理编码
+                    @Override
+                    public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
+                        for (int i = 0; i < mData.size(); i++) {
+                            if(mData.get(i).getLatitude()==reverseGeoCodeResult.getLocation().latitude&&mData.get(i).getLongitude()==reverseGeoCodeResult.getLocation().longitude){
+                                mData.get(i).setPlace(reverseGeoCodeResult.getAddress());
+                            }
+                        }
+
+                    }
+                };
+                mgeoCoder.setOnGetGeoCodeResultListener(listener);
+                for (int i = 0; i < mData.size(); i++) {
+                    LatLng latLng = new LatLng(mData.get(i).getLatitude(), mData.get(i).getLongitude());
+                    mgeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng).newVersion(1).language(LanguageType.LanguageTypeChinese));
+                }
+                mgeoCoder.destroy();
+                adapter = new BrowseAdapter(mData);
+                listView = (ListView) findViewById(R.id.browse_listView);
+                listView.setAdapter(adapter);
 
             }
 
             @Override
-            public void onFailure(Call<List<MyLoveData>> call, Throwable t) {
+            public void onFailure(Call<MyLoveDataArray> call, Throwable t) {
                 System.out.println("请求失败！");
                 Log.e("YANG", t.getMessage());
             }

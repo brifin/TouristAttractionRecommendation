@@ -3,6 +3,7 @@ package com.example.tourapp.httpInterface;
 import com.example.tourapp.data.GroupResult;
 import com.example.tourapp.data.MyLoveData;
 import com.example.tourapp.data.MyLoveDataArray;
+import com.example.tourapp.data.UserData;
 
 import java.util.List;
 
@@ -16,12 +17,11 @@ import retrofit2.http.POST;
 
 public interface GroupInterface {
     @POST("historyStar")
-
-    Call<MyLoveDataArray> HistoryStar(@Body RequestBody requestBody);
+    Call<MyLoveDataArray> HistoryStar(@Body UserData userData);
 
     @POST("historyView")
 
-    Call<List<MyLoveData>> HistoryView(@Body RequestBody nickname);
+    Call<MyLoveDataArray> HistoryView(@Body RequestBody nickname);
 
     @POST("groupclass")
     //@Headers("Content-Type: application/x-www-form-urlencoded")

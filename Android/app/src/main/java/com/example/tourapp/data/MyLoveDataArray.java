@@ -1,13 +1,14 @@
 package com.example.tourapp.data;
 
+import java.util.List;
+
 public class MyLoveDataArray {
-    MyLoveData[] DataArray;
+    private List<MyLoveData> loveplace;
 
-    public MyLoveData[] getDataArray() {
-        return DataArray;
+    public void setLoveplace(List<MyLoveData> loveplace){
+        this.loveplace = loveplace;
     }
-
-    public void setData(MyLoveData[] data) {
-    DataArray = data;
+    public List<MyLoveData> getLoveplace(){
+        return this.loveplace;
     }
 }

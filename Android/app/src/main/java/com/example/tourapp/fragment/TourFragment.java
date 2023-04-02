@@ -57,7 +57,7 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        valueListener = (ValueListener) getActivity();
+        //valueListener = (ValueListener) getActivity();
 
     }
 

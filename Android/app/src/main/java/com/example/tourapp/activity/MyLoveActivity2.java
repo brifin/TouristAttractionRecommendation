@@ -96,24 +96,21 @@ public class MyLoveActivity2 extends AppCompatActivity {
         UserData userData = new UserData();
         userData.setNickname(nickname);
 
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), gson.toJson(userData));
-        Call<MyLoveDataArray> historyStarCall = groupInterface.HistoryStar(requestBody);
+        //RequestBody requestBody = RequestBody.create(MediaType.parse("application/ json;charset=utf-8"), gson.toJson(userData));
+        Call<MyLoveDataArray> historyStarCall = groupInterface.HistoryStar(userData);
         historyStarCall.enqueue(new Callback<MyLoveDataArray>() {
             @Override
             public void onResponse(Call<MyLoveDataArray> call, Response<MyLoveDataArray> response) {
                 MyLoveDataArray loveData = response.body();
-                MyLoveData[] data = loveData.getDataArray();
-                //System.out.println("我的点赞"+gson.toJson(data));
+                List<MyLoveData> data = loveData.getLoveplace();
 
                 if (data != null) {
-                    for (int i = 0; i < data.length; i++) {
-                        //System.out.println("####");
-                        //System.out.println(data[i].getPoi());
+                    for (int i = 0; i < data.size(); i++) {
                         LoveItem loveItem = new LoveItem();
-                        loveItem.setLatitude(data[i].getLatitude());
-                        loveItem.setLongitude(data[i].getLongitude());
-                        loveItem.setPoi(data[i].getPoi());
-                        loveItem.setTimestamp(data[i].getTimestamp());
+                        loveItem.setLatitude(data.get(i).getLatitude());
+                        loveItem.setLongitude(data.get(i).getLongitude());
+                        loveItem.setPoi(data.get(i).getPoi());
+                        loveItem.setTimestamp(data.get(i).getTimestamp());
                         mData.add(loveItem);
                     }
                 }
