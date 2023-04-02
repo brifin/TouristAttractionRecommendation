@@ -46,7 +46,6 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
     private List<TourItem> tourItemList = new ArrayList<>();
     private TourAdapter tourAdapter;
     private ImageView iv_back3;
-    //private ValueListener valueListener;
     private int i;
 
     public View view;
@@ -60,8 +59,6 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //valueListener = (ValueListener) getActivity();
-
     }
 
     @Override
@@ -75,13 +72,6 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_tour, container, false);
         initTourItems();
-        //System.out.println("##"+tourItemList);
-        //tourAdapter = new TourAdapter(this.getContext(), R.layout.tour_item, tourItemList);
-//        iv_back3 = view.findViewById(R.id.iv_back3);
-//        ListView list_view = view.findViewById(R.id.list_view);
-//        list_view.setAdapter(tourAdapter);
-//        list_view.setOnItemClickListener(this);
-//        iv_back3.setOnClickListener(this);
         return view;
     }
 
@@ -171,11 +161,6 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
 
     }
 
-    /*public interface ValueListener{
-        public void sendSchedule(String str);
-        public void sendIsScatteredGroups(Boolean iScatteredGroups);
-    }*/
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getActivity(), TourDetailActivity.class);
@@ -184,6 +169,9 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
         intent.putExtra("isScatteredGroups", tourItemList.get(position).isIsScatteredGroups());
         //valueListener.sendSchedule(tourItemList.get(position).getSchedule());
         //valueListener.sendIsScatteredGroups(tourItemList.get(position).isIsScatteredGroups());
+
+        intent.putExtra("isScatteredGroups",tourItemList.get(position).isIsScatteredGroups());
+
         startActivity(intent);
     }
 

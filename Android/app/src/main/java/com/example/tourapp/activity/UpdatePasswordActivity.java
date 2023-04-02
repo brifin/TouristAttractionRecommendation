@@ -171,13 +171,13 @@ public class UpdatePasswordActivity extends AppCompatActivity implements View.On
         if (et_name.getText().toString().trim().isEmpty() || et_name.getText().toString().contains(" ")) {
             Toast.makeText(this, getString(R.string.invalid_username), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (et_reset_old_password.getText().toString().length() <= 6 || et_reset_old_password.getText().toString().contains(" ")) {
+        } else if (et_reset_old_password.getText().toString().length() < 6 || et_reset_old_password.getText().toString().contains(" ")) {
             Toast.makeText(this, getString(R.string.invalid_password), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (et_reset_new_password.getText().toString().length() <= 6 || et_reset_new_password.getText().toString().contains(" ")) {
+        } else if (et_reset_new_password.getText().toString().length() < 6 || et_reset_new_password.getText().toString().contains(" ")) {
             Toast.makeText(this, getString(R.string.invalid_password), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (et_new_password_check.getText().toString().length() <= 6 || et_new_password_check.getText().toString().contains(" ")) {
+        } else if (et_new_password_check.getText().toString().length() < 6 || et_new_password_check.getText().toString().contains(" ")) {
             Toast.makeText(this, getString(R.string.invalid_password), Toast.LENGTH_SHORT).show();
             return false;
         }

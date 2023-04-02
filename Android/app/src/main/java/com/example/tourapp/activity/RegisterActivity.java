@@ -139,10 +139,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (et_reset_username.getText().toString().trim().isEmpty() || et_reset_username.getText().toString().contains(" ")) {
             Toast.makeText(this, getString(R.string.invalid_username), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (et_old_password.getText().toString().length() <= 6 || et_old_password.getText().toString().contains(" ")) {
+        } else if (et_old_password.getText().toString().length() < 6 || et_old_password.getText().toString().contains(" ")) {
             Toast.makeText(this, getString(R.string.invalid_password), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (et_new_password.getText().toString().length() <= 6 || et_new_password.getText().toString().contains(" ")) {
+        } else if (et_new_password.getText().toString().length() < 6 || et_new_password.getText().toString().contains(" ")) {
             Toast.makeText(this, getString(R.string.invalid_password), Toast.LENGTH_SHORT).show();
             return false;
         }
