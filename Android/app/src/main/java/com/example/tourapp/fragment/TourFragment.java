@@ -60,8 +60,6 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        initTourItems();
-        tourAdapter = new TourAdapter(context, R.layout.tour_item, tourItemList);
     }
 
     @Override
@@ -69,6 +67,8 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tour, container, false);
+        initTourItems();
+        tourAdapter = new TourAdapter(this.getContext(), R.layout.tour_item, tourItemList);
         iv_back3 = view.findViewById(R.id.iv_back3);
         ListView list_view = view.findViewById(R.id.list_view);
         list_view.setAdapter(tourAdapter);
@@ -129,7 +129,7 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                                 @Override
                                 public void onFailure(Call<GroupResult> call, Throwable t) {
                                     System.out.println("请求失败!");
-                                    Log.e("YANG", t.getMessage());
+                                    Log.e("YANG", "app01" + t.getMessage());
                                 }
 
                             });
@@ -146,7 +146,7 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
             @Override
             public void onFailure(Call<DataResult> call, Throwable t) {
                 System.out.println("请求失败！");
-                Log.e("YANG", t.getMessage());
+                Log.e("YANG", "user:" + t.getMessage());
             }
         });
 
