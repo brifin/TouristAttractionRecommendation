@@ -114,12 +114,15 @@ public class MyLoveActivity2 extends AppCompatActivity {
         GroupInterface groupInterface = retrofit.create(GroupInterface.class);
         Gson gson = new Gson();
         String nicknameJson = gson.toJson(nickname);
+
+
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), nicknameJson);
         Call<List<MyLoveData>> historyStarCall = groupInterface.HistoryStar(requestBody);
         historyStarCall.enqueue(new Callback<List<MyLoveData>>() {
             @Override
             public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
                 List<MyLoveData> data = response.body();
+                System.out.println(gson.toJson(data));
 
                 if (data != null) {
                     for (int i = 0; i < Objects.requireNonNull(data).size(); i++) {
@@ -131,13 +134,13 @@ public class MyLoveActivity2 extends AppCompatActivity {
                         mData.add(loveItem);
                     }
                 }
-
+                System.out.println("我的点赞数据请求成功");
 
             }
 
             @Override
             public void onFailure(Call<List<MyLoveData>> call, Throwable t) {
-                System.out.println("请求失败！");
+                System.out.println("我的点赞数据请求失败！");
                 System.out.println(t.getMessage());
             }
         });

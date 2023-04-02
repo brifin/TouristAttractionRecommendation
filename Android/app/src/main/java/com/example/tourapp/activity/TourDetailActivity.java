@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.tourapp.R;
 import com.example.tourapp.adapter.TourDetailAdapter;
 import com.example.tourapp.data.DataResult;
+import com.example.tourapp.data.GroupResult;
 import com.example.tourapp.data.Result;
 import com.example.tourapp.httpInterface.GroupInterface;
 import com.example.tourapp.httpInterface.UserInterface;
@@ -87,7 +88,7 @@ public class TourDetailActivity extends AppCompatActivity {
             public void onResponse(Call<DataResult> call, Response<DataResult> response) {
                 DataResult dataResult = response.body();
                 if (dataResult != null) {
-                    Integer code = dataResult.getCode();
+                    long code = dataResult.getCode();
                     Log.d("YANG", dataResult.getMsg());
                     if (code == 200) {
                         String[] schedules = dataResult.getData();
@@ -99,28 +100,27 @@ public class TourDetailActivity extends AppCompatActivity {
                             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                             Retrofit build = new Retrofit.Builder()
                                     .addConverterFactory(GsonConverterFactory.create())
-                                    .baseUrl("http://121.37.67.235:8000/app01")
+                                    .baseUrl("http://121.37.67.235:8000/app01/")
                                     .build();
 
                             GroupInterface groupInterface = build.create(GroupInterface.class);
-                            Call<String> stringCall = groupInterface.groupClass(requestBody);
+                            Call<GroupResult> BooleanCall = groupInterface.groupClass(requestBody);
 
-                            stringCall.enqueue(new Callback<String>() {
+                            BooleanCall.enqueue(new Callback<GroupResult>() {
                                 @Override
-                                public void onResponse(Call<String> call, Response<String> response) {
-                                    String isScatteredGroups = response.body();
-                                    if (!isScatteredGroups.isEmpty()) {
-                                        if (isScatteredGroups.contains("false")) {
-                                            iv_ScatteredGroups.setImageResource(R.drawable.collection);
-                                        } else {
+                                public void onResponse(Call<GroupResult> call, Response<GroupResult> response) {
+                                    Boolean isScatteredGroups = response.body().getScatteredGroups();
+                                    if (!isScatteredGroups) {
+                                        iv_ScatteredGroups.setImageResource(R.drawable.collection);
+                                    }
+                                        else {
                                             iv_ScatteredGroups.setImageResource(R.drawable.uncollection);
                                         }
                                     }
 
-                                }
 
                                 @Override
-                                public void onFailure(Call<String> call, Throwable t) {
+                                public void onFailure(Call<GroupResult> call, Throwable t) {
                                     System.out.println("请求失败！");
                                     Log.e("YANG", t.getMessage());
                                 }

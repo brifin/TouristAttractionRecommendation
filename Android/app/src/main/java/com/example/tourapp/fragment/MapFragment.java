@@ -134,6 +134,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             //推荐
             case R.id.Lyre:
                 mBaiduMap.clear();
+                if(behavior.getState()==BottomSheetBehavior.STATE_COLLAPSED){
+                    behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                }
                 List<String> poiStarts = new ArrayList<String>();
                 poiStarts = getPoiStarts();
                 GetRecommendService recommendService = (GetRecommendService) ServiceCreator_app01.creatService(GetRecommendService.class);
@@ -169,6 +172,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             //生成路线
             case R.id.Lypath:
                 mBaiduMap.clear();
+                if(behavior.getState()==BottomSheetBehavior.STATE_COLLAPSED){
+                    behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                }
                 GetRouteService getRouteService = (GetRouteService) ServiceCreator_app01.creatService(GetRouteService.class);
                 RouteData routeData = new RouteData();
                 routeData.setLatitude(currentPoint[0]);
@@ -237,6 +243,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             //生成附近景点
             case R.id.LyAttra:
                 mBaiduMap.clear();
+                if(behavior.getState()==BottomSheetBehavior.STATE_COLLAPSED){
+                    behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                }
                 GetNearlyAttra getNearlyAttra = (GetNearlyAttra) ServiceCreator_user.creatService(GetNearlyAttra.class);
                 getNearlyAttra.getNearlyAttra(String.valueOf(currentPoint[0]), String.valueOf(currentPoint[1])).enqueue(new Callback<NearlyAttra>() {
                     @Override
@@ -252,6 +261,10 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                             doublepoint[0] = Double.parseDouble(place[0]);
                             doublepoint[1] = Double.parseDouble(place[1]);
                             doublepoint[2] = Double.parseDouble(place[2]);
+                            System.out.println(doublepoint[0]);
+                            System.out.println(doublepoint[1]);
+                            System.out.println(doublepoint[2]);
+
                             realPoints.add(doublepoint);
                         }
                         List<double[]> nearlypoint = filterPoints(currentPoint, realPoints);
@@ -260,7 +273,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                             nearlypoint1 = nearlypoint.get(i);
                             LatLng point = new LatLng(nearlypoint1[0], nearlypoint1[1]);
                             Bundle bundle = new Bundle();
-                            bundle.putLong("poi", Double.doubleToLongBits(nearlypoint1[2]));
+                            bundle.putLong("poi", (long)(nearlypoint1[2]));
                             OverlayOptions options1 = new MarkerOptions()
                                     .animateType(MarkerOptions.MarkerAnimateType.none)
                                     .position(point)
@@ -309,15 +322,28 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                if (behavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
-                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                    behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                }
+                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                long poi = marker.getExtraInfo().getLong("poi");
+                List<String> MyLovepoi = getPoiStarts();
+                for (int i = 0; i < MyLovepoi.size(); i++) {
+                    //System.out.println(Long.parseLong(MyLovepoi.get(i)));
+                    if (poi==Long.parseLong(MyLovepoi.get(i))){
+                        heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart1, null));
+                    }else {
+                        heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart));
+                    }
                 }
                 //记录marker信息
                 clickMarker.setNickname(MainActivity.nickname);
                 clickMarker.setLat(marker.getPosition().latitude);
                 clickMarker.setLon(marker.getPosition().longitude);
-                long poi = marker.getExtraInfo().getLong("poi");
                 clickMarker.setPoi(poi);
+                System.out.println("poi:");
+
+                System.out.println(poi);
                 browseData.setNickname(MainActivity.nickname);
                 browseData.setLat(marker.getPosition().latitude);
                 browseData.setLon(marker.getPosition().longitude);
@@ -326,7 +352,17 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 String browDataJson = new Gson().toJson(browseData);
                 ClickMarkerService clickMarkerService = (ClickMarkerService) ServiceCreator_app01.creatService(ClickMarkerService.class);
                 RequestBody requestBody = RequestBody.create(MediaType.get("application/json; charset=utf-8"), browDataJson);
-                clickMarkerService.sendMyBrowse(requestBody);
+                clickMarkerService.sendMyBrowse(requestBody).enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        System.out.println("marker点击网络请求成功");
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        System.out.println("marker点击网络请求失败:"+t.toString());
+                    }
+                });
                 return true;
             }
         });

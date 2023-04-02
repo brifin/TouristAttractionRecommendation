@@ -15,11 +15,16 @@ import com.example.tourapp.R;
 import com.example.tourapp.data.User;
 import com.example.tourapp.httpInterface.UserInterface;
 import com.example.tourapp.data.Result;
+import com.example.tourapp.interceptor.AddCookiesInterceptor;
+import com.example.tourapp.interceptor.ReceivedCookiesInterceptor;
 import com.google.gson.Gson;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -75,6 +80,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }else {
                 //TODO
                 //传入后端，进行注册，并返回登录界面
+//                OkHttpClient okHttpClient = new OkHttpClient.Builder()
+//                        .addInterceptor(new ReceivedCookiesInterceptor())
+//                        .addInterceptor(new AddCookiesInterceptor())
+//                        .build();
+
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("http://47.107.38.208:8090/user/")
                         .addConverterFactory(GsonConverterFactory.create())
@@ -84,11 +94,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 User user = new User();
                 user.setAccount(reset_username);
                 user.setPassword(new_password);
-                user.setNickname(reset_username);
+                user.setNickname(null);
+
 
                 Gson gson = new Gson();
                 String json = gson.toJson(user);
-                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                RequestBody requestBody = RequestBody.create(MediaType.get("application/json; charset=utf-8"), json);
                 Call<Result> resultCall = userInterface.register(requestBody);
                 resultCall.enqueue(new Callback<Result>() {
                     @Override

@@ -1,9 +1,9 @@
 package com.example.tourapp.data;
 
 public class DataResult {
-    private Integer code;
+    private long code;
     private String msg;
-    private Integer total;
+    private long total;
     private String[] data;
 
     public DataResult() {
@@ -20,7 +20,7 @@ public class DataResult {
      * 获取
      * @return code
      */
-    public Integer getCode() {
+    public long getCode() {
         return code;
     }
 
@@ -28,7 +28,7 @@ public class DataResult {
      * 设置
      * @param code
      */
-    public void setCode(Integer code) {
+    public void setCode(long code) {
         this.code = code;
     }
 
@@ -52,7 +52,7 @@ public class DataResult {
      * 获取
      * @return total
      */
-    public Integer getTotal() {
+    public long getTotal() {
         return total;
     }
 
@@ -60,7 +60,7 @@ public class DataResult {
      * 设置
      * @param total
      */
-    public void setTotal(Integer total) {
+    public void setTotal(long total) {
         this.total = total;
     }
 

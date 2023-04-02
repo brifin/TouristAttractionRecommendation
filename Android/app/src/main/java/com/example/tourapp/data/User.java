@@ -1,7 +1,7 @@
 package com.example.tourapp.data;
 
 public class User {
-    private Integer id;
+    //private Integer id;
     private String nickname;
     private String account;
     private String password;
@@ -11,7 +11,7 @@ public class User {
     }
 
     public User(Integer id, String nickname, String account, String password) {
-        this.id = id;
+      //  this.id = id;
         this.nickname = nickname;
         this.account = account;
         this.password = password;
@@ -21,17 +21,17 @@ public class User {
      * 获取
      * @return id
      */
-    public Integer getId() {
-        return id;
-    }
+//    public Integer getId() {
+//        return id;
+//    }
 
     /**
      * 设置
      * @param id
      */
-    public void setId(Integer id) {
-        this.id = id;
-    }
+//    public void setId(Integer id) {
+//        this.id = id;
+//    }
 
     /**
      * 获取
@@ -81,7 +81,7 @@ public class User {
         this.password = password;
     }
 
-    public String toString() {
-        return "User{id = " + id + ", nickname = " + nickname + ", account = " + account + ", password = " + password + "}";
-    }
+//    public String toString() {
+//        return "User{id = " + id + ", nickname = " + nickname + ", account = " + account + ", password = " + password + "}";
+//    }
 }

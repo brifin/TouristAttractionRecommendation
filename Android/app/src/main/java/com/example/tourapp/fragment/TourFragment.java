@@ -21,6 +21,8 @@ import com.example.tourapp.activity.TourDetailActivity;
 import com.example.tourapp.adapter.TourAdapter;
 import com.example.tourapp.application.MyApplication;
 import com.example.tourapp.data.DataResult;
+import com.example.tourapp.data.GroupResult;
+import com.example.tourapp.data.MySchedule;
 import com.example.tourapp.httpInterface.GroupInterface;
 import com.example.tourapp.httpInterface.UserInterface;
 import com.example.tourapp.viewAndItem.TourItem;
@@ -88,7 +90,7 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
             public void onResponse(Call<DataResult> call, Response<DataResult> response) {
                 DataResult dataResult = response.body();
                 if (dataResult != null) {
-                    Integer code = dataResult.getCode();
+                    long code = dataResult.getCode();
                     Log.d("YANG", dataResult.getMsg());
                     if (code == 200) {
                         int i = 1;
@@ -96,43 +98,45 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                         Gson gson = new Gson();
 
                         for (String schedule : schedules) {
-                            String json = gson.toJson(schedule);
+                            Log.d("YANG",schedule);
+                            MySchedule mySchedule = new MySchedule(schedule.trim());
+                            String json = gson.toJson(mySchedule);
+                            System.out.println(json);
 
                             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                             Retrofit build = new Retrofit.Builder()
                                     .addConverterFactory(GsonConverterFactory.create())
-                                    .baseUrl("http://121.37.67.235:8000/app01")
+                                    .baseUrl("http://121.37.67.235:8000/app01/")
                                     .build();
 
                             GroupInterface groupInterface = build.create(GroupInterface.class);
-                            Call<String> stringCall = groupInterface.groupClass(requestBody);
+                            Call<GroupResult> GroupCall = groupInterface.groupClass(requestBody);
 
                             int I = i;
-                            stringCall.enqueue(new Callback<String>() {
+                            GroupCall.enqueue(new Callback<GroupResult>() {
                                 @Override
-                                public void onResponse(Call<String> call, Response<String> response) {
-                                    String str = response.body();
+                                public void onResponse(Call<GroupResult> call, Response<GroupResult> response) {
+                                    Boolean isScatteredGroups = response.body().getScatteredGroups();
                                     String tourName = "旅游团" + I;
                                     TourItem tourItem;
-                                    if (!str.isEmpty()) {
-                                        if (str.contains("false")) {
-                                            tourItem = new TourItem(tourName, R.drawable.collection, I, false);
-                                        } else {
-                                            tourItem = new TourItem(tourName, R.drawable.uncollection, I, true);
-                                        }
-
-                                        tourItemList.add(tourItem);
+                                    if (!isScatteredGroups) {
+                                        tourItem = new TourItem(tourName, R.drawable.collection, I, false);
+                                    } else {
+                                        tourItem = new TourItem(tourName, R.drawable.uncollection, I, true);
                                     }
 
+                                    tourItemList.add(tourItem);
                                 }
 
                                 @Override
-                                public void onFailure(Call<String> call, Throwable t) {
-                                    System.out.println("请求失败！");
-                                    Log.d("YANG", t.getMessage());
+                                public void onFailure(Call<GroupResult> call, Throwable t) {
+                                    System.out.println("请求失败!");
+                                    Log.e("YANG", t.getMessage());
                                 }
+
                             });
                             i++;
+                            break;
                         }
 
                     } else {

@@ -1,10 +1,16 @@
 package com.example.tourapp.activity;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +29,8 @@ import com.example.tourapp.interceptor.ReceivedCookiesInterceptor;
 import com.google.gson.Gson;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
+
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -43,10 +51,44 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView tv_register;
     private SharedPreferences login_sp;
 
+    private final String[] permissionArray = new String[]{
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.ACCESS_WIFI_STATE,
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.READ_MEDIA_AUDIO,
+            Manifest.permission.READ_MEDIA_IMAGES,
+            Manifest.permission.READ_MEDIA_VIDEO,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+    };
+
+    private ActivityResultLauncher<String[]> requestPermissions;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestPermissions = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), new ActivityResultCallback<Map<String, Boolean>>() {
+            @Override
+            public void onActivityResult(Map<String, Boolean> result) {
+                boolean internet = Boolean.TRUE.equals(result.get(Manifest.permission.INTERNET));
+                boolean accessNetWork = Boolean.TRUE.equals(result.get(Manifest.permission.ACCESS_NETWORK_STATE));
+                boolean accessWifistate = Boolean.TRUE.equals(result.get(Manifest.permission.ACCESS_WIFI_STATE));
+                boolean readContacts = Boolean.TRUE.equals(result.get(Manifest.permission.READ_CONTACTS));
+                boolean readPhoneState = Boolean.TRUE.equals(result.get(Manifest.permission.READ_PHONE_STATE));
+                boolean readAudio = Boolean.TRUE.equals(result.get(Manifest.permission.READ_MEDIA_AUDIO));
+                boolean readImages = Boolean.TRUE.equals(result.get(Manifest.permission.READ_MEDIA_IMAGES));
+                boolean readVideo = Boolean.TRUE.equals(result.get(Manifest.permission.READ_MEDIA_VIDEO));
+                boolean writeStorage = Boolean.TRUE.equals(result.get(Manifest.permission.WRITE_EXTERNAL_STORAGE));
+                boolean coarseLocation = Boolean.TRUE.equals(result.get(Manifest.permission.ACCESS_COARSE_LOCATION));
+                boolean fineLocation = Boolean.TRUE.equals(result.get(Manifest.permission.ACCESS_FINE_LOCATION));
+            }
+        });
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        checkVersion();
         et_username = findViewById(R.id.et_username);
         et_password = findViewById(R.id.et_password);
         cb_remember = findViewById(R.id.cb_remember);
@@ -97,6 +139,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .addInterceptor(new ReceivedCookiesInterceptor())
+                    .addInterceptor(new AddCookiesInterceptor())
                     .build();
 
             //后端查询数据返回结果，然后再做相应判断
@@ -151,6 +194,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 @Override
                 public void onFailure(Call<Result> call, Throwable t) {
+                    Toast.makeText(LoginActivity.this, "网络请求失败", Toast.LENGTH_SHORT).show();
                     System.out.println("连接失败！");
                     Log.e("YANG",t.getMessage());
                 }
@@ -180,5 +224,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .statusBarAlpha(0.0f)
                 .hideBar(BarHide.FLAG_HIDE_BAR)
                 .init();
+    }
+
+    private void checkVersion() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            for (int i = 0; i < permissionArray.length; i++) {
+                if (checkSelfPermission(permissionArray[i]) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions.launch(permissionArray);
+                }
+            }
+        }
     }
 }

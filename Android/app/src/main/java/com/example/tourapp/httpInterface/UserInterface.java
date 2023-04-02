@@ -3,6 +3,7 @@ package com.example.tourapp.httpInterface;
 import com.example.tourapp.data.DataResult;
 import com.example.tourapp.data.GetImageResult;
 import com.example.tourapp.data.Result;
+import com.example.tourapp.data.User;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -22,6 +23,7 @@ public interface UserInterface {
     Call<Result> login(@Body RequestBody user);
 
     @POST("save")
+    //@Headers("Cookie:userId=4")
     Call<Result> register(@Body RequestBody user);
 
     @POST("update")
