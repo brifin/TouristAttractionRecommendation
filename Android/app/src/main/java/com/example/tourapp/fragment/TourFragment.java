@@ -45,6 +45,7 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
     private List<TourItem> tourItemList = new ArrayList<>();
     private TourAdapter tourAdapter;
     private ImageView iv_back3;
+    private int i;
 
     public TourFragment() {
     }
@@ -91,17 +92,15 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                 DataResult dataResult = response.body();
                 if (dataResult != null) {
                     long code = dataResult.getCode();
-                    Log.d("YANG", dataResult.getMsg());
+                    Log.d("YANG",dataResult.getMsg());
                     if (code == 200) {
-                        int i = 1;
+                        i = 1;
                         String[] schedules = dataResult.getData();
                         Gson gson = new Gson();
 
                         for (String schedule : schedules) {
-                            Log.d("YANG",schedule);
                             MySchedule mySchedule = new MySchedule(schedule.trim());
                             String json = gson.toJson(mySchedule);
-                            System.out.println(json);
 
                             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                             Retrofit build = new Retrofit.Builder()
@@ -112,17 +111,16 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                             GroupInterface groupInterface = build.create(GroupInterface.class);
                             Call<GroupResult> GroupCall = groupInterface.groupClass(requestBody);
 
-                            int I = i;
                             GroupCall.enqueue(new Callback<GroupResult>() {
                                 @Override
                                 public void onResponse(Call<GroupResult> call, Response<GroupResult> response) {
                                     Boolean isScatteredGroups = response.body().getScatteredGroups();
-                                    String tourName = "旅游团" + I;
+                                    String tourName = "旅游团" + i++;
                                     TourItem tourItem;
                                     if (!isScatteredGroups) {
-                                        tourItem = new TourItem(tourName, R.drawable.collection, I, false);
+                                        tourItem = new TourItem(tourName, R.drawable.collection, schedule, false);
                                     } else {
-                                        tourItem = new TourItem(tourName, R.drawable.uncollection, I, true);
+                                        tourItem = new TourItem(tourName, R.drawable.uncollection, schedule, true);
                                     }
 
                                     tourItemList.add(tourItem);
@@ -135,8 +133,6 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                                 }
 
                             });
-                            i++;
-                            break;
                         }
 
                     } else {
@@ -159,7 +155,8 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getActivity(), TourDetailActivity.class);
-        intent.putExtra("tour_id", tourItemList.get(position).getTourId());
+        intent.putExtra("schedule", tourItemList.get(position).getSchedule());
+        intent.putExtra("isScatteredGroups",tourItemList.get(position).isIsScatteredGroups());
         startActivity(intent);
     }
 
