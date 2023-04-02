@@ -1,6 +1,7 @@
 package com.example.tourapp.service;
 
 import com.example.tourapp.data.RecommendPlaceData;
+import com.example.tourapp.data.RecommendReturn;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface GetRecommendService {
 
     @POST("recommend")
     @Headers("Content-Type: application/json;charset=UTF-8")
-    Call<List<double[]>> getRecommendData(@Body RequestBody poiStarts);
+    Call<RecommendReturn> getRecommendData(@Body RequestBody poiStarts);
 }
