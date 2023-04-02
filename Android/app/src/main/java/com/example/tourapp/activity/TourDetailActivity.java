@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.tourapp.R;
 import com.example.tourapp.adapter.TourDetailAdapter;
+import com.example.tourapp.fragment.TourFragment;
 import com.example.tourapp.viewAndItem.RecordItem;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
@@ -20,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-public class TourDetailActivity extends AppCompatActivity {
+public class TourDetailActivity extends AppCompatActivity implements TourFragment.ValueListener {
 
     private List<RecordItem> recordItemList = new ArrayList<>();
     private TourDetailAdapter adapter;
@@ -50,8 +51,8 @@ public class TourDetailActivity extends AppCompatActivity {
         iv_back.setOnClickListener(v -> {
             finish();
         });
-        schedule = getIntent().getStringExtra("schedule");
-        isScatteredGroups = getIntent().getBooleanExtra("isScatteredGroups", false);
+        //schedule = getIntent().getStringExtra("schedule");
+        //isScatteredGroups = getIntent().getBooleanExtra("isScatteredGroups", false);
 
         Random random = new Random();
         int nextInt = random.nextInt(3);
@@ -120,4 +121,14 @@ public void hideStable(){
         .hideBar(BarHide.FLAG_HIDE_BAR)
         .init();
         }
-        }
+
+    @Override
+    public void sendSchedule(String str) {
+        schedule = str;
+    }
+
+    @Override
+    public void sendIsScatteredGroups(Boolean iScatteredGroups) {
+        isScatteredGroups = iScatteredGroups;
+    }
+}
