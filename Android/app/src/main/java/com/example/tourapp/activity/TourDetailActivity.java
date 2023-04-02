@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-public class TourDetailActivity extends AppCompatActivity implements TourFragment.ValueListener {
+public class TourDetailActivity extends AppCompatActivity {
 
     private List<RecordItem> recordItemList = new ArrayList<>();
     private TourDetailAdapter adapter;
@@ -55,7 +55,7 @@ public class TourDetailActivity extends AppCompatActivity implements TourFragmen
         //isScatteredGroups = getIntent().getBooleanExtra("isScatteredGroups", false);
 
         Random random = new Random();
-        int nextInt = random.nextInt(3);
+        int nextInt = random.nextInt(4);
         tv_introduce.setText(introduce[nextInt]);
 
         hideStable();
@@ -122,13 +122,13 @@ public void hideStable(){
         .init();
         }
 
-    @Override
+    /*@Override
     public void sendSchedule(String str) {
         schedule = str;
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void sendIsScatteredGroups(Boolean iScatteredGroups) {
         isScatteredGroups = iScatteredGroups;
-    }
+    }*/
 }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,10 +46,12 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
     private List<TourItem> tourItemList = new ArrayList<>();
     private TourAdapter tourAdapter;
     private ImageView iv_back3;
-    private ValueListener valueListener;
+    //private ValueListener valueListener;
     private int i;
 
     public View view;
+
+    private Handler handler = new Handler();
 
     public TourFragment() {
     }
@@ -120,6 +123,7 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                             Call<GroupResult> GroupCall = groupInterface.groupClass(requestBody);
 
                             GroupCall.enqueue(new Callback<GroupResult>() {
+
                                 @Override
                                 public void onResponse(Call<GroupResult> call, Response<GroupResult> response) {
                                     Boolean isScatteredGroups = response.body().getScatteredGroups();
@@ -139,6 +143,9 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
 
                                     list_view.setOnItemClickListener(TourFragment.this);
                                     iv_back3.setOnClickListener(TourFragment.this);
+
+
+
                                 }
 
                                     @Override
@@ -165,20 +172,20 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
 
     }
 
-    public interface ValueListener{
+    /*public interface ValueListener{
         public void sendSchedule(String str);
         public void sendIsScatteredGroups(Boolean iScatteredGroups);
-    }
+    }*/
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getActivity(), TourDetailActivity.class);
-        //intent.putExtra("schedule", tourItemList.get(position).getSchedule());
-        //System.out.println("###"+tourItemList.get(position).getSchedule());
-        //intent.putExtra("isScatteredGroups",tourItemList.get(position).isIsScatteredGroups());
-        valueListener.sendSchedule(tourItemList.get(position).getSchedule());
-        valueListener.sendIsScatteredGroups(tourItemList.get(position).isIsScatteredGroups());
+
+        //valueListener.sendSchedule(tourItemList.get(position).getSchedule());
+        //valueListener.sendIsScatteredGroups(tourItemList.get(position).isIsScatteredGroups());
         startActivity(intent);
     }
+
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.iv_back3) {
