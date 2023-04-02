@@ -230,10 +230,10 @@ public class UserFragment extends Fragment implements View.OnClickListener {
                         Bitmap bitmap = bundle.getParcelable("data");
                         if (bitmap != null) {
                             iv_portrait.setImageBitmap(bitmap);
-                            File file = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".png");
+                            File file = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + ".jpg");
                             try {
                                 FileOutputStream fileOutputStream = new FileOutputStream(file);
-                                bitmap.compress(Bitmap.CompressFormat.PNG,80,fileOutputStream);
+                                bitmap.compress(Bitmap.CompressFormat.JPEG,80,fileOutputStream);
                                 fileOutputStream.flush();
                                 fileOutputStream.close();
                                 uploadImage(file);
@@ -274,7 +274,7 @@ public class UserFragment extends Fragment implements View.OnClickListener {
     }
 
     private void uploadImage(File file) {
-        RequestBody requestBody = RequestBody.create(MediaType.parse("image/png"), file);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/jpg"), file);
         MultipartBody.Part part = MultipartBody.Part.createFormData("applyFiles", file.getName(), requestBody);
 
         UserInterface userInterface = retrofit.create(UserInterface.class);

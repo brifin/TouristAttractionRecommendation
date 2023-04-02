@@ -12,7 +12,7 @@
     <string name="forget_pwd">修改密码</string>
     <string name="login">登录</string>
     <string name="invalid_username">用户名无效</string>
-    <string name="invalid_password">密码必须大于6位数</string>
+    <string name="invalid_password">密码必须不小于6位数</string>
     <string name="mismatching_password">两次密码输入不一致</string>
     <string name="update_failed">密码修改失败</string>
     <string name="update_success">密码修改成功</string>
