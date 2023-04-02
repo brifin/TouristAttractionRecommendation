@@ -3,17 +3,17 @@ package com.example.tourapp.viewAndItem;
 public class TourItem {
     private String tourName;
     private int imageId;
-    private int tourId;
+    private String schedule;
     private boolean isScatteredGroups;
 
 
     public TourItem() {
     }
 
-    public TourItem(String tourName, int imageId, int tourId, boolean isScatteredGroups) {
+    public TourItem(String tourName, int imageId, String schedule, boolean isScatteredGroups) {
         this.tourName = tourName;
         this.imageId = imageId;
-        this.tourId = tourId;
+        this.schedule = schedule;
         this.isScatteredGroups = isScatteredGroups;
     }
 
@@ -51,18 +51,18 @@ public class TourItem {
 
     /**
      * 获取
-     * @return tourId
+     * @return schedule
      */
-    public int getTourId() {
-        return tourId;
+    public String getSchedule() {
+        return schedule;
     }
 
     /**
      * 设置
-     * @param tourId
+     * @param schedule
      */
-    public void setTourId(int tourId) {
-        this.tourId = tourId;
+    public void setSchedule(String schedule) {
+        this.schedule = schedule;
     }
 
     /**
@@ -82,6 +82,6 @@ public class TourItem {
     }
 
     public String toString() {
-        return "TourItem{tourName = " + tourName + ", imageId = " + imageId + ", tourId = " + tourId + ", isScatteredGroups = " + isScatteredGroups + "}";
+        return "TourItem{tourName = " + tourName + ", imageId = " + imageId + ", schedule = " + schedule + ", isScatteredGroups = " + isScatteredGroups + "}";
     }
 }

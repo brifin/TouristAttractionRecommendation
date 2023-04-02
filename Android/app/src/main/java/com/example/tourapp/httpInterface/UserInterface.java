@@ -2,6 +2,7 @@ package com.example.tourapp.httpInterface;
 
 import com.example.tourapp.data.DataResult;
 import com.example.tourapp.data.GetImageResult;
+import com.example.tourapp.data.PngResult;
 import com.example.tourapp.data.Result;
 import com.example.tourapp.data.User;
 
@@ -31,11 +32,12 @@ public interface UserInterface {
 
     @POST("updatePng")
     @Multipart
-    Call<Result> uploadFile(@Part MultipartBody.Part file);
+    Call<PngResult> uploadFile(@Part MultipartBody.Part file);
 
     @GET("getPng")
     Call<GetImageResult> getImage();
 
     @GET("tourGroup")
+    @Headers("Cookie:userId=9")
     Call<DataResult> tourGroup();
 }
