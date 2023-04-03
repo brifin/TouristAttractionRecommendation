@@ -10,4 +10,11 @@ public class UserData {
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
+
+    public UserData(String nickname) {
+        this.nickname = nickname;
+    }
+    public UserData() {
+
+    }
 }

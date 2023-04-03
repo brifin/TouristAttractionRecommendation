@@ -86,25 +86,33 @@ public class MyBrowseActivity extends AppCompatActivity {
 
         UserData user = new UserData();
         user.setNickname(nickname);
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"),gson.toJson(user));
-        Call<MyLoveDataArray> historyViewCall = groupInterface.HistoryView(requestBody);
-        historyViewCall.enqueue(new Callback<MyLoveDataArray>() {
+        Call<List<MyLoveData[]>> historyViewCall = groupInterface.HistoryView(user);
+        historyViewCall.enqueue(new Callback<List<MyLoveData[]>>() {
             @Override
-            public void onResponse(Call<MyLoveDataArray> call, Response<MyLoveDataArray> response) {
-                MyLoveDataArray loveDataArray = response.body();
-                List<MyLoveData> data = loveDataArray.getLoveplace();
+            public void onResponse(Call<List<MyLoveData[]>> call, Response<List<MyLoveData[]>> response) {
+                System.out.println("我的浏览请求成功");
+                List<MyLoveData[]> response1 = response.body();
+                MyLoveData[] data = null;
+                if(response1!=null){
+                    if (response1.size() != 0) {
+                        data = response1.get(0);
+                    } else {
+                        data = new MyLoveData[0];
+                    }
+                }else {
+                    data = new MyLoveData[0];
+                }
 
-                if (data != null) {
-                    for (int i = 0; i < data.size(); i++) {
+                    for (int i = 0; i < data.length; i++) {
+                        System.out.println(" "+i);
                         BrowseItem browseItem = new BrowseItem();
-                        browseItem.setLatitude(data.get(i).getLatitude());
-                        browseItem.setLongitude(data.get(i).getLongitude());
-                        browseItem.setPoi(data.get(i).getPoi());
-                        browseItem.setTimestamp(data.get(i).getTimestamp());
+                        browseItem.setLatitude(data[i].getLatitude());
+                        browseItem.setLongitude(data[i].getLongitude());
+                        browseItem.setPoi(data[i].getPoi());
+                        browseItem.setTimestamp(data[i].getTimestamp());
                         mData.add(browseItem);
                     }
 
-                }
                 GeoCoder mgeoCoder = GeoCoder.newInstance();
                 OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
                     @Override
@@ -136,7 +144,7 @@ public class MyBrowseActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<MyLoveDataArray> call, Throwable t) {
+            public void onFailure(Call<List<MyLoveData[]>> call, Throwable t) {
                 System.out.println("请求失败！");
                 Log.e("YANG", t.getMessage());
             }

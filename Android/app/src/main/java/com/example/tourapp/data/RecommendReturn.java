@@ -1,13 +1,15 @@
 package com.example.tourapp.data;
 
-public class RecommendReturn {
-    private Place[] recommends;
+import java.util.List;
 
-    public Place[] getRecommend() {
+public class RecommendReturn {
+    private List<double[]> recommends;
+
+    public List<double[]> getRecommends() {
         return recommends;
     }
 
-    public void setRecommend(Place[] recommend) {
-        this.recommends = recommend;
+    public void setRecommends(List<double[]> recommends) {
+        this.recommends = recommends;
     }
 }

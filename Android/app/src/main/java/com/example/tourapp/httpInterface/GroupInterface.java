@@ -17,11 +17,11 @@ import retrofit2.http.POST;
 
 public interface GroupInterface {
     @POST("historyStar")
-    Call<MyLoveDataArray> HistoryStar(@Body UserData userData);
+    Call<List<MyLoveData[]>> HistoryStar(@Body UserData userData);
 
     @POST("historyView")
 
-    Call<MyLoveDataArray> HistoryView(@Body RequestBody nickname);
+    Call<List<MyLoveData[]>> HistoryView(@Body UserData userData);
 
     @POST("groupclass")
     //@Headers("Content-Type: application/x-www-form-urlencoded")

@@ -15,6 +15,6 @@ import retrofit2.http.POST;
 
 public interface GetRouteService {
     @POST("route")
-    @Headers("Content-Type: application/json;charset=UTF-8")
-    Call<RouteRecommendData> getRoute(@Body RequestBody requestBody);
+
+    Call<List<List<double[]>>> getRoute(@Body RequestBody requestBody);
 }

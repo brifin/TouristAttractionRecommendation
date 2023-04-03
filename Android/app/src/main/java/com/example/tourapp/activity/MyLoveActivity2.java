@@ -53,32 +53,11 @@ public class MyLoveActivity2 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_love2);
+        mData.clear();
         Intent intent = getIntent();
         nickname = intent.getStringExtra("nickname");
-        initView();
-
-    }
-
-    public void initView() {
         hideStable();
-        getData(nickname);
-    }
 
-    //隐藏状态栏
-    public void hideStable() {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
-        ImmersionBar.with(this)
-                .transparentBar()
-                .statusBarDarkFont(true)
-                .statusBarAlpha(0.0f)
-                .hideBar(BarHide.FLAG_HIDE_BAR)
-                .init();
-    }
-
-
-    //网络请求获取或者更新数据
-    public  void  getData(String nickname) {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(new AddCookiesInterceptor())
                 .addInterceptor(new ReceivedCookiesInterceptor())
@@ -97,36 +76,46 @@ public class MyLoveActivity2 extends AppCompatActivity {
         userData.setNickname(nickname);
 
         //RequestBody requestBody = RequestBody.create(MediaType.parse("application/ json;charset=utf-8"), gson.toJson(userData));
-        Call<MyLoveDataArray> historyStarCall = groupInterface.HistoryStar(userData);
-        historyStarCall.enqueue(new Callback<MyLoveDataArray>() {
+        Call<List<MyLoveData[]>> historyStarCall = groupInterface.HistoryStar(userData);
+        historyStarCall.enqueue(new Callback<List<MyLoveData[]>>() {
             @Override
-            public void onResponse(Call<MyLoveDataArray> call, Response<MyLoveDataArray> response) {
-                MyLoveDataArray loveData = response.body();
-                List<MyLoveData> data = loveData.getLoveplace();
-
-                if (data != null) {
-                    for (int i = 0; i < data.size(); i++) {
-                        LoveItem loveItem = new LoveItem();
-                        loveItem.setLatitude(data.get(i).getLatitude());
-                        loveItem.setLongitude(data.get(i).getLongitude());
-                        loveItem.setPoi(data.get(i).getPoi());
-                        loveItem.setTimestamp(data.get(i).getTimestamp());
-                        mData.add(loveItem);
+            public void onResponse(Call<List<MyLoveData[]>> call, Response<List<MyLoveData[]>> response) {
+                // MyLoveDataArray loveData = response.body();
+                List<MyLoveData[]> response1 = new ArrayList<MyLoveData[]>();
+                response1 = response.body();
+                MyLoveData[] data = null;
+                if (response1!=null){
+                    if (response1.size() != 0) {
+                        data = response1.get(0);
+                    } else {
+                        data = new MyLoveData[0];
                     }
                 }
+                else {
+                    data = new MyLoveData[0];
+                }
+                for (int i = 0; i < data.length; i++) {
+
+                    LoveItem loveItem = new LoveItem();
+                    loveItem.setLatitude(data[i].getLatitude());
+                    loveItem.setLongitude(data[i].getLongitude());
+                    loveItem.setPoi(data[i].getPoi());
+                    loveItem.setTimestamp(data[i].getTimestamp());
+                    mData.add(loveItem);
+                }
+
                 GeoCoder mgeoCoder = GeoCoder.newInstance();
                 OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
                     @Override
                     public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
 
                     }
-
                     //逆地理编码
                     @Override
                     public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
                         System.out.println(reverseGeoCodeResult.getAddress());
                         for (int i = 0; i < mData.size(); i++) {
-                            if(mData.get(i).getLatitude()==reverseGeoCodeResult.getLocation().latitude&&mData.get(i).getLongitude()==reverseGeoCodeResult.getLocation().longitude){
+                            if (mData.get(i).getLatitude() == reverseGeoCodeResult.getLocation().latitude && mData.get(i).getLongitude() == reverseGeoCodeResult.getLocation().longitude) {
                                 mData.get(i).setPlace(reverseGeoCodeResult.getAddress());
                             }
                         }
@@ -138,15 +127,23 @@ public class MyLoveActivity2 extends AppCompatActivity {
                 System.out.println("我的点赞数据请求成功");
 
             }
-
             @Override
-            public void onFailure(Call<MyLoveDataArray> call, Throwable t) {
+            public void onFailure(Call<List<MyLoveData[]>> call, Throwable t) {
                 System.out.println("我的点赞数据请求失败！");
                 System.out.println(t.getMessage());
             }
         });
 
-
     }
-
+    //隐藏状态栏
+    public void hideStable() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+        ImmersionBar.with(this)
+                .transparentBar()
+                .statusBarDarkFont(true)
+                .statusBarAlpha(0.0f)
+                .hideBar(BarHide.FLAG_HIDE_BAR)
+                .init();
+    }
 }
