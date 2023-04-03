@@ -185,27 +185,28 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
                 Gson gson = new Gson();
                 //RequestBody requestBody = RequestBody.create(MediaType.parse("application/ json;charset=utf-8"), gson.toJson(userData));
-                groupInterface.HistoryStar(userData).enqueue(new Callback<List<MyLoveData[]>>() {
+                groupInterface.HistoryStar(userData).enqueue(new Callback<List<MyLoveData>>() {
                     @Override
-                    public void onResponse(Call<List<MyLoveData[]>> call, Response<List<MyLoveData[]>> response) {
+                    public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
                         System.out.println("请求1成功");
                         //MyLoveDataArray loveDataArray = response.body();
-                        List<MyLoveData[]> response1 = new ArrayList<MyLoveData[]>();
+                        List<MyLoveData> response1;
                         response1 = response.body();
-                        MyLoveData[] data = null;
+                        //MyLoveData[] data = null;
+                        long[] poiStars = new long[response1.size()];
                         if (response1 != null) {
                             if (response1.size() != 0) {
-                                data = response1.get(0);
+
+                                for (int i = 0; i < response1.size(); i++) {
+                                    poiStars[i] = response1.get(i).getPoi();
+                                }
                             } else {
-                                data = new MyLoveData[0];
+
                             }
                         } else {
-                            data = new MyLoveData[0];
+
                         }
-                        long[] poiStars = new long[data.length];
-                        for (int i = 0; i < data.length; i++) {
-                            poiStars[i] = data[i].getPoi();
-                        }
+
 //                        long[] poiStars = new long[6];
 //                        poiStars[0] = 1;
 //                        poiStars[1] = 2;
@@ -244,7 +245,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     }
 
                     @Override
-                    public void onFailure(Call<List<MyLoveData[]>> call, Throwable t) {
+                    public void onFailure(Call<List<MyLoveData>> call, Throwable t) {
                         System.out.println("1" + t.toString());
                     }
                 });
@@ -265,42 +266,33 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 //----
                 GroupInterface groupInterface1 = (GroupInterface) ServiceCreator_app01.creatService(GroupInterface.class);
                 UserData userData1 = new UserData(nickname);
-                groupInterface1.HistoryStar(userData1).enqueue(new Callback<List<MyLoveData[]>>() {
+                groupInterface1.HistoryStar(userData1).enqueue(new Callback<List<MyLoveData>>() {
                     @Override
-                    public void onResponse(Call<List<MyLoveData[]>> call, Response<List<MyLoveData[]>> response) {
-//                        List<MyLoveData[]> response1 = new ArrayList<MyLoveData[]>();
-//                        response1 = response.body();
-//                        MyLoveData[] data = null;
-//                        if (response1 != null) {
-//                            if (response1.size() != 0) {
-//                                data = response1.get(0);
-//                            } else {
-//                                data = new MyLoveData[0];
-//                            }
-//                        } else {
-//                            data = new MyLoveData[0];
-//                        }
-//                        long[] poiStars = new long[data.length];
-//                        for (int i = 0; i < data.length; i++) {
-//                            poiStars[i] = data[i].getPoi();
-//                        }
-                        long[] poiStars = new long[6];
-                        poiStars[0] = 1;
-                        poiStars[1] = 2;
-                        poiStars[2] = 3;
-                        poiStars[3] = 4;
-                        poiStars[4] = 5;
-                        poiStars[5] = 6;
-
+                    public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
+                        List<MyLoveData> response1 = new ArrayList<MyLoveData>();
+                        response1 = response.body();
+                        long[] poiStars = new long[response1.size()];
+                        if (response1 != null) {
+                            if (response1.size() != 0) {
+                                for (int i = 0; i < response1.size(); i++) {
+                                    poiStars[i] = response1.get(i).getPoi();
+                                }
+                            }
+                        }
+//                        long[] poiStars = new long[6];
+//                        poiStars[0] = 1;
+//                        poiStars[1] = 2;
+//                        poiStars[2] = 3;
+//                        poiStars[3] = 4;
+//                        poiStars[4] = 5;
+//                        poiStars[5] = 6;
                         routeData.setStars(poiStars);
                         Gson gson = new Gson();
                         String s = gson.toJson(routeData);
-                        RequestBody requestBodye = RequestBody.create(MediaType.parse("application/json;charset=utf-8"),s);
+                        RequestBody requestBodye = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), s);
                         getRouteService.getRoute(requestBodye).enqueue(new Callback<List<List<double[]>>>() {
                             @Override
                             public void onResponse(Call<List<List<double[]>>> call, Response<List<List<double[]>>> response) {
-
-
                                 List<List<double[]>> response1 = response.body();
                                 if (response1 != null) {
                                     if (response1.size() != 0) {
@@ -367,9 +359,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                         route2.setAttraction4(route2Attraction4);
 
                                         route3.setAttraction1(route3Attraction1);
-                                        route3.setAttraction1(route3Attraction1);
-                                        route3.setAttraction1(route3Attraction1);
-                                        route3.setAttraction1(route3Attraction1);
+                                        route3.setAttraction2(route3Attraction2);
+                                        route3.setAttraction3(route3Attraction3);
+                                        route3.setAttraction4(route3Attraction4);
 
                                         routeRe.setRoute1(route1);
                                         routeRe.setRoute2(route2);
@@ -380,8 +372,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                                 .addConverterFactory(GsonConverterFactory.create())
                                                 .build();
                                         GetRouteRecommend getRouteRecommend = retrofit1.create(GetRouteRecommend.class);
-
-                                        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"),gson.toJson(routeRe));
+                                        System.out.println(gson.toJson(routeRe) + "#");
+                                        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), gson.toJson(routeRe));
                                         getRouteRecommend.getRouteRecommend(requestBody).enqueue(new Callback<RouteRecommend>() {
                                             @Override
                                             public void onResponse(Call<RouteRecommend> call, Response<RouteRecommend> response) {
@@ -421,6 +413,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                                     Toast.makeText(getContext(), "生成路线为null", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
+
                                             @Override
                                             public void onFailure(Call<RouteRecommend> call, Throwable t) {
                                                 System.out.println("生成路线请求2失败");
@@ -436,6 +429,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
                                 }
                             }
+
                             @Override
                             public void onFailure(Call<List<List<double[]>>> call, Throwable t) {
                                 System.out.println("生成路线请求1失败");
@@ -445,7 +439,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     }
 
                     @Override
-                    public void onFailure(Call<List<MyLoveData[]>> call, Throwable t) {
+                    public void onFailure(Call<List<MyLoveData>> call, Throwable t) {
                         System.out.println("我的点赞在生成路线中失败");
                         System.out.println(t.toString());
                     }
@@ -473,10 +467,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                             doublepoint[0] = Double.parseDouble(place[0]);
                             doublepoint[1] = Double.parseDouble(place[1]);
                             doublepoint[2] = Double.parseDouble(place[2]);
-                            System.out.println(doublepoint[0]);
-                            System.out.println(doublepoint[1]);
-                            System.out.println(doublepoint[2]);
-
                             realPoints.add(doublepoint);
                         }
                         List<double[]> nearlypoint = filterPoints(currentPoint, realPoints);
@@ -507,6 +497,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             case R.id.heart:
                 ClickLoveService clickLoveService = (ClickLoveService) ServiceCreator_app01.creatService(ClickLoveService.class);
                 if (flag) {
+                    //点赞
                     heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart1, null));
                     clickMarker.setTimestamp(getTime());
                     clickMarker.setStar(1);
@@ -527,6 +518,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     });
 
                 } else {
+                    //取消点赞
                     heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart));
                     clickMarker.setTimestamp(getTime());
                     clickMarker.setStar(0);
@@ -561,7 +553,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
                 behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart));
-                //----
+
                 OkHttpClient okHttpClient = new OkHttpClient.Builder()
                         .addInterceptor(new AddCookiesInterceptor())
                         .addInterceptor(new ReceivedCookiesInterceptor())
@@ -579,55 +571,41 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
                 UserData userData = new UserData();
                 userData.setNickname(nickname);
-                System.out.println(gson.toJson(userData));
                 RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), gson.toJson(userData));
-                Call<List<MyLoveData[]> >historyStarCall = groupInterface.HistoryStar(userData);
-                historyStarCall.enqueue(new Callback<List<MyLoveData[]>>() {
+                Call<List<MyLoveData>> historyStarCall = groupInterface.HistoryStar(userData);
+                historyStarCall.enqueue(new Callback<List<MyLoveData>>() {
                     @Override
-                    public void onResponse(Call<List<MyLoveData[]>> call, Response<List<MyLoveData[]>> response) {
-                        //MyLoveDataArray loveData = response.body();
-                        List<MyLoveData[]> data = response.body();
-                        //System.out.println("我的点赞"+gson.toJson(data));
-
+                    public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
+                        List<MyLoveData> data = response.body();
+                        long poi = marker.getExtraInfo().getLong("poi");
                         if (data != null) {
+                            long[] myLovepoi = new long[data.size()];
                             for (int i = 0; i < data.size(); i++) {
-                                //System.out.println("####");
-                                //System.out.println(data[i].getPoi());
-                                LoveItem loveItem = new LoveItem();
-                                loveItem.setLatitude(data.get(i)[i].getLatitude());
-                                loveItem.setLongitude(data.get(i)[i].getLongitude());
-                                loveItem.setPoi(data.get(i)[i].getPoi());
-                                loveItem.setTimestamp(data.get(i)[i].getTimestamp());
-                                //mData.add(loveItem);
+                                myLovepoi[i] = data.get(i).getPoi();
+                                if (poi == data.get(i).getPoi()) {
+                                    heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart1, null));
+                                }
                             }
+
                         }
                         System.out.println("我的点赞数据请求成功");
 
                     }
 
                     @Override
-                    public void onFailure(Call<List<MyLoveData[]>> call, Throwable t) {
+                    public void onFailure(Call<List<MyLoveData>> call, Throwable t) {
                         System.out.println("我的点赞数据请求失败！");
                         System.out.println(t.getMessage());
                     }
                 });
 
-                long poi = marker.getExtraInfo().getLong("poi");
-                List<String> MyLovepoi = getPoiStarts();
-                for (int i = 0; i < MyLovepoi.size(); i++) {
-                    System.out.println(Long.parseLong(MyLovepoi.get(i)));
-                    if (poi == Long.parseLong(MyLovepoi.get(i))) {
-                        heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart1, null));
-                    }
-                }
                 //记录marker信息
+                long poi = marker.getExtraInfo().getLong("poi");
                 clickMarker.setNickname(MainActivity.nickname);
                 clickMarker.setLat(marker.getPosition().latitude);
                 clickMarker.setLon(marker.getPosition().longitude);
                 clickMarker.setPoi(poi);
-                System.out.println("poi:");
 
-                System.out.println(poi);
                 browseData.setNickname(MainActivity.nickname);
                 browseData.setLat(marker.getPosition().latitude);
                 browseData.setLon(marker.getPosition().longitude);
@@ -635,7 +613,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 browseData.setTimestamp(getTime());
                 String browDataJson = new Gson().toJson(browseData);
 
-                System.out.println(browDataJson);
                 ClickMarkerService clickMarkerService = (ClickMarkerService) ServiceCreator_app01.creatService(ClickMarkerService.class);
                 RequestBody requestBody1 = RequestBody.create(MediaType.get("application/json; charset=utf-8"), browDataJson);
                 clickMarkerService.sendMyBrowse(requestBody1).enqueue(new Callback<ResponseBody>() {
@@ -653,36 +630,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        //设置地图监听事件
-        mBaiduMap.setOnMapClickListener(new BaiduMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
-                    behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                }
-            }
-
-            @Override
-            public void onMapPoiClick(MapPoi mapPoi) {
-
-            }
-        });
-    }
-
-
-    //获取我的点赞中景点的POI序号
-    private List<String> getPoiStarts() {
-        List<String> poiStarts = new ArrayList<String>();
-        //更新我的点赞的数据
-        if (MainActivity.nickname != null) {
-            //MyLoveActivity2.getData(MainActivity.nickname);
-            for (int i = 0; i < MyLoveActivity2.mData.size(); i++) {
-                poiStarts.add(String.valueOf(MyLoveActivity2.mData.get(i).getPoi()));
-            }
-        } else {
-            Toast.makeText(getContext(), "您未登录,请您登录再执行此操作", Toast.LENGTH_SHORT).show();
-        }
-        return poiStarts;
     }
 
     //设置弹窗动画

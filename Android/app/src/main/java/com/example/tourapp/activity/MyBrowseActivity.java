@@ -46,6 +46,7 @@ public class MyBrowseActivity extends AppCompatActivity {
     private BrowseAdapter adapter;
     private ListView listView;
     private String nickname;
+    public static boolean FLAG = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,32 +87,25 @@ public class MyBrowseActivity extends AppCompatActivity {
 
         UserData user = new UserData();
         user.setNickname(nickname);
-        Call<List<MyLoveData[]>> historyViewCall = groupInterface.HistoryView(user);
-        historyViewCall.enqueue(new Callback<List<MyLoveData[]>>() {
+        Call<List<MyLoveData>> historyViewCall = groupInterface.HistoryView(user);
+        historyViewCall.enqueue(new Callback<List<MyLoveData>>() {
             @Override
-            public void onResponse(Call<List<MyLoveData[]>> call, Response<List<MyLoveData[]>> response) {
+            public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
                 System.out.println("我的浏览请求成功");
-                List<MyLoveData[]> response1 = response.body();
-                MyLoveData[] data = null;
-                if(response1!=null){
+                List<MyLoveData> response1 = response.body();
+                if (response1 != null) {
                     if (response1.size() != 0) {
-                        data = response1.get(0);
-                    } else {
-                        data = new MyLoveData[0];
+                        for (int i = 0; i < response1.size(); i++) {
+                            System.out.println(" " + i);
+                            BrowseItem browseItem = new BrowseItem();
+                            browseItem.setLatitude(response1.get(i).getLatitude());
+                            browseItem.setLongitude(response1.get(i).getLongitude());
+                            browseItem.setPoi(response1.get(i).getPoi());
+                            browseItem.setTimestamp(response1.get(i).getTimestamp());
+                            mData.add(browseItem);
+                        }
                     }
-                }else {
-                    data = new MyLoveData[0];
                 }
-
-                    for (int i = 0; i < data.length; i++) {
-                        System.out.println(" "+i);
-                        BrowseItem browseItem = new BrowseItem();
-                        browseItem.setLatitude(data[i].getLatitude());
-                        browseItem.setLongitude(data[i].getLongitude());
-                        browseItem.setPoi(data[i].getPoi());
-                        browseItem.setTimestamp(data[i].getTimestamp());
-                        mData.add(browseItem);
-                    }
 
                 GeoCoder mgeoCoder = GeoCoder.newInstance();
                 OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
@@ -124,17 +118,20 @@ public class MyBrowseActivity extends AppCompatActivity {
                     @Override
                     public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
                         for (int i = 0; i < mData.size(); i++) {
-                            if(mData.get(i).getLatitude()==reverseGeoCodeResult.getLocation().latitude&&mData.get(i).getLongitude()==reverseGeoCodeResult.getLocation().longitude){
+                            if (mData.get(i).getLatitude() == reverseGeoCodeResult.getLocation().latitude && mData.get(i).getLongitude() == reverseGeoCodeResult.getLocation().longitude) {
                                 mData.get(i).setPlace(reverseGeoCodeResult.getAddress());
+                                System.out.println("逆地理编码" + i);
                             }
                         }
-
+                        FLAG = false;
                     }
                 };
                 mgeoCoder.setOnGetGeoCodeResultListener(listener);
+                while (FLAG);
                 for (int i = 0; i < mData.size(); i++) {
                     LatLng latLng = new LatLng(mData.get(i).getLatitude(), mData.get(i).getLongitude());
                     mgeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng).newVersion(1).language(LanguageType.LanguageTypeChinese));
+                    System.out.println("外面" + i);
                 }
                 mgeoCoder.destroy();
                 adapter = new BrowseAdapter(mData);
@@ -144,7 +141,7 @@ public class MyBrowseActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<MyLoveData[]>> call, Throwable t) {
+            public void onFailure(Call<List<MyLoveData>> call, Throwable t) {
                 System.out.println("请求失败！");
                 Log.e("YANG", t.getMessage());
             }

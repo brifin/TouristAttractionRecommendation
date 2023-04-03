@@ -139,7 +139,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .addInterceptor(new ReceivedCookiesInterceptor())
-                    .addInterceptor(new AddCookiesInterceptor())
                     .build();
 
             //后端查询数据返回结果，然后再做相应判断
