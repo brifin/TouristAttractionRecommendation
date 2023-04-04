@@ -1,5 +1,6 @@
 package com.example.tourapp.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -121,7 +122,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     public Click_love clickMarker = new Click_love();
     public MyBrowse browseData = new MyBrowse();
 
-    public String nickname = MainActivity.nickname;
+    public String nickname = null;
 
     //当前我的位置
     private double[] currentPoint = new double[2];
@@ -135,6 +136,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        nickname = getActivity().getIntent().getStringExtra("username");
     }
 
 
@@ -184,21 +186,23 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 userData.setNickname(nickname);
 
                 Gson gson = new Gson();
-                //RequestBody requestBody = RequestBody.create(MediaType.parse("application/ json;charset=utf-8"), gson.toJson(userData));
-                groupInterface.HistoryStar(userData).enqueue(new Callback<List<MyLoveData>>() {
+                RequestBody requestBody1 = RequestBody.create(MediaType.parse("application/ json;charset=utf-8"), gson.toJson(userData));
+                System.out.println(gson.toJson(userData));
+                groupInterface.HistoryStar(requestBody1).enqueue(new Callback<List<MyLoveData>>() {
                     @Override
                     public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
-                        System.out.println("请求1成功");
+                        System.out.println("请求1成功"+gson.toJson(response.body()));
                         //MyLoveDataArray loveDataArray = response.body();
                         List<MyLoveData> response1;
                         response1 = response.body();
                         //MyLoveData[] data = null;
-                        long[] poiStars = new long[response1.size()];
+                        long[] poiStars = null;
                         if (response1 != null) {
                             if (response1.size() != 0) {
-
+                                poiStars = new long[response1.size()];
                                 for (int i = 0; i < response1.size(); i++) {
                                     poiStars[i] = response1.get(i).getPoi();
+                                    System.out.println(poiStars[i]+" ");
                                 }
                             } else {
 
@@ -221,6 +225,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         getRecommendService.getRecommendData(requestBody1).enqueue(new Callback<RecommendReturn>() {
                             @Override
                             public void onResponse(Call<RecommendReturn> call, Response<RecommendReturn> response) {
+
                                 System.out.println("请求2成功");
                                 RecommendReturn recommendReturn = response.body();
                                 List<double[]> places = recommendReturn.getRecommends();
@@ -266,14 +271,17 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 //----
                 GroupInterface groupInterface1 = (GroupInterface) ServiceCreator_app01.creatService(GroupInterface.class);
                 UserData userData1 = new UserData(nickname);
-                groupInterface1.HistoryStar(userData1).enqueue(new Callback<List<MyLoveData>>() {
+                Gson gson1 = new Gson();
+                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"),gson1.toJson(userData1));
+                groupInterface1.HistoryStar(requestBody).enqueue(new Callback<List<MyLoveData>>() {
                     @Override
                     public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
                         List<MyLoveData> response1 = new ArrayList<MyLoveData>();
                         response1 = response.body();
-                        long[] poiStars = new long[response1.size()];
+                        long[] poiStars = null;
                         if (response1 != null) {
                             if (response1.size() != 0) {
+                                poiStars = new long[response1.size()];
                                 for (int i = 0; i < response1.size(); i++) {
                                     poiStars[i] = response1.get(i).getPoi();
                                 }
@@ -290,6 +298,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         Gson gson = new Gson();
                         String s = gson.toJson(routeData);
                         RequestBody requestBodye = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), s);
+                        System.out.println(s+"#");
                         getRouteService.getRoute(requestBodye).enqueue(new Callback<List<List<double[]>>>() {
                             @Override
                             public void onResponse(Call<List<List<double[]>>> call, Response<List<List<double[]>>> response) {
@@ -513,7 +522,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
                         @Override
                         public void onFailure(Call<ResponseBody> call, Throwable t) {
-
                         }
                     });
 
@@ -533,10 +541,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
                         @Override
                         public void onFailure(Call<ResponseBody> call, Throwable t) {
-
                         }
                     });
-
                 }
                 break;
             default:
@@ -548,10 +554,15 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                    System.out.println("1");
                     behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                    pop_upsView.setVisibility(View.GONE);
+                } else {
+                    System.out.println("2");
+                    pop_upsView.setVisibility(View.VISIBLE);
+                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
 
-                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart));
 
                 OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -572,7 +583,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 UserData userData = new UserData();
                 userData.setNickname(nickname);
                 RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), gson.toJson(userData));
-                Call<List<MyLoveData>> historyStarCall = groupInterface.HistoryStar(userData);
+                Call<List<MyLoveData>> historyStarCall = groupInterface.HistoryStar(requestBody);
                 historyStarCall.enqueue(new Callback<List<MyLoveData>>() {
                     @Override
                     public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
@@ -601,12 +612,12 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
                 //记录marker信息
                 long poi = marker.getExtraInfo().getLong("poi");
-                clickMarker.setNickname(MainActivity.nickname);
+                clickMarker.setNickname(nickname);
                 clickMarker.setLat(marker.getPosition().latitude);
                 clickMarker.setLon(marker.getPosition().longitude);
                 clickMarker.setPoi(poi);
 
-                browseData.setNickname(MainActivity.nickname);
+                browseData.setNickname(MainActivity.instance.getNickname());
                 browseData.setLat(marker.getPosition().latitude);
                 browseData.setLon(marker.getPosition().longitude);
                 browseData.setPoi(poi);
@@ -694,18 +705,20 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         recommendLY.setOnClickListener(this);
         pathLY.setOnClickListener(this);
         attraLY.setOnClickListener(this);
-
-
     }
 
 
     private class MyBottomSheetCallback extends BottomSheetBehavior.BottomSheetCallback {
         @Override
         public void onStateChanged(@NonNull View bottomSheet, int newState) {
+
         }
 
         @Override
         public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            if (isAdded()) {
+
+            }
         }
     }
 

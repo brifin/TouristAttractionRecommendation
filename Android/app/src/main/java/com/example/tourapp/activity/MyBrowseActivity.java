@@ -22,6 +22,8 @@ import com.example.tourapp.data.MyLoveDataArray;
 import com.example.tourapp.data.User;
 import com.example.tourapp.data.UserData;
 import com.example.tourapp.httpInterface.GroupInterface;
+import com.example.tourapp.interceptor.AddCookiesInterceptor;
+import com.example.tourapp.interceptor.ReceivedCookiesInterceptor;
 import com.example.tourapp.viewAndItem.BrowseItem;
 import com.example.tourapp.viewAndItem.LoveItem;
 import com.google.gson.Gson;
@@ -33,6 +35,7 @@ import java.util.List;
 import java.util.Objects;
 
 import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,43 +45,31 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MyBrowseActivity extends AppCompatActivity {
 
-    private List<BrowseItem> mData;
+    private List<BrowseItem> mData = new ArrayList<BrowseItem>();;
     private BrowseAdapter adapter;
     private ListView listView;
     private String nickname;
-    public static boolean FLAG = true;
+
+    private GeoCoder mgeoCoder = GeoCoder.newInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_browse);
+        mData.clear();
         Intent intent = getIntent();
         nickname = intent.getStringExtra("nickname");
-        initView();
-    }
-
-    public void initView() {
         hideStable();
-        mData = new ArrayList<BrowseItem>();
-        getData();
-    }
 
-    //隐藏状态栏
-    public void hideStable() {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
-        ImmersionBar.with(this)
-                .transparentBar()
-                .statusBarDarkFont(true)
-                .statusBarAlpha(0.0f)
-                .hideBar(BarHide.FLAG_HIDE_BAR)
-                .init();
-    }
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new AddCookiesInterceptor())
+                .addInterceptor(new ReceivedCookiesInterceptor())
+                .build();
 
-    //网络请求获取数据
-    public void getData() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://121.37.67.235:8000/app01/")
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -87,16 +78,18 @@ public class MyBrowseActivity extends AppCompatActivity {
 
         UserData user = new UserData();
         user.setNickname(nickname);
-        Call<List<MyLoveData>> historyViewCall = groupInterface.HistoryView(user);
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"),gson.toJson(user));
+        Call<List<MyLoveData>> historyViewCall = groupInterface.HistoryView(requestBody);
         historyViewCall.enqueue(new Callback<List<MyLoveData>>() {
             @Override
             public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
                 System.out.println("我的浏览请求成功");
-                List<MyLoveData> response1 = response.body();
+                List<MyLoveData> response1 = new ArrayList<MyLoveData>();
+                response1 = response.body();
                 if (response1 != null) {
                     if (response1.size() != 0) {
                         for (int i = 0; i < response1.size(); i++) {
-                            System.out.println(" " + i);
                             BrowseItem browseItem = new BrowseItem();
                             browseItem.setLatitude(response1.get(i).getLatitude());
                             browseItem.setLongitude(response1.get(i).getLongitude());
@@ -106,8 +99,6 @@ public class MyBrowseActivity extends AppCompatActivity {
                         }
                     }
                 }
-
-                GeoCoder mgeoCoder = GeoCoder.newInstance();
                 OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
                     @Override
                     public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
@@ -122,22 +113,20 @@ public class MyBrowseActivity extends AppCompatActivity {
                                 mData.get(i).setPlace(reverseGeoCodeResult.getAddress());
                                 System.out.println("逆地理编码" + i);
                             }
+                            if (i==(mData.size()-1)){
+                                adapter = new BrowseAdapter(mData);
+                                listView = (ListView) findViewById(R.id.browse_listView);
+                                listView.setAdapter(adapter);
+                            }
                         }
-                        FLAG = false;
+
                     }
                 };
                 mgeoCoder.setOnGetGeoCodeResultListener(listener);
-                while (FLAG);
                 for (int i = 0; i < mData.size(); i++) {
                     LatLng latLng = new LatLng(mData.get(i).getLatitude(), mData.get(i).getLongitude());
                     mgeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng).newVersion(1).language(LanguageType.LanguageTypeChinese));
-                    System.out.println("外面" + i);
                 }
-                mgeoCoder.destroy();
-                adapter = new BrowseAdapter(mData);
-                listView = (ListView) findViewById(R.id.browse_listView);
-                listView.setAdapter(adapter);
-
             }
 
             @Override
@@ -146,5 +135,21 @@ public class MyBrowseActivity extends AppCompatActivity {
                 Log.e("YANG", t.getMessage());
             }
         });
+    }
+    //隐藏状态栏
+    public void hideStable() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+        ImmersionBar.with(this)
+                .transparentBar()
+                .statusBarDarkFont(true)
+                .statusBarAlpha(0.0f)
+                .hideBar(BarHide.FLAG_HIDE_BAR)
+                .init();
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mgeoCoder.destroy();
     }
 }

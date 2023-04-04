@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private LinearLayout pop_upsview;
     private TextView itemTextview;
+    public static MainActivity instance = null;
 
 
     private List<Fragment> fragmentList;
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     int[] itemImgId;
     int[] itemtvId;
 
-    public static String nickname = null;
+    public  String nickname = null;
     int activeColor = R.color.purple_200;
     int normalColor = R.color.black;
 
@@ -100,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         initView();
         Intent intent = getIntent();
         nickname = intent.getStringExtra("username");
+        instance = this;
     }
 
     //初始化视图
@@ -226,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String getNickname(){
+        nickname = getIntent().getStringExtra("username");
         return nickname;
     }
 }

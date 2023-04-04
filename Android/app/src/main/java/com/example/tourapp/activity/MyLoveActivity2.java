@@ -75,8 +75,8 @@ public class MyLoveActivity2 extends AppCompatActivity {
         UserData userData = new UserData();
         userData.setNickname(nickname);
 
-        //RequestBody requestBody = RequestBody.create(MediaType.parse("application/ json;charset=utf-8"), gson.toJson(userData));
-        Call<List<MyLoveData>> historyStarCall = groupInterface.HistoryStar(userData);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/ json;charset=utf-8"), gson.toJson(userData));
+        Call<List<MyLoveData>> historyStarCall = groupInterface.HistoryStar(requestBody);
         historyStarCall.enqueue(new Callback<List<MyLoveData>>() {
             @Override
             public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
@@ -102,7 +102,6 @@ public class MyLoveActivity2 extends AppCompatActivity {
                     public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
 
                     }
-
                     //逆地理编码
                     @Override
                     public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
@@ -114,6 +113,13 @@ public class MyLoveActivity2 extends AppCompatActivity {
                         }
                     }
                 };
+                mgeoCoder.setOnGetGeoCodeResultListener(listener);
+                for (int i = 0; i < mData.size(); i++) {
+                    LatLng latLng = new LatLng(mData.get(i).getLatitude(), mData.get(i).getLongitude());
+                    mgeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng).newVersion(1).language(LanguageType.LanguageTypeChinese));
+                    System.out.println("外面" + i);
+                }
+                mgeoCoder.destroy();
                 adapter = new LoveAdapter(mData);
                 listView = (ListView) findViewById(R.id.love_listView);
                 listView.setAdapter(adapter);
