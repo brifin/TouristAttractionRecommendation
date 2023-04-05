@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         nickname = intent.getStringExtra("username");
         instance = this;
+
     }
 
     //初始化视图

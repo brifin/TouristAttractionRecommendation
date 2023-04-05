@@ -35,7 +35,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:layout_marginTop="15dp">
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/place_tv"
@@ -52,7 +53,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:text="人数:754"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/black"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -95,6 +97,7 @@
                     android:src="@drawable/tiananmen_test" />
 
                 <ImageView
+                    android:id="@+id/detailImage2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
@@ -102,19 +105,37 @@
                     android:background="@drawable/image_shape"
                     android:src="@drawable/tiananmen2" />
 
+                <ImageView
+                    android:id="@+id/detailImage3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/image_shape"
+                    android:src="@drawable/tiananmen2" />
+
+                <ImageView
+                    android:id="@+id/detailImage4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/image_shape"
+                    android:src="@drawable/tiananmen_test" />
+
 
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
     <ImageView
-        android:layout_marginRight="15dp"
         android:id="@+id/heart"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="right"
         android:layout_marginLeft="120dp"
         android:layout_marginTop="15dp"
+        android:layout_marginRight="15dp"
         android:src="@drawable/heart" />
 
 </FrameLayout>

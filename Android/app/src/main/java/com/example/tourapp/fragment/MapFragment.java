@@ -34,17 +34,21 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.base.LanguageType;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.example.tourapp.Photo;
 import com.example.tourapp.R;
 import com.example.tourapp.ServiceCreator_app01;
 import com.example.tourapp.ServiceCreator_attractions;
 import com.example.tourapp.ServiceCreator_user;
-
 import com.example.tourapp.activity.LoginActivity;
 import com.example.tourapp.activity.MainActivity;
 import com.example.tourapp.activity.MyLoveActivity2;
-import com.example.tourapp.data.Attraction1;
 import com.example.tourapp.data.Click_love;
-import com.example.tourapp.data.Data;
 import com.example.tourapp.data.MyBrowse;
 import com.example.tourapp.data.MyLoveData;
 import com.example.tourapp.data.MyLoveDataArray;
@@ -53,25 +57,12 @@ import com.example.tourapp.data.Place;
 import com.example.tourapp.data.RecommendReturn;
 import com.example.tourapp.data.RecommendStars;
 import com.example.tourapp.data.Result;
-import com.example.tourapp.data.Route1;
-import com.example.tourapp.data.Route1Attraction1;
-import com.example.tourapp.data.Route1Attraction2;
-import com.example.tourapp.data.Route1Attraction3;
-import com.example.tourapp.data.Route1Attraction4;
-import com.example.tourapp.data.Route2;
-import com.example.tourapp.data.Route2Attraction1;
-import com.example.tourapp.data.Route2Attraction2;
-import com.example.tourapp.data.Route2Attraction3;
-import com.example.tourapp.data.Route2Attraction4;
-import com.example.tourapp.data.Route3;
-import com.example.tourapp.data.Route3Attraction1;
-import com.example.tourapp.data.Route3Attraction2;
-import com.example.tourapp.data.Route3Attraction3;
-import com.example.tourapp.data.Route3Attraction4;
 import com.example.tourapp.data.RouteData;
-import com.example.tourapp.data.RouteRe;
-import com.example.tourapp.data.RouteRecommend;
-import com.example.tourapp.data.RouteRecommendData;
+import com.example.tourapp.data.RouteFirstPlace;
+import com.example.tourapp.data.RouteFirstResponse;
+import com.example.tourapp.data.RouteListData;
+import com.example.tourapp.data.RoutePlace;
+import com.example.tourapp.data.RouteRespose;
 import com.example.tourapp.data.UserData;
 import com.example.tourapp.httpInterface.GroupInterface;
 import com.example.tourapp.interceptor.AddCookiesInterceptor;
@@ -90,6 +81,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
@@ -123,6 +115,10 @@ public class MapFragment extends Fragment implements View.OnClickListener {
     public MyBrowse browseData = new MyBrowse();
 
     public String nickname = null;
+
+    public long red = 0xAAFF0000;
+    public long yellow = 0xAAFFF00;
+    public long green = 0xAA00FF00;
 
     //当前我的位置
     private double[] currentPoint = new double[2];
@@ -191,7 +187,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 groupInterface.HistoryStar(requestBody1).enqueue(new Callback<List<MyLoveData>>() {
                     @Override
                     public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
-                        System.out.println("请求1成功"+gson.toJson(response.body()));
+                        System.out.println("请求1成功" + gson.toJson(response.body()));
                         //MyLoveDataArray loveDataArray = response.body();
                         List<MyLoveData> response1;
                         response1 = response.body();
@@ -202,7 +198,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                 poiStars = new long[response1.size()];
                                 for (int i = 0; i < response1.size(); i++) {
                                     poiStars[i] = response1.get(i).getPoi();
-                                    System.out.println(poiStars[i]+" ");
+                                    System.out.println(poiStars[i] + " ");
                                 }
                             } else {
 
@@ -210,7 +206,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         } else {
 
                         }
-
 //                        long[] poiStars = new long[6];
 //                        poiStars[0] = 1;
 //                        poiStars[1] = 2;
@@ -232,10 +227,13 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                 for (int i = 0; i < places.size(); i++) {
                                     double[] place = places.get(i);
                                     LatLng point = new LatLng(place[0], place[1]);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putLong("stars", -1);
                                     BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
                                     OverlayOptions option = new MarkerOptions()
                                             .position(point)
                                             .icon(bitmapDescriptor)
+                                            .extraInfo(bundle)
                                             .animateType(MarkerOptions.MarkerAnimateType.none);
                                     mBaiduMap.addOverlay(option);
                                 }
@@ -246,7 +244,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                 System.out.println("2" + t.toString());
                             }
                         });
-
                     }
 
                     @Override
@@ -254,7 +251,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         System.out.println("1" + t.toString());
                     }
                 });
-
                 break;
 
             //生成路线
@@ -267,12 +263,10 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 RouteData routeData = new RouteData();
                 routeData.setLatitude(currentPoint[0]);
                 routeData.setLongitude(currentPoint[1]);
-
-                //----
                 GroupInterface groupInterface1 = (GroupInterface) ServiceCreator_app01.creatService(GroupInterface.class);
                 UserData userData1 = new UserData(nickname);
                 Gson gson1 = new Gson();
-                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"),gson1.toJson(userData1));
+                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), gson1.toJson(userData1));
                 groupInterface1.HistoryStar(requestBody).enqueue(new Callback<List<MyLoveData>>() {
                     @Override
                     public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
@@ -287,155 +281,82 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                 }
                             }
                         }
-//                        long[] poiStars = new long[6];
-//                        poiStars[0] = 1;
-//                        poiStars[1] = 2;
-//                        poiStars[2] = 3;
-//                        poiStars[3] = 4;
-//                        poiStars[4] = 5;
-//                        poiStars[5] = 6;
                         routeData.setStars(poiStars);
                         Gson gson = new Gson();
                         String s = gson.toJson(routeData);
                         RequestBody requestBodye = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), s);
-                        System.out.println(s+"#");
                         getRouteService.getRoute(requestBodye).enqueue(new Callback<List<List<double[]>>>() {
                             @Override
                             public void onResponse(Call<List<List<double[]>>> call, Response<List<List<double[]>>> response) {
                                 List<List<double[]>> response1 = response.body();
+                                RouteFirstResponse routeFirstResponse = new RouteFirstResponse();
+                                List<List<RouteFirstPlace>> route = routeFirstResponse.getRoute();
                                 if (response1 != null) {
                                     if (response1.size() != 0) {
-                                        RouteRe routeRe = new RouteRe();
-                                        Route1 route1 = new Route1();
-                                        Route2 route2 = new Route2();
-                                        Route3 route3 = new Route3();
-                                        Route1Attraction1 route1Attraction1 = new Route1Attraction1();
-                                        Route1Attraction2 route1Attraction2 = new Route1Attraction2();
-                                        Route1Attraction3 route1Attraction3 = new Route1Attraction3();
-                                        Route1Attraction4 route1Attraction4 = new Route1Attraction4();
-                                        Route2Attraction1 route2Attraction1 = new Route2Attraction1();
-                                        Route2Attraction2 route2Attraction2 = new Route2Attraction2();
-                                        Route2Attraction3 route2Attraction3 = new Route2Attraction3();
-                                        Route2Attraction4 route2Attraction4 = new Route2Attraction4();
-                                        Route3Attraction1 route3Attraction1 = new Route3Attraction1();
-                                        Route3Attraction2 route3Attraction2 = new Route3Attraction2();
-                                        Route3Attraction3 route3Attraction3 = new Route3Attraction3();
-                                        Route3Attraction4 route3Attraction4 = new Route3Attraction4();
-                                        route1Attraction1.setLatitude(String.valueOf(response1.get(0).get(0)[0]));
-                                        route1Attraction1.setLongitude(String.valueOf(response1.get(0).get(0)[1]));
-
-                                        route1Attraction2.setLatitude(String.valueOf(response1.get(0).get(1)[0]));
-                                        route1Attraction2.setLongitude(String.valueOf(response1.get(0).get(1)[1]));
-
-                                        route1Attraction3.setLatitude(String.valueOf(response1.get(0).get(2)[0]));
-                                        route1Attraction3.setLongitude(String.valueOf(response1.get(0).get(2)[1]));
-
-                                        route1Attraction4.setLatitude(String.valueOf(response1.get(0).get(3)[0]));
-                                        route1Attraction4.setLongitude(String.valueOf(response1.get(0).get(3)[1]));
-                                        //
-                                        route2Attraction1.setLatitude(String.valueOf(response1.get(1).get(0)[0]));
-                                        route2Attraction1.setLongitude(String.valueOf(response1.get(1).get(0)[1]));
-
-                                        route2Attraction2.setLatitude(String.valueOf(response1.get(1).get(1)[0]));
-                                        route2Attraction2.setLongitude(String.valueOf(response1.get(1).get(1)[1]));
-
-                                        route2Attraction3.setLatitude(String.valueOf(response1.get(1).get(2)[0]));
-                                        route2Attraction3.setLongitude(String.valueOf(response1.get(1).get(2)[1]));
-
-                                        route2Attraction4.setLatitude(String.valueOf(response1.get(1).get(3)[0]));
-                                        route2Attraction4.setLongitude(String.valueOf(response1.get(1).get(3)[1]));
-                                        //
-                                        route3Attraction1.setLatitude(String.valueOf(response1.get(2).get(0)[0]));
-                                        route3Attraction1.setLongitude(String.valueOf(response1.get(2).get(0)[1]));
-
-                                        route3Attraction2.setLatitude(String.valueOf(response1.get(2).get(1)[0]));
-                                        route3Attraction2.setLongitude(String.valueOf(response1.get(2).get(1)[1]));
-
-                                        route3Attraction3.setLatitude(String.valueOf(response1.get(2).get(2)[0]));
-                                        route3Attraction3.setLongitude(String.valueOf(response1.get(2).get(2)[1]));
-
-                                        route3Attraction4.setLatitude(String.valueOf(response1.get(2).get(3)[0]));
-                                        route3Attraction4.setLongitude(String.valueOf(response1.get(2).get(3)[1]));
-                                        //
-                                        route1.setAttraction1(route1Attraction1);
-                                        route1.setAttraction2(route1Attraction2);
-                                        route1.setAttraction3(route1Attraction3);
-                                        route1.setAttraction4(route1Attraction4);
-
-                                        route2.setAttraction1(route2Attraction1);
-                                        route2.setAttraction2(route2Attraction2);
-                                        route2.setAttraction3(route2Attraction3);
-                                        route2.setAttraction4(route2Attraction4);
-
-                                        route3.setAttraction1(route3Attraction1);
-                                        route3.setAttraction2(route3Attraction2);
-                                        route3.setAttraction3(route3Attraction3);
-                                        route3.setAttraction4(route3Attraction4);
-
-                                        routeRe.setRoute1(route1);
-                                        routeRe.setRoute2(route2);
-                                        routeRe.setRoute3(route3);
-
+                                        for (int i = 0; i < response1.size(); i++) {
+                                            for (int j = 0; j < response1.get(i).size(); j++) {
+                                                RouteFirstPlace routeFirstPlace = new RouteFirstPlace();
+                                                routeFirstPlace.setLatitude(response1.get(i).get(j)[0]);
+                                                routeFirstPlace.setLongitude(response1.get(i).get(j)[1]);
+                                                route.get(i).add(routeFirstPlace);
+                                            }
+                                        }
                                         Retrofit retrofit1 = new Retrofit.Builder()
                                                 .baseUrl("http://47.107.38.208:8090/attractions/")
                                                 .addConverterFactory(GsonConverterFactory.create())
                                                 .build();
                                         GetRouteRecommend getRouteRecommend = retrofit1.create(GetRouteRecommend.class);
-                                        System.out.println(gson.toJson(routeRe) + "#");
-                                        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), gson.toJson(routeRe));
-                                        getRouteRecommend.getRouteRecommend(requestBody).enqueue(new Callback<RouteRecommend>() {
+                                        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), gson.toJson(routeFirstResponse));
+                                        getRouteRecommend.getRouteRecommend(requestBody).enqueue(new Callback<RouteRespose>() {
                                             @Override
-                                            public void onResponse(Call<RouteRecommend> call, Response<RouteRecommend> response) {
-                                                System.out.println(gson.toJson(response.body()));
+                                            public void onResponse(Call<RouteRespose> call, Response<RouteRespose> response) {
+                                                List<OverlayOptions> options = new ArrayList<OverlayOptions>();
+                                                List<LatLng> latLngList = new ArrayList<LatLng>();
+                                                BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
+
                                                 if (response.body() != null) {
-                                                    RouteRecommend routeRecommend = response.body();
-                                                    Data data1 = routeRecommend.getData();
-                                                    List<OverlayOptions> options = new ArrayList<OverlayOptions>();
-                                                    List<LatLng> latLngList = new ArrayList<LatLng>();
-                                                    BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
+
+                                                    RouteRespose routeRespose = response.body();
+                                                    RouteListData data1 = routeRespose.getData();
+                                                    List<List<RoutePlace>> routes = data1.getRoute();
+//                                                    //按人数高低排序
+//                                                    for (int i = 0; i < route.size(); i++) {
+//                                                        List<RoutePlace> routePlaceList = routes.get(i);
 //
-                                                    LatLng latLng1 = new LatLng(data1.getAttraction1().getLatitude(), data1.getAttraction1().getLongitude());
-                                                    latLngList.add(latLng1);
-                                                    OverlayOptions options1 = new MarkerOptions().position(latLng1).icon(bitmapDescriptor);
-                                                    options.add(options1);
-
-                                                    LatLng latLng2 = new LatLng(data1.getAttraction2().getLatitude(), data1.getAttraction2().getLongitude());
-                                                    latLngList.add(latLng2);
-                                                    OverlayOptions options2 = new MarkerOptions().position(latLng2).icon(bitmapDescriptor);
-                                                    options.add(options2);
-
-                                                    LatLng latLng3 = new LatLng(data1.getAttraction3().getLatitude(), data1.getAttraction3().getLongitude());
-                                                    latLngList.add(latLng3);
-                                                    OverlayOptions options3 = new MarkerOptions().position(latLng3).icon(bitmapDescriptor);
-                                                    options.add(options3);
-
-                                                    LatLng latLng4 = new LatLng(data1.getAttraction4().getLatitude(), data1.getAttraction4().getLongitude());
-                                                    latLngList.add(latLng4);
-                                                    OverlayOptions options4 = new MarkerOptions().position(latLng4).icon(bitmapDescriptor);
-                                                    options.add(options4);
-
-                                                    mBaiduMap.addOverlays(options);
-                                                    OverlayOptions mOverlayOptions = new PolylineOptions().width(5).color(0xAAFF0000).points(latLngList);
-                                                    Overlay overlay = mBaiduMap.addOverlay(mOverlayOptions);
-
+//                                                    }
+                                                    for (int i = 0; i < routes.size(); i++) {
+                                                        List<LatLng> points = new ArrayList<LatLng>();
+                                                        for (int j = 0; j < routes.get(i).size(); j++) {
+                                                            LatLng latLng = new LatLng(routes.get(i).get(j).getLatitude(), routes.get(i).get(j).getLongitude());
+                                                            points.add(latLng);
+                                                            Bundle bundle = new Bundle();
+                                                            bundle.putLong("poi", -1);
+                                                            bundle.putLong("stars", routes.get(i).get(j).getStars());
+                                                            OverlayOptions markerOption = new MarkerOptions().position(latLng).extraInfo(bundle).icon(bitmapDescriptor);
+                                                            options.add(markerOption);
+                                                        }
+                                                        mBaiduMap.addOverlays(options);
+                                                        OverlayOptions options1 = new PolylineOptions()
+                                                                .width(10)
+                                                                .points(points);
+                                                        Overlay mpolyline = mBaiduMap.addOverlay(options1);
+                                                    }
                                                 } else {
                                                     Toast.makeText(getContext(), "生成路线为null", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
 
                                             @Override
-                                            public void onFailure(Call<RouteRecommend> call, Throwable t) {
+                                            public void onFailure(Call<RouteRespose> call, Throwable t) {
                                                 System.out.println("生成路线请求2失败");
                                                 System.out.println(t.toString());
                                             }
                                         });
                                     } else {
                                         Toast.makeText(getContext(), "无推荐路线", Toast.LENGTH_SHORT).show();
-
                                     }
                                 } else {
                                     Toast.makeText(getContext(), "无推荐路线", Toast.LENGTH_SHORT).show();
-
                                 }
                             }
 
@@ -461,46 +382,51 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
                     behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 }
-                GetNearlyAttra getNearlyAttra = (GetNearlyAttra) ServiceCreator_user.creatService(GetNearlyAttra.class);
-                getNearlyAttra.getNearlyAttra(String.valueOf(currentPoint[0]), String.valueOf(currentPoint[1])).enqueue(new Callback<NearlyAttra>() {
-                    @Override
-                    public void onResponse(Call<NearlyAttra> call, Response<NearlyAttra> response) {
-                        List<OverlayOptions> options = new ArrayList<OverlayOptions>();
-                        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
-                        NearlyAttra nearlyAttra = response.body();
-                        String[] data = nearlyAttra.getData();
-                        List<double[]> realPoints = new ArrayList<double[]>();
-                        for (int i = 0; data[i] != null; i++) {
-                            String[] place = data[i].split("\\s+");
-                            double[] doublepoint = new double[3];
-                            doublepoint[0] = Double.parseDouble(place[0]);
-                            doublepoint[1] = Double.parseDouble(place[1]);
-                            doublepoint[2] = Double.parseDouble(place[2]);
-                            realPoints.add(doublepoint);
-                        }
-                        List<double[]> nearlypoint = filterPoints(currentPoint, realPoints);
-                        double[] nearlypoint1 = new double[3];
-                        for (int i = 0; i < nearlypoint.size(); i++) {
-                            nearlypoint1 = nearlypoint.get(i);
-                            LatLng point = new LatLng(nearlypoint1[0], nearlypoint1[1]);
-                            Bundle bundle = new Bundle();
-                            bundle.putLong("poi", (long) (nearlypoint1[2]));
-                            OverlayOptions options1 = new MarkerOptions()
-                                    .animateType(MarkerOptions.MarkerAnimateType.none)
-                                    .position(point)
-                                    .icon(bitmapDescriptor)
-                                    .extraInfo(bundle);
-                            options.add(options1);
-                        }
-                        mBaiduMap.addOverlays(options);
-                    }
 
-                    @Override
-                    public void onFailure(Call<NearlyAttra> call, Throwable t) {
-                        Toast.makeText(getContext(), "附近景点网络请求失败", Toast.LENGTH_SHORT).show();
-                        System.out.println(t.toString());
-                    }
-                });
+                GetNearlyAttra getNearlyAttra = (GetNearlyAttra) ServiceCreator_user.creatService(GetNearlyAttra.class);
+                getNearlyAttra.getNearlyAttra(String.valueOf(currentPoint[0]), String.valueOf(currentPoint[1])).
+
+                        enqueue(new Callback<NearlyAttra>() {
+                            @Override
+                            public void onResponse
+                                    (Call<NearlyAttra> call, Response<NearlyAttra> response) {
+                                List<OverlayOptions> options = new ArrayList<OverlayOptions>();
+                                BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
+                                NearlyAttra nearlyAttra = response.body();
+                                String[] data = nearlyAttra.getData();
+                                List<double[]> realPoints = new ArrayList<double[]>();
+                                for (int i = 0; data[i] != null; i++) {
+                                    String[] place = data[i].split("\\s+");
+                                    double[] doublepoint = new double[3];
+                                    doublepoint[0] = Double.parseDouble(place[0]);
+                                    doublepoint[1] = Double.parseDouble(place[1]);
+                                    doublepoint[2] = Double.parseDouble(place[2]);
+                                    realPoints.add(doublepoint);
+                                }
+                                List<double[]> nearlypoint = filterPoints(currentPoint, realPoints);
+                                double[] nearlypoint1 = new double[3];
+                                for (int i = 0; i < nearlypoint.size(); i++) {
+                                    nearlypoint1 = nearlypoint.get(i);
+                                    LatLng point = new LatLng(nearlypoint1[0], nearlypoint1[1]);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putLong("poi", (long) (nearlypoint1[2]));
+                                    bundle.putLong("stars", -1);
+                                    OverlayOptions options1 = new MarkerOptions()
+                                            .animateType(MarkerOptions.MarkerAnimateType.none)
+                                            .position(point)
+                                            .icon(bitmapDescriptor)
+                                            .extraInfo(bundle);
+                                    options.add(options1);
+                                }
+                                mBaiduMap.addOverlays(options);
+                            }
+
+                            @Override
+                            public void onFailure(Call<NearlyAttra> call, Throwable t) {
+                                Toast.makeText(getContext(), "附近景点网络请求失败", Toast.LENGTH_SHORT).show();
+                                System.out.println(t.toString());
+                            }
+                        });
                 break;
             //点赞
             case R.id.heart:
@@ -609,7 +535,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         System.out.println(t.getMessage());
                     }
                 });
-
                 //记录marker信息
                 long poi = marker.getExtraInfo().getLong("poi");
                 clickMarker.setNickname(nickname);
@@ -637,6 +562,46 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         System.out.println("marker点击网络请求失败:" + t.toString());
                     }
                 });
+                //逆地理编码
+                GeoCoder geoCoder = GeoCoder.newInstance();
+                OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
+                    @Override
+                    public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
+
+                    }
+
+                    @Override
+                    public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
+                        TextView textView = pop_upsView.findViewById(R.id.place_tv);
+                        textView.setText(reverseGeoCodeResult.getAddress());
+                    }
+                };
+                geoCoder.setOnGetGeoCodeResultListener(listener);
+                geoCoder.reverseGeoCode(new ReverseGeoCodeOption()
+                        .language(LanguageType.LanguageTypeChinese)
+                        .location(marker.getPosition())
+                        .newVersion(1));
+                long stars = (long) marker.getExtraInfo().get("stars");
+                if (stars != -1) {
+                    TextView number_tv = pop_upsView.findViewById(R.id.number_tv);
+                    number_tv.setText("人数 : " + stars);
+                    number_tv.setVisibility(View.VISIBLE);
+                }
+                Photo photo = new Photo();
+                ImageView imageView1 = pop_upsView.findViewById(R.id.detailImage1);
+                ImageView imageView2 = pop_upsView.findViewById(R.id.detailImage2);
+                ImageView imageView3 = pop_upsView.findViewById(R.id.detailImage3);
+                ImageView imageView4 = pop_upsView.findViewById(R.id.detailImage4);
+                TextView textView = pop_upsView.findViewById(R.id.detailtext);
+                Random random = new Random();
+                int number = random.nextInt(100);
+                int num = number % 4;
+                imageView1.setImageResource(photo.getListGroup().get(num)[0]);
+                imageView2.setImageResource(photo.getListGroup().get(num)[1]);
+                imageView3.setImageResource(photo.getListGroup().get(num)[2]);
+                imageView4.setImageResource(photo.getListGroup().get(num)[3]);
+                textView.setText(photo.getTexts().get(num));
+                geoCoder.destroy();
                 return true;
             }
         });
