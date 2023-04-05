@@ -1,6 +1,7 @@
 package com.example.tourapp.fragment;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -16,11 +17,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.Circle;
+import com.baidu.mapapi.map.CircleOptions;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
@@ -79,8 +83,11 @@ import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -116,9 +123,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
     public String nickname = null;
 
-    public long red = 0xAAFF0000;
-    public long yellow = 0xAAFFF00;
-    public long green = 0xAA00FF00;
+    public Integer red = 0xAAFF0000;
+    public Integer yellow = 0xAAFFFF00;
+    public Integer green = 0xAA00FF00;
 
     //当前我的位置
     private double[] currentPoint = new double[2];
@@ -319,25 +326,73 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                                     RouteRespose routeRespose = response.body();
                                                     RouteListData data1 = routeRespose.getData();
                                                     List<List<RoutePlace>> routes = data1.getRoute();
-//                                                    //按人数高低排序
-//                                                    for (int i = 0; i < route.size(); i++) {
-//                                                        List<RoutePlace> routePlaceList = routes.get(i);
-//
-//                                                    }
+                                                    List<List<RoutePlace>> newRoute = new ArrayList<List<RoutePlace>>();
+
+                                                    //按人数低到高排序
+                                                    for (int i = 0; i < route.size(); i++) {
+                                                        List<RoutePlace> routePlaceList = routes.get(i);
+                                                        for (int j = 0; j < routePlaceList.size()-1; j++) {
+                                                            for (int k = 1; k < routePlaceList.size()-j; k++) {
+                                                                if (routePlaceList.get(k-1).getStars()>routePlaceList.get(k).getStars()){
+                                                                    long num = routePlaceList.get(k-1).getStars();
+                                                                    routePlaceList.get(k-1).setStars(routePlaceList.get(k).getStars());
+                                                                    routePlaceList.get(k).setStars(num);
+                                                                }
+                                                            }
+                                                        }
+                                                        newRoute.add(routePlaceList);
+                                                    }
+                                                    routes = newRoute;
                                                     for (int i = 0; i < routes.size(); i++) {
                                                         List<LatLng> points = new ArrayList<LatLng>();
+                                                        List<Integer> colorValue = new ArrayList<Integer>();
                                                         for (int j = 0; j < routes.get(i).size(); j++) {
                                                             LatLng latLng = new LatLng(routes.get(i).get(j).getLatitude(), routes.get(i).get(j).getLongitude());
                                                             points.add(latLng);
                                                             Bundle bundle = new Bundle();
                                                             bundle.putLong("poi", -1);
                                                             bundle.putLong("stars", routes.get(i).get(j).getStars());
+                                                            if (j<(routes.get(i).size()/3)){
+                                                                //标记绿
+                                                                colorValue.add(green);
+                                                                OverlayOptions ooCircle = new CircleOptions()
+                                                                        .center(latLng)
+                                                                        .setIsGradientCircle(true)
+                                                                        .setCenterColor(Color.argb(0,0,200,0))
+                                                                        .setSideColor(Color.rgb(0,100,0))
+                                                                        .radius(500);
+                                                                Circle mGradientCircle = (Circle) mBaiduMap.addOverlay(ooCircle);
+                                                            }else {
+                                                                if (j<(routes.get(i).size()/3*2)){
+                                                                    //标记黄
+                                                                    colorValue.add(yellow);
+                                                                    OverlayOptions ooCircle = new CircleOptions()
+                                                                            .center(latLng)
+                                                                            .setIsGradientCircle(true)
+                                                                            .setCenterColor(Color.argb(0,200,200,0))
+                                                                            .setSideColor(Color.rgb(100,100,0))
+                                                                            .radius(500);
+                                                                    Circle mGradientCircle = (Circle) mBaiduMap.addOverlay(ooCircle);
+                                                                }else {
+                                                                    //标记红
+                                                                    colorValue.add(red);
+                                                                    OverlayOptions ooCircle = new CircleOptions()
+                                                                            .center(latLng)
+                                                                            .setIsGradientCircle(true)
+                                                                            .setCenterColor(Color.argb(0,200,0,0))
+                                                                            .setSideColor(Color.rgb(100,0,0))
+                                                                            .radius(500);
+                                                                    Circle mGradientCircle = (Circle) mBaiduMap.addOverlay(ooCircle);
+                                                                }
+                                                            }
                                                             OverlayOptions markerOption = new MarkerOptions().position(latLng).extraInfo(bundle).icon(bitmapDescriptor);
                                                             options.add(markerOption);
                                                         }
                                                         mBaiduMap.addOverlays(options);
                                                         OverlayOptions options1 = new PolylineOptions()
                                                                 .width(10)
+                                                                .isGradient(true)
+                                                                .colorsValues(colorValue)
                                                                 .points(points);
                                                         Overlay mpolyline = mBaiduMap.addOverlay(options1);
                                                     }

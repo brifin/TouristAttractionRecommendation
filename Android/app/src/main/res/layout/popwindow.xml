@@ -34,7 +34,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"
+                    android:layout_height="50dp"
                     android:layout_marginTop="15dp"
                     android:orientation="vertical">
 
@@ -92,6 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
+                    android:layout_marginTop="15dp"
                     android:adjustViewBounds="true"
                     android:background="@drawable/image_shape"
                     android:src="@drawable/tiananmen_test" />
@@ -116,6 +117,15 @@
 
                 <ImageView
                     android:id="@+id/detailImage4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/image_shape"
+                    android:src="@drawable/tiananmen_test" />
+
+                <ImageView
+                    android:id="@+id/detailImage5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
