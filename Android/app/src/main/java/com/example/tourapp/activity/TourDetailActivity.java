@@ -32,15 +32,23 @@ public class TourDetailActivity extends AppCompatActivity {
     private String[] introduce = {
             "遇见最美希腊——雅典+圣托里尼+梅黛奥拉天空之城游玩;希腊跟团游。",
             "冰与火之歌，冰岛欢乐深度游;冰岛跟团游。",
+            "美国东部经典豪华游;纽约+费城+华盛顿+尼亚加拉瀑布+波士顿。",
+            "美国东海岸旅游团;尼亚加拉大瀑布-费城-华盛顿",
+            "美国西海岸;拉斯维加斯-大峡谷-羚羊彩穴-马蹄湾-胡佛水坝-巧克力工厂",
             "纵贯拉普兰极光破冰之旅;瑞典+芬兰跟团游。",
-            "北欧之珠四国欢乐游 ; 德国+丹麦+瑞典+芬兰+挪威跟团游。"
+            "北欧之珠四国欢乐游;德国+丹麦+瑞典+芬兰+挪威跟团游。",
+            "美国南部;迈阿密经典,迈阿密/罗德岱堡跟团游"
     };
 
     private int[] imageId = {
             R.drawable.view1,
             R.drawable.view2,
+            R.drawable.view5,
+            R.drawable.scenery1group1,
+            R.drawable.scenery2group1,
             R.drawable.view3,
-            R.drawable.view4
+            R.drawable.view4,
+            R.drawable.scenery3group1
     };
     private String schedule;
     private boolean isScatteredGroups;
@@ -65,7 +73,7 @@ public class TourDetailActivity extends AppCompatActivity {
         });
 
         Random random = new Random();
-        int nextInt = random.nextInt(4);
+        int nextInt = random.nextInt(5);
         tv_introduce.setText(introduce[nextInt]);
         iv_introduce.setImageResource(imageId[nextInt]);
         hideStable();
