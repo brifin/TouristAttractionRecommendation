@@ -277,6 +277,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 groupInterface1.HistoryStar(requestBody).enqueue(new Callback<List<MyLoveData>>() {
                     @Override
                     public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
+                        System.out.println("我的点赞在路线成功");
+                        System.out.println(gson1.toJson(response.body())+"%%");
                         List<MyLoveData> response1 = new ArrayList<MyLoveData>();
                         response1 = response.body();
                         long[] poiStars = null;
@@ -291,22 +293,27 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         routeData.setStars(poiStars);
                         Gson gson = new Gson();
                         String s = gson.toJson(routeData);
+                        System.out.println(s+"#");
                         RequestBody requestBodye = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), s);
                         getRouteService.getRoute(requestBodye).enqueue(new Callback<List<List<double[]>>>() {
                             @Override
                             public void onResponse(Call<List<List<double[]>>> call, Response<List<List<double[]>>> response) {
+                                System.out.println("生成路线请求1");
                                 List<List<double[]>> response1 = response.body();
                                 RouteFirstResponse routeFirstResponse = new RouteFirstResponse();
+                                routeFirstResponse.setRoute(new ArrayList<List<RouteFirstPlace>>());
                                 List<List<RouteFirstPlace>> route = routeFirstResponse.getRoute();
                                 if (response1 != null) {
                                     if (response1.size() != 0) {
                                         for (int i = 0; i < response1.size(); i++) {
+                                            List<RouteFirstPlace> places = new ArrayList<RouteFirstPlace>();
                                             for (int j = 0; j < response1.get(i).size(); j++) {
                                                 RouteFirstPlace routeFirstPlace = new RouteFirstPlace();
                                                 routeFirstPlace.setLatitude(response1.get(i).get(j)[0]);
                                                 routeFirstPlace.setLongitude(response1.get(i).get(j)[1]);
-                                                route.get(i).add(routeFirstPlace);
+                                                places.add(routeFirstPlace);
                                             }
+                                            route.add(places);
                                         }
                                         Retrofit retrofit1 = new Retrofit.Builder()
                                                 .baseUrl("http://47.107.38.208:8090/attractions/")
@@ -317,6 +324,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                         getRouteRecommend.getRouteRecommend(requestBody).enqueue(new Callback<RouteRespose>() {
                                             @Override
                                             public void onResponse(Call<RouteRespose> call, Response<RouteRespose> response) {
+                                                System.out.println(gson.toJson(response.body())+"@@");
+                                                System.out.println("生成路线请求2");
                                                 List<OverlayOptions> options = new ArrayList<OverlayOptions>();
                                                 List<LatLng> latLngList = new ArrayList<LatLng>();
                                                 BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
@@ -647,6 +656,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 ImageView imageView2 = pop_upsView.findViewById(R.id.detailImage2);
                 ImageView imageView3 = pop_upsView.findViewById(R.id.detailImage3);
                 ImageView imageView4 = pop_upsView.findViewById(R.id.detailImage4);
+                ImageView imageView5 = pop_upsView.findViewById(R.id.detailImage5);
                 TextView textView = pop_upsView.findViewById(R.id.detailtext);
                 Random random = new Random();
                 int number = random.nextInt(100);
@@ -655,6 +665,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 imageView2.setImageResource(photo.getListGroup().get(num)[1]);
                 imageView3.setImageResource(photo.getListGroup().get(num)[2]);
                 imageView4.setImageResource(photo.getListGroup().get(num)[3]);
+                imageView5.setImageResource(photo.getListGroup().get(num)[4]);
                 textView.setText(photo.getTexts().get(num));
                 geoCoder.destroy();
                 return true;
