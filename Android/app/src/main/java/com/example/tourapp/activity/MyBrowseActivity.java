@@ -15,6 +15,7 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.example.tourapp.Photo;
 import com.example.tourapp.R;
 import com.example.tourapp.adapter.BrowseAdapter;
 import com.example.tourapp.data.MyLoveData;
@@ -87,6 +88,7 @@ public class MyBrowseActivity extends AppCompatActivity {
                 System.out.println("我的浏览请求成功");
                 List<MyLoveData> response1 = new ArrayList<MyLoveData>();
                 response1 = response.body();
+                Photo photo = new Photo();
                 if (response1 != null) {
                     if (response1.size() != 0) {
                         for (int i = 0; i < response1.size(); i++) {
@@ -95,6 +97,7 @@ public class MyBrowseActivity extends AppCompatActivity {
                             browseItem.setLongitude(response1.get(i).getLongitude());
                             browseItem.setPoi(response1.get(i).getPoi());
                             browseItem.setTimestamp(response1.get(i).getTimestamp());
+                            browseItem.setPhoto(photo.getListGroup().get(i%4)[i%5]);
                             mData.add(browseItem);
                         }
                     }
@@ -109,9 +112,9 @@ public class MyBrowseActivity extends AppCompatActivity {
                     @Override
                     public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
                         for (int i = 0; i < mData.size(); i++) {
-                            if (mData.get(i).getLatitude() == reverseGeoCodeResult.getLocation().latitude && mData.get(i).getLongitude() == reverseGeoCodeResult.getLocation().longitude) {
+                            if (String.format("%.5f",mData.get(i).getLatitude()).equals(String.format("%.5f",reverseGeoCodeResult.getLocation().latitude)) &&String.format("%.5f",mData.get(i).getLongitude()).equals(String.format("%.5f", reverseGeoCodeResult.getLocation().longitude))) {
                                 mData.get(i).setPlace(reverseGeoCodeResult.getAddress());
-                                System.out.println("逆地理编码" + i);
+                                System.out.println("++");
                             }
                             if (i==(mData.size()-1)){
                                 adapter = new BrowseAdapter(mData);

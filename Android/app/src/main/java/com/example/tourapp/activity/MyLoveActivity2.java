@@ -15,6 +15,7 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.example.tourapp.Photo;
 import com.example.tourapp.R;
 import com.example.tourapp.adapter.LoveAdapter;
 import com.example.tourapp.data.MyLoveData;
@@ -82,6 +83,7 @@ public class MyLoveActivity2 extends AppCompatActivity {
             public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
                 List<MyLoveData> response1 = new ArrayList<MyLoveData>();
                 response1 = response.body();
+                Photo photo = new Photo();
                 if (response1 != null) {
                     if (response1.size() != 0) {
                         for (int i = 0; i < response1.size(); i++) {
@@ -90,6 +92,7 @@ public class MyLoveActivity2 extends AppCompatActivity {
                             loveItem.setLongitude(response1.get(i).getLongitude());
                             loveItem.setPoi(response1.get(i).getPoi());
                             loveItem.setTimestamp(response1.get(i).getTimestamp());
+                            loveItem.setPhoto(photo.getListGroup().get(i%4)[i%5]);
                             mData.add(loveItem);
                         }
                     }
@@ -105,26 +108,22 @@ public class MyLoveActivity2 extends AppCompatActivity {
                     //逆地理编码
                     @Override
                     public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
-                        System.out.println(reverseGeoCodeResult.getAddress());
                         for (int i = 0; i < mData.size(); i++) {
-                            if (mData.get(i).getLatitude() == reverseGeoCodeResult.getLocation().latitude && mData.get(i).getLongitude() == reverseGeoCodeResult.getLocation().longitude) {
+                            if (String.format("%.5f",mData.get(i).getLatitude()).equals(String.format("%.5f", mData.get(i).getLatitude())) && String.format("%.5f",mData.get(i).getLongitude()).equals(String.format("%.5f", reverseGeoCodeResult.getLocation().longitude ))) {
                                 mData.get(i).setPlace(reverseGeoCodeResult.getAddress());
                             }
                         }
+                        adapter = new LoveAdapter(mData);
+                        listView = (ListView) findViewById(R.id.love_listView);
+                        listView.setAdapter(adapter);
                     }
                 };
                 mgeoCoder.setOnGetGeoCodeResultListener(listener);
                 for (int i = 0; i < mData.size(); i++) {
                     LatLng latLng = new LatLng(mData.get(i).getLatitude(), mData.get(i).getLongitude());
                     mgeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng).newVersion(1).language(LanguageType.LanguageTypeChinese));
-                    System.out.println("外面" + i);
                 }
                 mgeoCoder.destroy();
-                adapter = new LoveAdapter(mData);
-                listView = (ListView) findViewById(R.id.love_listView);
-                listView.setAdapter(adapter);
-                System.out.println("我的点赞数据请求成功");
-
             }
 
             @Override

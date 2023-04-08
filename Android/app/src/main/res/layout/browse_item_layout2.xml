@@ -7,7 +7,7 @@
 
     <ImageView
         android:id="@+id/browse_item_iv"
-        android:layout_width="100dp"
+        android:layout_width="150dp"
         android:layout_height="match_parent"
         android:adjustViewBounds="true" />
 
@@ -15,12 +15,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.2" />
 
         <TextView
             android:id="@+id/browse_item_place"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:textColor="@color/black"
+            android:layout_weight="3"
+            android:gravity="center"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" />
 
         <TextView
             android:id="@+id/browse_item_position"
@@ -29,6 +39,10 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="@color/black" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/browse_item_time"
@@ -37,5 +51,9 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="@color/black" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
     </LinearLayout>
 </LinearLayout>

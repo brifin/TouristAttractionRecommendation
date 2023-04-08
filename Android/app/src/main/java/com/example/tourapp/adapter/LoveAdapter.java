@@ -49,30 +49,29 @@ public class LoveAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(MyApplication.getContext()).inflate(R.layout.love_item_layout, parent, false);
             holder = new ViewHolder();
-           holder.imageView = (ImageView) convertView.findViewById(R.id.love_item_iv);
-           holder.textViewPlace = (TextView) convertView.findViewById(R.id.love_item_place);
+            holder.imageView = (ImageView) convertView.findViewById(R.id.love_item_iv);
+            holder.textViewPlace = (TextView) convertView.findViewById(R.id.love_item_place);
             holder.textViewTime = (TextView) convertView.findViewById(R.id.love_item_time);
             holder.textViewPosition = (TextView) convertView.findViewById(R.id.love_item_position);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        //holder.imageView.setImageResource(mData.get(position).getPhoto());
-
+        holder.imageView.setImageResource(mData.get(position).getPhoto());
         holder.textViewPlace.setText(mData.get(position).getPlace());
         holder.textViewTime.setText(mData.get(position).getTimestamp());
 
         String latStr;
         String lonStr;
-        if(mData.get(position).getLatitude() >= 0) {
+        if (mData.get(position).getLatitude() >= 0) {
             latStr = String.format("%.2f° N", mData.get(position).getLatitude());
-        }else {
+        } else {
             latStr = String.format("%.2f° S", -mData.get(position).getLatitude());
         }
 
-        if(mData.get(position).getLongitude() >= 0) {
+        if (mData.get(position).getLongitude() >= 0) {
             lonStr = String.format("%.2f° E", mData.get(position).getLongitude());
-        }else {
+        } else {
             lonStr = String.format("%.2f° W", -mData.get(position).getLongitude());
         }
         String tv_position = "(" + latStr + "," + lonStr + ")";

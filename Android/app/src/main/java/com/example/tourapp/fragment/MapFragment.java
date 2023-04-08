@@ -44,11 +44,15 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.example.tourapp.NumberFlag;
 import com.example.tourapp.Photo;
 import com.example.tourapp.R;
 import com.example.tourapp.ServiceCreator_app01;
 import com.example.tourapp.ServiceCreator_attractions;
 import com.example.tourapp.ServiceCreator_user;
+import com.example.tourapp.Task1;
+import com.example.tourapp.Task2;
+import com.example.tourapp.Task3;
 import com.example.tourapp.activity.LoginActivity;
 import com.example.tourapp.activity.MainActivity;
 import com.example.tourapp.activity.MyLoveActivity2;
@@ -89,6 +93,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
@@ -213,13 +219,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         } else {
 
                         }
-//                        long[] poiStars = new long[6];
-//                        poiStars[0] = 1;
-//                        poiStars[1] = 2;
-//                        poiStars[2] = 3;
-//                        poiStars[3] = 4;
-//                        poiStars[4] = 5;
-//                        poiStars[5] = 6;
                         RecommendStars recommendStars = new RecommendStars();
                         recommendStars.setStars(poiStars);
                         GetRecommendService getRecommendService = retrofit.create(GetRecommendService.class);
@@ -233,9 +232,12 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                 List<double[]> places = recommendReturn.getRecommends();
                                 for (int i = 0; i < places.size(); i++) {
                                     double[] place = places.get(i);
+                                    System.out.println("#+" + places.get(i)[0] + places.get(i)[1]);
                                     LatLng point = new LatLng(place[0], place[1]);
                                     Bundle bundle = new Bundle();
                                     bundle.putLong("stars", -1);
+                                    bundle.putDouble("latitude", place[0]);
+                                    bundle.putDouble("longitude", place[1]);
                                     BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
                                     OverlayOptions option = new MarkerOptions()
                                             .position(point)
@@ -278,7 +280,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
                         System.out.println("我的点赞在路线成功");
-                        System.out.println(gson1.toJson(response.body())+"%%");
+                        System.out.println(gson1.toJson(response.body()) + "%%");
                         List<MyLoveData> response1 = new ArrayList<MyLoveData>();
                         response1 = response.body();
                         long[] poiStars = null;
@@ -293,12 +295,12 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         routeData.setStars(poiStars);
                         Gson gson = new Gson();
                         String s = gson.toJson(routeData);
-                        System.out.println(s+"#");
+                        System.out.println("##"+s);
                         RequestBody requestBodye = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), s);
                         getRouteService.getRoute(requestBodye).enqueue(new Callback<List<List<double[]>>>() {
                             @Override
                             public void onResponse(Call<List<List<double[]>>> call, Response<List<List<double[]>>> response) {
-                                System.out.println("生成路线请求1");
+                                System.out.println("生成路线请求1"+gson.toJson(response.body()));
                                 List<List<double[]>> response1 = response.body();
                                 RouteFirstResponse routeFirstResponse = new RouteFirstResponse();
                                 routeFirstResponse.setRoute(new ArrayList<List<RouteFirstPlace>>());
@@ -324,7 +326,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                         getRouteRecommend.getRouteRecommend(requestBody).enqueue(new Callback<RouteRespose>() {
                                             @Override
                                             public void onResponse(Call<RouteRespose> call, Response<RouteRespose> response) {
-                                                System.out.println(gson.toJson(response.body())+"@@");
                                                 System.out.println("生成路线请求2");
                                                 List<OverlayOptions> options = new ArrayList<OverlayOptions>();
                                                 List<LatLng> latLngList = new ArrayList<LatLng>();
@@ -337,78 +338,58 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                                     List<List<RoutePlace>> routes = data1.getRoute();
                                                     List<List<RoutePlace>> newRoute = new ArrayList<List<RoutePlace>>();
 
-                                                    //按人数低到高排序
+                                                    //按路线总人数低到高排序
+                                                    NumberFlag[] list = new NumberFlag[route.size()];
                                                     for (int i = 0; i < route.size(); i++) {
                                                         List<RoutePlace> routePlaceList = routes.get(i);
-                                                        for (int j = 0; j < routePlaceList.size()-1; j++) {
-                                                            for (int k = 1; k < routePlaceList.size()-j; k++) {
-                                                                if (routePlaceList.get(k-1).getStars()>routePlaceList.get(k).getStars()){
-                                                                    long num = routePlaceList.get(k-1).getStars();
-                                                                    routePlaceList.get(k-1).setStars(routePlaceList.get(k).getStars());
-                                                                    routePlaceList.get(k).setStars(num);
-                                                                }
-                                                            }
+                                                        long sum = 0;
+                                                        NumberFlag numberFlag = new NumberFlag();
+                                                        numberFlag.setRoutenumber(0);
+                                                        numberFlag.setNum(0);
+                                                        for (int j = 0; j < routePlaceList.size(); j++) {
+                                                            sum = sum + routePlaceList.get(j).getStars();
                                                         }
-                                                        newRoute.add(routePlaceList);
+                                                        numberFlag.setNum(sum);
+                                                        numberFlag.setRoutenumber(i);
+                                                        list[i] = numberFlag;
                                                     }
+                                                    if (list[0].getNum() > list[1].getNum()) {
+                                                        NumberFlag numberFlag = list[0];
+                                                        list[0] = list[1];
+                                                        list[1] = numberFlag;
+                                                    }
+                                                    if (list[1].getNum() > list[2].getNum()) {
+                                                        NumberFlag numberFlag = list[1];
+                                                        list[1] = list[2];
+                                                        list[2] = numberFlag;
+                                                    }
+                                                    if (list[0].getNum() > list[1].getNum()) {
+                                                        NumberFlag numberFlag = list[0];
+                                                        list[0] = list[1];
+                                                        list[1] = numberFlag;
+                                                    }
+                                                    newRoute.add(routes.get(list[0].getRoutenumber()));
+                                                    newRoute.add(routes.get(list[1].getRoutenumber()));
+                                                    newRoute.add(routes.get(list[1].getRoutenumber()));
                                                     routes = newRoute;
-                                                    for (int i = 0; i < routes.size(); i++) {
-                                                        List<LatLng> points = new ArrayList<LatLng>();
-                                                        List<Integer> colorValue = new ArrayList<Integer>();
-                                                        for (int j = 0; j < routes.get(i).size(); j++) {
-                                                            LatLng latLng = new LatLng(routes.get(i).get(j).getLatitude(), routes.get(i).get(j).getLongitude());
-                                                            points.add(latLng);
-                                                            Bundle bundle = new Bundle();
-                                                            bundle.putLong("poi", -1);
-                                                            bundle.putLong("stars", routes.get(i).get(j).getStars());
-                                                            if (j<(routes.get(i).size()/3)){
-                                                                //标记绿
-                                                                colorValue.add(green);
-                                                                OverlayOptions ooCircle = new CircleOptions()
-                                                                        .center(latLng)
-                                                                        .setIsGradientCircle(true)
-                                                                        .setCenterColor(Color.argb(0,0,200,0))
-                                                                        .setSideColor(Color.rgb(0,100,0))
-                                                                        .radius(500);
-                                                                Circle mGradientCircle = (Circle) mBaiduMap.addOverlay(ooCircle);
-                                                            }else {
-                                                                if (j<(routes.get(i).size()/3*2)){
-                                                                    //标记黄
-                                                                    colorValue.add(yellow);
-                                                                    OverlayOptions ooCircle = new CircleOptions()
-                                                                            .center(latLng)
-                                                                            .setIsGradientCircle(true)
-                                                                            .setCenterColor(Color.argb(0,200,200,0))
-                                                                            .setSideColor(Color.rgb(100,100,0))
-                                                                            .radius(500);
-                                                                    Circle mGradientCircle = (Circle) mBaiduMap.addOverlay(ooCircle);
-                                                                }else {
-                                                                    //标记红
-                                                                    colorValue.add(red);
-                                                                    OverlayOptions ooCircle = new CircleOptions()
-                                                                            .center(latLng)
-                                                                            .setIsGradientCircle(true)
-                                                                            .setCenterColor(Color.argb(0,200,0,0))
-                                                                            .setSideColor(Color.rgb(100,0,0))
-                                                                            .radius(500);
-                                                                    Circle mGradientCircle = (Circle) mBaiduMap.addOverlay(ooCircle);
-                                                                }
-                                                            }
-                                                            OverlayOptions markerOption = new MarkerOptions().position(latLng).extraInfo(bundle).icon(bitmapDescriptor);
-                                                            options.add(markerOption);
-                                                        }
-                                                        mBaiduMap.addOverlays(options);
-                                                        OverlayOptions options1 = new PolylineOptions()
-                                                                .width(10)
-                                                                .isGradient(true)
-                                                                .colorsValues(colorValue)
-                                                                .points(points);
-                                                        Overlay mpolyline = mBaiduMap.addOverlay(options1);
-                                                    }
-                                                } else {
-                                                    Toast.makeText(getContext(), "生成路线为null", Toast.LENGTH_SHORT).show();
-                                                }
+                                                    List<LatLng> points = new ArrayList<LatLng>();
+                                                    Timer timer1 = new Timer();
+                                                    TimerTask task1 = new Task1(routes,mBaiduMap, timer1, mapView);
+                                                    timer1.schedule(task1, 0 , 500);
+
+                                                    Timer timer2 = new Timer();
+                                                    TimerTask task2 = new Task2(routes,mBaiduMap, timer1, mapView);
+                                                    timer1.schedule(task2, 2500 , 500);
+
+                                                    Timer timer3 = new Timer();
+                                                    TimerTask task3 = new Task3(routes,mBaiduMap, timer1, mapView);
+                                                    timer1.schedule(task3, 5000 , 500);
+                                            } else
+
+                                            {
+                                                Toast.makeText(getContext(), "生成路线为null", Toast.LENGTH_SHORT).show();
                                             }
+                                        }
 
                                             @Override
                                             public void onFailure(Call<RouteRespose> call, Throwable t) {
@@ -475,6 +456,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                     Bundle bundle = new Bundle();
                                     bundle.putLong("poi", (long) (nearlypoint1[2]));
                                     bundle.putLong("stars", -1);
+                                    bundle.putDouble("latitude", nearlypoint1[0]);
+                                    bundle.putDouble("longitude", nearlypoint1[1]);
                                     OverlayOptions options1 = new MarkerOptions()
                                             .animateType(MarkerOptions.MarkerAnimateType.none)
                                             .position(point)
@@ -502,6 +485,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     clickMarker.setStar(1);
                     //post请求传输点赞数据
                     String clickMarkerJson = new Gson().toJson(clickMarker);
+                    System.out.println(clickMarkerJson+"点赞json");
 
                     RequestBody requestBodyClickLove = RequestBody.create(MediaType.get("application/json; charset=utf-8"), clickMarkerJson);
                     clickLoveService.clickLove(requestBodyClickLove).enqueue(new Callback<ResponseBody>() {
@@ -522,6 +506,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     clickMarker.setStar(0);
                     //post传输点赞数据
                     String clickMarkerJson1 = new Gson().toJson(clickMarker);
+                    System.out.println(clickMarkerJson1+"点赞json");
+
                     RequestBody requestBodyClickLove2 = RequestBody.create(MediaType.get("application/json; charset=utf-8"), clickMarkerJson1);
                     clickLoveService.clickLove(requestBodyClickLove2).enqueue(new Callback<ResponseBody>() {
                         @Override
@@ -554,6 +540,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 }
 
                 heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart));
+                flag = true;
 
                 OkHttpClient okHttpClient = new OkHttpClient.Builder()
                         .addInterceptor(new AddCookiesInterceptor())
@@ -583,8 +570,11 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                             long[] myLovepoi = new long[data.size()];
                             for (int i = 0; i < data.size(); i++) {
                                 myLovepoi[i] = data.get(i).getPoi();
-                                if (poi == data.get(i).getPoi()) {
+                                double lan = (double) marker.getExtraInfo().get("latitude");
+                                double lon = (double) marker.getExtraInfo().get("longitude");
+                                if (lan == data.get(i).getLatitude() && lon == data.get(i).getLongitude()) {
                                     heartiv.setImageDrawable(getResources().getDrawable(R.drawable.heart1, null));
+                                    flag = false;
                                 }
                             }
 

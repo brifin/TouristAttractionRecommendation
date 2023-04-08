@@ -55,7 +55,7 @@ public class BrowseAdapter extends BaseAdapter {
         } else {
             viewholder = (viewHolder) convertView.getTag();
         }
-        //viewholder.imageView.setImageResource(mData.get(position).getPhoto());
+        viewholder.imageView.setImageResource(mBrowseData.get(position).getPhoto());
         viewholder.textViewPlace.setText(mBrowseData.get(position).getPlace());
         viewholder.textViewTime.setText(mBrowseData.get(position).getTimestamp());
 
