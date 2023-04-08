@@ -12,7 +12,7 @@ import retrofit2.http.Query;
 
 public interface GetNearlyAttra {
 
-    @Headers({"Cookie:userId=1"})
+
     @POST("nearbyAttractions")
     @FormUrlEncoded
     Call<NearlyAttra> getNearlyAttra(@Field("latitude") String latitude, @Field("longitude") String longitude );

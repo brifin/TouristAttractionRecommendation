@@ -3,6 +3,8 @@ package com.example.tourapp;
 import com.example.tourapp.interceptor.AddCookiesInterceptor;
 import com.example.tourapp.interceptor.ReceivedCookiesInterceptor;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -12,6 +14,9 @@ public class ServiceCreator_user {
     private static OkHttpClient okHttpClient = new OkHttpClient.Builder()
             .addInterceptor(new AddCookiesInterceptor())
             .addInterceptor(new ReceivedCookiesInterceptor())
+            .writeTimeout(20000, TimeUnit.SECONDS)
+            .readTimeout(20000,TimeUnit.SECONDS)
+            .connectTimeout(20000,TimeUnit.SECONDS)
             .build();
     private static Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)

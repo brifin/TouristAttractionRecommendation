@@ -39,10 +39,6 @@ public class Task2 extends TimerTask {
         route = routes.get(1);
         points = new ArrayList<LatLng>();
         flag = 0;
-        moverlayOptions = new PolylineOptions()
-                .width(20)
-                .color(0xAAFFFF00)
-                .points(points);
         bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
         options = new ArrayList<OverlayOptions>();
     }
@@ -59,9 +55,9 @@ public class Task2 extends TimerTask {
         OverlayOptions mTextOptions = new TextOptions()
                 .text("人数:"+route.get(flag).getStars())
                 .bgColor(0xFFFFFF)
-                .fontSize(20)
+                .fontSize(30)
                 .position(latLng)
-                .fontColor(0x000000);
+                .fontColor(0xAA000000);
 
         OverlayOptions options1 = new MarkerOptions()
                 .extraInfo(bundle)
@@ -69,11 +65,19 @@ public class Task2 extends TimerTask {
                 .position(latLng);
         options.add(options1);
         points.add(latLng);
+        if (points.size()>1){
+            moverlayOptions = new PolylineOptions()
+                    .width(20)
+                    .color(0xAAFFFF00)
+                    .points(points);
+        }
         mapView.post(new Runnable() {
             @Override
             public void run() {
                 baiduMap.addOverlays(options);
-                Overlay mPolyline = baiduMap.addOverlay(moverlayOptions);
+                if (points.size()>1){
+                    Overlay mPolyline = baiduMap.addOverlay(moverlayOptions);
+                }
                 Overlay mText = baiduMap.addOverlay(mTextOptions);
             }
         });

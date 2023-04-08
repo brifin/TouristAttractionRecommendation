@@ -3,6 +3,7 @@ package com.example.tourapp.service;
 
 import com.example.tourapp.data.RouteData;
 import com.example.tourapp.data.RouteFirstResponse;
+import com.example.tourapp.data.RouteRecommendFirst;
 
 
 import java.util.List;
@@ -16,5 +17,5 @@ import retrofit2.http.POST;
 
 public interface GetRouteService {
     @POST("route")
-    Call<List<List<double[]>>> getRoute(@Body RequestBody requestBody);
+    Call<RouteRecommendFirst> getRoute(@Body RequestBody requestBody);
 }

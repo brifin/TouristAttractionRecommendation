@@ -1,10 +1,13 @@
 package com.example.tourapp;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.widget.Button;
 
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.Overlay;
@@ -12,6 +15,7 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.TextOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.example.tourapp.application.MyApplication;
 import com.example.tourapp.data.RoutePlace;
 
 import java.util.ArrayList;
@@ -39,10 +43,6 @@ public class Task3 extends TimerTask {
         route = routes.get(2);
         points = new ArrayList<LatLng>();
         flag = 0;
-        moverlayOptions = new PolylineOptions()
-                .width(20)
-                .color(0xAAFF0000)
-                .points(points);
         bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
         options = new ArrayList<OverlayOptions>();
     }
@@ -58,21 +58,30 @@ public class Task3 extends TimerTask {
         OverlayOptions mTextOptions = new TextOptions()
                 .text("人数:"+route.get(flag).getStars())
                 .bgColor(0xFFFFFF)
-                .fontSize(20)
+                .fontSize(30)
                 .position(latLng)
-                .fontColor(0x000000);
-
+                .fontColor(0xAA000000);
+        Button button = new Button(MyApplication.getContext());
+        button.setText("人数:"+route.get(flag).getStars());
         OverlayOptions options1 = new MarkerOptions()
                 .extraInfo(bundle)
                 .icon(bitmapDescriptor)
                 .position(latLng);
         options.add(options1);
         points.add(latLng);
+        if (points.size()>1){
+            moverlayOptions = new PolylineOptions()
+                    .width(20)
+                    .color(0xAAFF0000)
+                    .points(points);
+        }
         mapView.post(new Runnable() {
             @Override
             public void run() {
                 baiduMap.addOverlays(options);
-                Overlay mPolyline = baiduMap.addOverlay(moverlayOptions);
+                if (points.size()>1){
+                    Overlay mPolyline = baiduMap.addOverlay(moverlayOptions);
+                }
                 Overlay mText = baiduMap.addOverlay(mTextOptions);
             }
         });

@@ -70,6 +70,7 @@ import com.example.tourapp.data.RouteFirstPlace;
 import com.example.tourapp.data.RouteFirstResponse;
 import com.example.tourapp.data.RouteListData;
 import com.example.tourapp.data.RoutePlace;
+import com.example.tourapp.data.RouteRecommendFirst;
 import com.example.tourapp.data.RouteRespose;
 import com.example.tourapp.data.UserData;
 import com.example.tourapp.httpInterface.GroupInterface;
@@ -201,10 +202,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onResponse(Call<List<MyLoveData>> call, Response<List<MyLoveData>> response) {
                         System.out.println("请求1成功" + gson.toJson(response.body()));
-                        //MyLoveDataArray loveDataArray = response.body();
                         List<MyLoveData> response1;
                         response1 = response.body();
-                        //MyLoveData[] data = null;
                         long[] poiStars = null;
                         if (response1 != null) {
                             if (response1.size() != 0) {
@@ -230,6 +229,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                 System.out.println("请求2成功");
                                 RecommendReturn recommendReturn = response.body();
                                 List<double[]> places = recommendReturn.getRecommends();
+                                long[] pois = recommendReturn.getMap_poi();
                                 for (int i = 0; i < places.size(); i++) {
                                     double[] place = places.get(i);
                                     System.out.println("#+" + places.get(i)[0] + places.get(i)[1]);
@@ -238,6 +238,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                     bundle.putLong("stars", -1);
                                     bundle.putDouble("latitude", place[0]);
                                     bundle.putDouble("longitude", place[1]);
+                                    bundle.putLong("poi", pois[i]);
                                     BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
                                     OverlayOptions option = new MarkerOptions()
                                             .position(point)
@@ -295,13 +296,13 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         routeData.setStars(poiStars);
                         Gson gson = new Gson();
                         String s = gson.toJson(routeData);
-                        System.out.println("##"+s);
+                        System.out.println("##" + s);
                         RequestBody requestBodye = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), s);
-                        getRouteService.getRoute(requestBodye).enqueue(new Callback<List<List<double[]>>>() {
+                        getRouteService.getRoute(requestBodye).enqueue(new Callback<RouteRecommendFirst>() {
                             @Override
-                            public void onResponse(Call<List<List<double[]>>> call, Response<List<List<double[]>>> response) {
-                                System.out.println("生成路线请求1"+gson.toJson(response.body()));
-                                List<List<double[]>> response1 = response.body();
+                            public void onResponse(Call<RouteRecommendFirst> call, Response<RouteRecommendFirst> response) {
+                                System.out.println("生成路线请求1" + gson.toJson(response.body()));
+                                List<List<double[]>> response1 = response.body().getAllRoute();
                                 RouteFirstResponse routeFirstResponse = new RouteFirstResponse();
                                 routeFirstResponse.setRoute(new ArrayList<List<RouteFirstPlace>>());
                                 List<List<RouteFirstPlace>> route = routeFirstResponse.getRoute();
@@ -374,22 +375,20 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                                     routes = newRoute;
                                                     List<LatLng> points = new ArrayList<LatLng>();
                                                     Timer timer1 = new Timer();
-                                                    TimerTask task1 = new Task1(routes,mBaiduMap, timer1, mapView);
-                                                    timer1.schedule(task1, 0 , 500);
+                                                    TimerTask task1 = new Task1(routes, mBaiduMap, timer1, mapView);
+                                                    timer1.schedule(task1, 0, 500);
 
                                                     Timer timer2 = new Timer();
-                                                    TimerTask task2 = new Task2(routes,mBaiduMap, timer1, mapView);
-                                                    timer1.schedule(task2, 2500 , 500);
+                                                    TimerTask task2 = new Task2(routes, mBaiduMap, timer2, mapView);
+                                                    timer2.schedule(task2, 2500, 500);
 
                                                     Timer timer3 = new Timer();
-                                                    TimerTask task3 = new Task3(routes,mBaiduMap, timer1, mapView);
-                                                    timer1.schedule(task3, 5000 , 500);
-                                            } else
-
-                                            {
-                                                Toast.makeText(getContext(), "生成路线为null", Toast.LENGTH_SHORT).show();
+                                                    TimerTask task3 = new Task3(routes, mBaiduMap, timer3, mapView);
+                                                    timer3.schedule(task3, 5000, 500);
+                                                } else {
+                                                    Toast.makeText(getContext(), "生成路线为null", Toast.LENGTH_SHORT).show();
+                                                }
                                             }
-                                        }
 
                                             @Override
                                             public void onFailure(Call<RouteRespose> call, Throwable t) {
@@ -406,7 +405,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                             }
 
                             @Override
-                            public void onFailure(Call<List<List<double[]>>> call, Throwable t) {
+                            public void onFailure(Call<RouteRecommendFirst> call, Throwable t) {
                                 System.out.println("生成路线请求1失败");
                                 System.out.println(t.toString());
                             }
@@ -430,11 +429,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
                 GetNearlyAttra getNearlyAttra = (GetNearlyAttra) ServiceCreator_user.creatService(GetNearlyAttra.class);
                 getNearlyAttra.getNearlyAttra(String.valueOf(currentPoint[0]), String.valueOf(currentPoint[1])).
-
                         enqueue(new Callback<NearlyAttra>() {
                             @Override
-                            public void onResponse
-                                    (Call<NearlyAttra> call, Response<NearlyAttra> response) {
+                            public void onResponse(Call<NearlyAttra> call, Response<NearlyAttra> response) {
                                 List<OverlayOptions> options = new ArrayList<OverlayOptions>();
                                 BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
                                 NearlyAttra nearlyAttra = response.body();
@@ -485,7 +482,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     clickMarker.setStar(1);
                     //post请求传输点赞数据
                     String clickMarkerJson = new Gson().toJson(clickMarker);
-                    System.out.println(clickMarkerJson+"点赞json");
+                    System.out.println(clickMarkerJson + "点赞json");
 
                     RequestBody requestBodyClickLove = RequestBody.create(MediaType.get("application/json; charset=utf-8"), clickMarkerJson);
                     clickLoveService.clickLove(requestBodyClickLove).enqueue(new Callback<ResponseBody>() {
@@ -506,7 +503,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                     clickMarker.setStar(0);
                     //post传输点赞数据
                     String clickMarkerJson1 = new Gson().toJson(clickMarker);
-                    System.out.println(clickMarkerJson1+"点赞json");
+                    System.out.println(clickMarkerJson1 + "点赞json");
 
                     RequestBody requestBodyClickLove2 = RequestBody.create(MediaType.get("application/json; charset=utf-8"), clickMarkerJson1);
                     clickLoveService.clickLove(requestBodyClickLove2).enqueue(new Callback<ResponseBody>() {
