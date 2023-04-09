@@ -47,6 +47,7 @@ public class Task2 extends TimerTask {
     @Override
     public void run() {
         LatLng latLng = new LatLng(route.get(flag).getLatitude(), route.get(flag).getLongitude());
+        System.out.println(flag+"#"+route.get(flag).getLatitude()+"$"+route.get(flag).getLongitude());
         Bundle bundle = new Bundle();
         bundle.putLong("poi", -1);
         bundle.putLong("stars", route.get(flag).getStars());

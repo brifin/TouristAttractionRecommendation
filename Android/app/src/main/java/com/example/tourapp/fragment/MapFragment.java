@@ -204,7 +204,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         System.out.println("请求1成功" + gson.toJson(response.body()));
                         List<MyLoveData> response1;
                         response1 = response.body();
-                        long[] poiStars = null;
+                        long[] poiStars = new long[response1.size()];
                         if (response1 != null) {
                             if (response1.size() != 0) {
                                 poiStars = new long[response1.size()];
@@ -220,7 +220,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                         }
                         RecommendStars recommendStars = new RecommendStars();
                         recommendStars.setStars(poiStars);
+                        System.out.println(gson.toJson(poiStars)+"##");
                         GetRecommendService getRecommendService = retrofit.create(GetRecommendService.class);
+                        System.out.println(gson.toJson(recommendStars)+"$$$$");
                         RequestBody requestBody1 = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), gson.toJson(recommendStars));
                         getRecommendService.getRecommendData(requestBody1).enqueue(new Callback<RecommendReturn>() {
                             @Override
@@ -327,7 +329,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                         getRouteRecommend.getRouteRecommend(requestBody).enqueue(new Callback<RouteRespose>() {
                                             @Override
                                             public void onResponse(Call<RouteRespose> call, Response<RouteRespose> response) {
-                                                System.out.println("生成路线请求2");
+                                                System.out.println("生成路线请求2"+gson.toJson(response.body()));
                                                 List<OverlayOptions> options = new ArrayList<OverlayOptions>();
                                                 List<LatLng> latLngList = new ArrayList<LatLng>();
                                                 BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
@@ -371,20 +373,20 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                                     }
                                                     newRoute.add(routes.get(list[0].getRoutenumber()));
                                                     newRoute.add(routes.get(list[1].getRoutenumber()));
-                                                    newRoute.add(routes.get(list[1].getRoutenumber()));
+                                                    newRoute.add(routes.get(list[2].getRoutenumber()));
                                                     routes = newRoute;
                                                     List<LatLng> points = new ArrayList<LatLng>();
                                                     Timer timer1 = new Timer();
                                                     TimerTask task1 = new Task1(routes, mBaiduMap, timer1, mapView);
-                                                    timer1.schedule(task1, 0, 500);
+                                                    timer1.schedule(task1, 0, 400);
 
                                                     Timer timer2 = new Timer();
                                                     TimerTask task2 = new Task2(routes, mBaiduMap, timer2, mapView);
-                                                    timer2.schedule(task2, 2500, 500);
+                                                    timer2.schedule(task2, 0, 400);
 
                                                     Timer timer3 = new Timer();
                                                     TimerTask task3 = new Task3(routes, mBaiduMap, timer3, mapView);
-                                                    timer3.schedule(task3, 5000, 500);
+                                                    timer3.schedule(task3, 0, 400);
                                                 } else {
                                                     Toast.makeText(getContext(), "生成路线为null", Toast.LENGTH_SHORT).show();
                                                 }
