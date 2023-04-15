@@ -33,14 +33,6 @@
             android:textSize="25sp" />
 
         <ImageView
-            android:id="@+id/iv_ScatteredGroups"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:layout_weight="1"
-            android:src="@drawable/collection" />
-
-        <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="14dp"
@@ -55,23 +47,28 @@
     <ImageView
         android:id="@+id/iv_introduce"
         android:layout_width="match_parent"
-        android:adjustViewBounds="true"
-        android:layout_margin="10dp"
-        android:layout_height="135dp"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/view1"
+        android:layout_height="186dp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_margin="20dp"
+            android:layout_height="200dp">
         <TextView
             android:id="@+id/tv_introduce"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/introduce"
-            android:layout_gravity="center"
-            android:layout_margin="20dp"
             android:background="@color/white"
             android:textSize="20dp"/>
+        </ScrollView>
 
         <TextView
             android:layout_width="match_parent"

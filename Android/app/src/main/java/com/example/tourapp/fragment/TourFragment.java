@@ -46,9 +46,42 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
     private List<TourItem> tourItemList = new ArrayList<>();
     private TourAdapter tourAdapter;
     private ImageView iv_back3;
-    private int i;
 
     public View view;
+
+    private int Id = 0;
+    private String[] tourName = {
+            "希腊旅游团",
+            "冰岛旅游团",
+            "美国东部旅游团",
+            "美国西海岸旅游团",
+            "芬兰旅游团",
+            "拉普兰旅游团",
+            "北欧旅游团",
+            "美国南部旅游团"
+    };
+
+    private String[] positionName = {
+            "希腊",
+            "冰岛",
+            "美国东部",
+            "美国西海岸",
+            "芬兰",
+            "拉普兰",
+            "北欧",
+            "美国南部"
+    };
+
+    private int[] imageId = {
+            R.drawable.view1,
+            R.drawable.view2,
+            R.drawable.view5,
+            R.drawable.view6,
+            R.drawable.scenery2group1,
+            R.drawable.view3,
+            R.drawable.view4,
+            R.drawable.scenery3group1
+    };
 
     public TourFragment() {
     }
@@ -69,6 +102,8 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_tour, container, false);
+        iv_back3 = view.findViewById(R.id.iv_back3);
+        iv_back3.setOnClickListener(TourFragment.this);
         initTourItems();
         return view;
     }
@@ -90,11 +125,11 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                     long code = dataResult.getCode();
                     Log.d("YANG", dataResult.getMsg());
                     if (code == 200) {
-                        i = 1;
                         String[] schedules = dataResult.getData();
                         Gson gson = new Gson();
 
                         for (String schedule : schedules) {
+                            System.out.println(schedule);
                             MySchedule mySchedule = new MySchedule(schedule.trim());
                             String json = gson.toJson(mySchedule);
 
@@ -115,23 +150,23 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                                 @Override
                                 public void onResponse(Call<GroupResult> call, Response<GroupResult> response) {
                                     Boolean isScatteredGroups = response.body().getScatteredGroups();
-                                    String tourName = "旅游团" + i++;
-                                    TourItem tourItem;
-                                    if (!isScatteredGroups) {
-                                        tourItem = new TourItem(tourName, R.drawable.collection, schedule, false);
-                                    } else {
-                                        tourItem = new TourItem(tourName, R.drawable.uncollection, schedule, true);
+                                    if (Id < 8) {
+                                        TourItem tourItem;
+                                        if (!isScatteredGroups) {
+                                            tourItem = new TourItem(tourName[Id], imageId[Id], schedule, false, positionName[Id]);
+                                        } else {
+                                            tourItem = new TourItem(tourName[Id], imageId[Id], schedule, true, positionName[Id]);
+                                        }
+
+                                        tourItemList.add(tourItem);
                                     }
 
-                                    tourItemList.add(tourItem);
                                     tourAdapter = new TourAdapter(MyApplication.getContext(), R.layout.tour_item, tourItemList);
-                                    iv_back3 = view.findViewById(R.id.iv_back3);
                                     ListView list_view = view.findViewById(R.id.list_view);
                                     list_view.setAdapter(tourAdapter);
 
                                     list_view.setOnItemClickListener(TourFragment.this);
-                                    iv_back3.setOnClickListener(TourFragment.this);
-
+                                    Id++;
                                 }
 
                                 @Override
@@ -141,6 +176,7 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                                 }
 
                             });
+
                         }
 
                     } else {
@@ -165,10 +201,10 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
         intent.putExtra("schedule", tourItemList.get(position).getSchedule());
         System.out.println("###" + tourItemList.get(position).getSchedule());
         intent.putExtra("isScatteredGroups", tourItemList.get(position).isIsScatteredGroups());
+        System.out.println("###" + id);
+        intent.putExtra("id", position);
         //valueListener.sendSchedule(tourItemList.get(position).getSchedule());
         //valueListener.sendIsScatteredGroups(tourItemList.get(position).isIsScatteredGroups());
-
-        intent.putExtra("isScatteredGroups",tourItemList.get(position).isIsScatteredGroups());
 
         startActivity(intent);
     }
