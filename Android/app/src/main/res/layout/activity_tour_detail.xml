@@ -59,13 +59,13 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="160dp">
+            android:layout_margin="20dp"
+            android:layout_height="200dp">
         <TextView
             android:id="@+id/tv_introduce"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/introduce"
-            android:layout_margin="20dp"
             android:background="@color/white"
             android:textSize="20dp"/>
         </ScrollView>
@@ -73,7 +73,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:layout_marginTop="4dp"
             android:background="@drawable/text_view_border"
             android:gravity="center"
             android:text="@string/tour_record"
