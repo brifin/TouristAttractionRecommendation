@@ -33,14 +33,6 @@
             android:textSize="25sp" />
 
         <ImageView
-            android:id="@+id/iv_ScatteredGroups"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:layout_weight="1"
-            android:src="@drawable/collection" />
-
-        <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="14dp"

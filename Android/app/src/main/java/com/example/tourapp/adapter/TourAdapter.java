@@ -32,25 +32,37 @@ public class TourAdapter extends ArrayAdapter<TourItem>{
         if(convertView == null) {
             view = LayoutInflater.from(getContext()).inflate(resourceId, parent, false);
             viewHolder  = new ViewHolder();
-            viewHolder.iv_collection = view.findViewById(R.id.iv_collection);
+            viewHolder.tv_isScatteredGroups = view.findViewById(R.id.tv_isScatteredGroups);
             viewHolder.tv_tourName = view.findViewById(R.id.tv_tourName);
+            viewHolder.iv_pic = view.findViewById(R.id.iv_pic);
+            viewHolder.tv_positionName = view.findViewById(R.id.tv_positionName);
             view.setTag(viewHolder);
         }else {
             view = convertView;
             viewHolder = (ViewHolder) view.getTag();
         }
-        viewHolder.iv_collection.setImageResource(tourItem.getImageId());
+        viewHolder.iv_pic.setImageResource(tourItem.getImageId());
         viewHolder.tv_tourName.setText(tourItem.getTourName());
+        viewHolder.tv_positionName.setText(tourItem.getPositionName());
+
+        if(tourItem.isIsScatteredGroups()) {
+            viewHolder.tv_isScatteredGroups.setText("散拼团");
+        }else if(!tourItem.isIsScatteredGroups()) {
+            viewHolder.tv_isScatteredGroups.setText("精品团");
+        }
         //标记
-        viewHolder.iv_collection.setTag(position);
+        viewHolder.tv_isScatteredGroups.setTag(position);
+        viewHolder.tv_positionName.setTag(position);
         viewHolder.tv_tourName.setTag(position);
         return view;
     }
 
 
     public final static class ViewHolder {
-        ImageView iv_collection;
+        ImageView iv_pic;
+        TextView tv_isScatteredGroups;
         TextView tv_tourName;
+        TextView tv_positionName;
     }
 
     @Nullable

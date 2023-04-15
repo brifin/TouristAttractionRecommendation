@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.HeterogeneousExpandableList;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,32 +28,55 @@ public class TourDetailActivity extends AppCompatActivity {
     private List<RecordItem> recordItemList = new ArrayList<>();
     private TourDetailAdapter adapter;
     private ImageView iv_back;
-    private ImageView iv_ScatteredGroups;
+    //private ImageView iv_ScatteredGroups;
     private TextView tv_introduce;
     private String[] introduce = {
             "遇见最美希腊——雅典+圣托里尼+梅黛奥拉天空之城游玩;希腊跟团游。",
             "冰与火之歌，冰岛欢乐深度游;冰岛跟团游。",
             "美国东部经典豪华游;纽约+费城+华盛顿+尼亚加拉瀑布+波士顿。",
-            "美国东海岸旅游团;尼亚加拉大瀑布-费城-华盛顿",
-            "美国西海岸;拉斯维加斯-大峡谷-羚羊彩穴-马蹄湾-胡佛水坝-巧克力工厂",
+            "美国西海岸;拉斯维加斯+大峡谷+羚羊彩穴+马蹄湾+胡佛水坝+巧克力工厂。",
+            "芬兰游;图尔库城堡+赫尔辛基+波尔沃+凯米+罗瓦涅米+莱维。",
             "纵贯拉普兰极光破冰之旅;瑞典+芬兰跟团游。",
-            "北欧之珠四国欢乐游;德国+丹麦+瑞典+芬兰+挪威跟团游。",
-            "美国南部;迈阿密经典,迈阿密/罗德岱堡跟团游"
+            "德国旅游团;新天鹅堡+柏林+科隆大教堂",
+            "美国南部;迈阿密+罗德岱堡跟团游。"
     };
+
+    double[] lat = {
+            38.52,
+            64.09,
+            39.56,
+            37.10,
+            60.27,
+            69.02,
+            52.30,
+            25.47
+    };//纬度
+
+    double[] lon = {
+            24.52,
+            -21.56,
+            -75.10,
+            -115.08,
+            23.14,
+            24.08,
+            13.25,
+            -80.03
+    };//精度
 
     private int[] imageId = {
             R.drawable.view1,
             R.drawable.view2,
             R.drawable.view5,
-            R.drawable.scenery1group1,
-            R.drawable.scenery2group1,
+            R.drawable.view7,
+            R.drawable.view6,
             R.drawable.view3,
             R.drawable.view4,
-            R.drawable.scenery3group1
+            R.drawable.view8
     };
     private String schedule;
-    private boolean isScatteredGroups;
+    //private boolean isScatteredGroups;
     private ImageView iv_introduce;
+    private int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +85,10 @@ public class TourDetailActivity extends AppCompatActivity {
         iv_back = findViewById(R.id.iv_back);
         tv_introduce = findViewById(R.id.tv_introduce);
         iv_introduce = findViewById(R.id.iv_introduce);
-        iv_ScatteredGroups = findViewById(R.id.iv_ScatteredGroups);
+        //iv_ScatteredGroups = findViewById(R.id.iv_ScatteredGroups);
         schedule = getIntent().getStringExtra("schedule");
-        isScatteredGroups = getIntent().getBooleanExtra("isScatteredGroups", false);
+        //isScatteredGroups = getIntent().getBooleanExtra("isScatteredGroups", false);
+        id = getIntent().getIntExtra("id", 0);
         initTourDetailItems();
         ListView listView = findViewById(R.id.list_item_detail);
         adapter = new TourDetailAdapter(this, R.layout.record_item, recordItemList);
@@ -71,28 +96,22 @@ public class TourDetailActivity extends AppCompatActivity {
         iv_back.setOnClickListener(v -> {
             finish();
         });
+        if (id < 8) {
+            tv_introduce.setText(introduce[id]);
+            iv_introduce.setImageResource(imageId[id]);
+        }
 
-        Random random = new Random();
-        int nextInt = random.nextInt(5);
-        tv_introduce.setText(introduce[nextInt]);
-        iv_introduce.setImageResource(imageId[nextInt]);
         hideStable();
     }
 
     private void initTourDetailItems() {
-        if (!isScatteredGroups) {
-            iv_ScatteredGroups.setImageResource(R.drawable.collection);
-        } else {
-            iv_ScatteredGroups.setImageResource(R.drawable.uncollection);
-        }
         //System.out.println(schedule);
         String[] str = schedule.split("\\s+");
-        for(int i = 1;i<str.length;i++)
-        {
+        for (int i = 1; i < str.length; i++) {
 
             String[] simple = str[i].split(",");
-            double latStart = 30;
-            double lonStart = 120;
+            double latStart = lat[id];
+            double lonStart = lon[id];
             Date nowDate = new Date();
             long startTime = nowDate.getTime() - 2000 * 60 * 1000;
             RecordItem recordItem;
@@ -100,7 +119,7 @@ public class TourDetailActivity extends AppCompatActivity {
 
             String timeStr = simple[2];
             double timeOffset = Double.parseDouble(timeStr) * 60 * 1000;
-            long time = (long)(startTime + timeOffset);
+            long time = (long) (startTime + timeOffset);
             Date date = new Date(time);
             String formatTime = format.format(date);
             double lat = latStart + Double.parseDouble(simple[0]);
@@ -128,17 +147,17 @@ public class TourDetailActivity extends AppCompatActivity {
     }
 
 
-//隐藏状态栏
-public void hideStable(){
-        ActionBar actionBar=getSupportActionBar();
+    //隐藏状态栏
+    public void hideStable() {
+        ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         ImmersionBar.with(this)
-        .transparentBar()
-        .statusBarDarkFont(true)
-        .statusBarAlpha(0.0f)
-        .hideBar(BarHide.FLAG_HIDE_BAR)
-        .init();
-        }
+                .transparentBar()
+                .statusBarDarkFont(true)
+                .statusBarAlpha(0.0f)
+                .hideBar(BarHide.FLAG_HIDE_BAR)
+                .init();
+    }
 
     /*@Override
     public void sendSchedule(String str) {
