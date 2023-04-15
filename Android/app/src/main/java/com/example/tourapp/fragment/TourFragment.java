@@ -102,6 +102,8 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_tour, container, false);
+        iv_back3 = view.findViewById(R.id.iv_back3);
+        iv_back3.setOnClickListener(TourFragment.this);
         initTourItems();
         return view;
     }
@@ -160,12 +162,10 @@ public class TourFragment extends Fragment implements AdapterView.OnItemClickLis
                                     }
 
                                     tourAdapter = new TourAdapter(MyApplication.getContext(), R.layout.tour_item, tourItemList);
-                                    iv_back3 = view.findViewById(R.id.iv_back3);
                                     ListView list_view = view.findViewById(R.id.list_view);
                                     list_view.setAdapter(tourAdapter);
 
                                     list_view.setOnItemClickListener(TourFragment.this);
-                                    iv_back3.setOnClickListener(TourFragment.this);
                                     Id++;
                                 }
 

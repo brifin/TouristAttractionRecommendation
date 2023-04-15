@@ -47,27 +47,33 @@
     <ImageView
         android:id="@+id/iv_introduce"
         android:layout_width="match_parent"
-        android:adjustViewBounds="true"
-        android:layout_margin="10dp"
-        android:layout_height="135dp"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/view1"
+        android:layout_height="186dp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="160dp">
         <TextView
             android:id="@+id/tv_introduce"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/introduce"
-            android:layout_gravity="center"
             android:layout_margin="20dp"
             android:background="@color/white"
             android:textSize="20dp"/>
+        </ScrollView>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="30dp"
+            android:layout_marginTop="4dp"
             android:background="@drawable/text_view_border"
             android:gravity="center"
             android:text="@string/tour_record"
