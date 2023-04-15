@@ -42,7 +42,8 @@
                         android:id="@+id/place_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/placename"
                         android:text="地点:天安门"
                         android:textColor="@color/black" />
 
@@ -67,7 +68,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scrollbars="vertical"
-                        android:text="天安门（旧称：承天门）位于中国北京市中心，故宫的南端，属于首批全国重点文物保护单位之一，中国国家象征之一。天安门正中门洞上方悬挂着毛泽东画像，两边分别是“中华人民共和国万岁”和“世界人民大团结万岁”的大幅标语。天安门（旧称：承天门）位于中国北京市中心，故宫的南端，属于首批全国重点文物保护单位之一，中国国家象征之一。天安门正中门洞上方悬挂着毛泽东画像，两边分别是与动荡的国际形势和作为世界最大经济体、也是西方民主代表的美国令人震惊的国内分裂形成鲜明对比的是，中国在我们眼前展现的不可思议的壮举让人们相信，用不了多久，中国就能实现民族复兴的中国梦。事实上，任何冷静地观察美国国会大厦危机的人都知道，我们正在目睹一场重大变化，在国际政治中具有显着潜力的回响，成群结队的破坏者冲进了现任美国总统本人鼓励的大楼。两个世纪以来，美国民主被视为西方的典范，由于内部原因，它正在急剧破裂很快就会康。"
                         android:textColor="@color/black" />
                 </LinearLayout>
 
@@ -79,15 +79,16 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <ImageView
+                <com.github.siyamed.shapeimageview.RoundedImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginLeft="120dp"
                     android:layout_marginTop="15dp"
-                    android:background="@color/white" />
+                    android:background="@color/white"
+                    app:siRadius="5dp" />
 
 
-                <ImageView
+                <com.github.siyamed.shapeimageview.RoundedImageView
                     android:id="@+id/detailImage1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -95,43 +96,48 @@
                     android:layout_marginTop="15dp"
                     android:adjustViewBounds="true"
                     android:background="@drawable/image_shape"
-                    android:src="@drawable/tiananmen_test" />
+                    android:src="@drawable/tiananmen_test"
+                    app:siRadius="5dp"/>
 
-                <ImageView
+                <com.github.siyamed.shapeimageview.RoundedImageView
                     android:id="@+id/detailImage2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:adjustViewBounds="true"
                     android:background="@drawable/image_shape"
-                    android:src="@drawable/tiananmen2" />
+                    android:src="@drawable/tiananmen2"
+                    app:siRadius="5dp"/>
 
-                <ImageView
+                <com.github.siyamed.shapeimageview.RoundedImageView
                     android:id="@+id/detailImage3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:adjustViewBounds="true"
                     android:background="@drawable/image_shape"
-                    android:src="@drawable/tiananmen2" />
+                    android:src="@drawable/tiananmen2"
+                    app:siRadius="5dp"/>
 
-                <ImageView
+                <com.github.siyamed.shapeimageview.RoundedImageView
                     android:id="@+id/detailImage4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:adjustViewBounds="true"
                     android:background="@drawable/image_shape"
-                    android:src="@drawable/tiananmen_test" />
+                    android:src="@drawable/tiananmen_test"
+                    app:siRadius="5dp"/>
 
-                <ImageView
+                <com.github.siyamed.shapeimageview.RoundedImageView
                     android:id="@+id/detailImage5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:adjustViewBounds="true"
                     android:background="@drawable/image_shape"
-                    android:src="@drawable/tiananmen_test" />
+                    android:src="@drawable/tiananmen_test"
+                    app:siRadius="5dp"/>
 
 
             </LinearLayout>

@@ -4,6 +4,15 @@ public class RoutePlace {
     private double latitude;
     private double longitude;
     private long stars;
+    private long poi;
+
+    public long getPoi() {
+        return poi;
+    }
+
+    public void setPoi(long poi) {
+        this.poi = poi;
+    }
 
     public double getLatitude() {
         return latitude;

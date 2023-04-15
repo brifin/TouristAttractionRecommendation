@@ -3,6 +3,15 @@ package com.example.tourapp.data;
 public class RouteFirstPlace {
     private double latitude;
     private double longitude;
+    private long poi;
+
+    public long getPoi() {
+        return poi;
+    }
+
+    public void setPoi(long poi) {
+        this.poi = poi;
+    }
 
     public double getLatitude() {
         return latitude;

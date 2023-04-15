@@ -3,6 +3,8 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
+        maven { url 'https://jitpacks.io' }
+        
     }
 }
 dependencyResolutionManagement {
@@ -11,6 +13,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url 'https://jitpacks.io' }
+
     }
 }
 rootProject.name = "TourApp"

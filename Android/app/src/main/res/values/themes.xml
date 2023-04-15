@@ -18,4 +18,5 @@
         <item name="android:windowTranslucentStatus">true</item>
         <!-- Customize your theme here. -->
     </style>
+
 </resources>
