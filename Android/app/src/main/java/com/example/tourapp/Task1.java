@@ -1,7 +1,9 @@
 package com.example.tourapp;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.UiThread;
 
@@ -41,94 +43,70 @@ public class Task1 extends TimerTask {
     public List<LatLng> points;
     public BaiduMap baiduMap;
     public MapView mapView;
-
-    private RoutePlanSearch mSearch;
+    public View view;
     public int flag;
+    public OverlayOptions moverlayOptions;
     public BitmapDescriptor bitmapDescriptor;
-
-
     public List<OverlayOptions> options;
-    public List<RoutePlace> route;
-    public Timer timer;
+    public List<RoutePlace> route ;
+    public Timer timer ;
 
-    public Task1(List<List<RoutePlace>> routes, BaiduMap baiduMap, Timer timer, MapView mapView) {
+    public Task1(List<List<RoutePlace>> routes, BaiduMap baiduMap, Timer timer, MapView mapView,View view,BitmapDescriptor bitmapDescriptor) {
         this.routes = routes;
         this.baiduMap = baiduMap;
         this.timer = timer;
         this.mapView = mapView;
+        this.bitmapDescriptor = bitmapDescriptor;
         route = routes.get(0);
         points = new ArrayList<LatLng>();
         flag = 0;
-        mSearch = RoutePlanSearch.newInstance();
-        bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
+        this.view = view;
         options = new ArrayList<OverlayOptions>();
     }
 
+
     @Override
     public void run() {
+        if (flag > 5) {
+            timer.cancel();
+        }
         LatLng latLng = new LatLng(route.get(flag).getLatitude(), route.get(flag).getLongitude());
+        System.out.println(flag+"#"+route.get(flag).getLatitude()+"$"+route.get(flag).getLongitude());
         Bundle bundle = new Bundle();
-        bundle.putLong("poi", -1);
+        bundle.putLong("poi", -route.get(flag).getPoi());
+        System.out.println("poi1"+route.get(flag).getPoi());
+
         bundle.putLong("stars", route.get(flag).getStars());
         bundle.putDouble("latitude", route.get(flag).getLatitude());
         bundle.putDouble("longitude", route.get(flag).getLongitude());
-        Bundle bundle1 = new Bundle();
+
+
+        TextView textView = view.findViewById(R.id.population);
+        textView.setText("人数："+route.get(flag).getStars());
+        bitmapDescriptor  = BitmapDescriptorFactory.fromView(view);
 
         OverlayOptions options1 = new MarkerOptions()
                 .extraInfo(bundle)
                 .icon(bitmapDescriptor)
                 .position(latLng);
         options.add(options1);
-
-
-        OnGetRoutePlanResultListener listener = new OnGetRoutePlanResultListener() {
-            @Override
-            public void onGetWalkingRouteResult(WalkingRouteResult walkingRouteResult) {
-
-            }
-
-            @Override
-            public void onGetTransitRouteResult(TransitRouteResult transitRouteResult) {
-
-            }
-
-            @Override
-            public void onGetMassTransitRouteResult(MassTransitRouteResult massTransitRouteResult) {
-
-            }
-
-            @Override
-            public void onGetDrivingRouteResult(DrivingRouteResult drivingRouteResult) {
-                DrivingRouteOverlay overlay = new DrivingRouteOverlay(baiduMap);
-                if(drivingRouteResult.getRouteLines().size() > 0){
-                    overlay.setData(drivingRouteResult.getRouteLines().get(0));
-                    overlay.addToMap();
-                }
-
-            }
-
-            @Override
-            public void onGetIndoorRouteResult(IndoorRouteResult indoorRouteResult) {
-
-            }
-
-            @Override
-            public void onGetBikingRouteResult(BikingRouteResult bikingRouteResult) {
-
-            }
-        };
-        mSearch.setOnGetRoutePlanResultListener(listener);
-        LatLng latLngStart = new LatLng(route.get(0).getLatitude(), route.get(0).getLongitude());
-        LatLng latLngEnd = new LatLng(route.get(route.size()-1).getLatitude(), route.get(route.size()-1).getLongitude());
-        PlanNode stNode = PlanNode.withLocation(latLngStart);
-        PlanNode endNode = PlanNode.withLocation(latLngEnd);
-        mSearch.drivingSearch(new DrivingRoutePlanOption().from(stNode).to(endNode));
-        baiduMap.addOverlays(options);
-        mSearch.destroy();
-
-        flag = flag + 1;
-        if (flag > 7) {
-            timer.cancel();
+        points.add(latLng);
+        if (points.size()>1){
+            moverlayOptions = new PolylineOptions()
+                    .width(10)
+                    .color(0xAA00DD00)
+                    .points(points);
         }
+        mapView.post(new Runnable() {
+            @Override
+            public void run() {
+                baiduMap.addOverlays(options);
+                if (points.size()>1){
+                    Overlay mPolyline = baiduMap.addOverlay(moverlayOptions);
+                }
+            }
+        });
+        flag = flag + 1;
+
     }
 }

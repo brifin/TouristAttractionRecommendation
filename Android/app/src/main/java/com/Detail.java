@@ -19,6 +19,7 @@ public class Detail {
     public Detail(String name, String detail, int[] photos){
         this.detail  = detail;
         this.photos = photos;
+        this.name = name;
     }
 
     public String getDetail() {

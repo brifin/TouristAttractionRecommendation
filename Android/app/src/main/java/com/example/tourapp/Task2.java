@@ -1,6 +1,8 @@
 package com.example.tourapp;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
@@ -24,51 +26,56 @@ public class Task2 extends TimerTask {
     public List<LatLng> points;
     public BaiduMap baiduMap;
     public MapView mapView;
+    public View view;
     public int flag;
     public OverlayOptions moverlayOptions;
     public BitmapDescriptor bitmapDescriptor;
     public List<OverlayOptions> options;
-    public List<RoutePlace> route ;
-    public Timer timer ;
+    public List<RoutePlace> route;
+    public Timer timer;
 
-    public Task2(List<List<RoutePlace>> routes, BaiduMap baiduMap, Timer timer, MapView mapView) {
+    public Task2(List<List<RoutePlace>> routes, BaiduMap baiduMap, Timer timer, MapView mapView, View view, BitmapDescriptor bitmapDescriptor) {
         this.routes = routes;
         this.baiduMap = baiduMap;
         this.timer = timer;
         this.mapView = mapView;
         route = routes.get(1);
         points = new ArrayList<LatLng>();
+        this.bitmapDescriptor = bitmapDescriptor;
         flag = 0;
-        bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
+        this.view = view;
         options = new ArrayList<OverlayOptions>();
     }
 
 
     @Override
     public void run() {
+        if (flag > 5) {
+            System.out.println("%%%%");
+            timer.cancel();
+        }
         LatLng latLng = new LatLng(route.get(flag).getLatitude(), route.get(flag).getLongitude());
-        System.out.println(flag+"#"+route.get(flag).getLatitude()+"$"+route.get(flag).getLongitude());
+        System.out.println(flag + "#" + route.get(flag).getLatitude() + "$" + route.get(flag).getLongitude());
         Bundle bundle = new Bundle();
-        bundle.putLong("poi", -1);
+        bundle.putLong("poi", route.get(flag).getPoi());
+        System.out.println("poi2"+route.get(flag).getPoi());
+
         bundle.putLong("stars", route.get(flag).getStars());
         bundle.putDouble("latitude", route.get(flag).getLatitude());
         bundle.putDouble("longitude", route.get(flag).getLongitude());
-        OverlayOptions mTextOptions = new TextOptions()
-                .text("人数:"+route.get(flag).getStars())
-                .bgColor(0xFFFFFF)
-                .fontSize(30)
-                .position(latLng)
-                .fontColor(0xAA000000);
 
+        TextView textView = view.findViewById(R.id.population);
+        textView.setText("人数：" + route.get(flag).getStars());
+        bitmapDescriptor  = BitmapDescriptorFactory.fromView(view);
         OverlayOptions options1 = new MarkerOptions()
                 .extraInfo(bundle)
                 .icon(bitmapDescriptor)
                 .position(latLng);
         options.add(options1);
         points.add(latLng);
-        if (points.size()>1){
+        if (points.size() > 1) {
             moverlayOptions = new PolylineOptions()
-                    .width(20)
+                    .width(10)
                     .color(0xAAFFFF00)
                     .points(points);
         }
@@ -76,15 +83,11 @@ public class Task2 extends TimerTask {
             @Override
             public void run() {
                 baiduMap.addOverlays(options);
-                if (points.size()>1){
+                if (points.size() > 1) {
                     Overlay mPolyline = baiduMap.addOverlay(moverlayOptions);
                 }
-                Overlay mText = baiduMap.addOverlay(mTextOptions);
             }
         });
         flag = flag + 1;
-        if (flag > 3) {
-            timer.cancel();
-        }
     }
 }

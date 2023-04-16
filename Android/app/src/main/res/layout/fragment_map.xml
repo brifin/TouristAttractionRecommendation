@@ -5,9 +5,6 @@
 
     <include layout="@layout/map" />
 
-
-
-
     <include layout="@layout/popwindow" />
 
 

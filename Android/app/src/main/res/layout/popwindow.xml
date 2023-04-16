@@ -40,22 +40,23 @@
 
                     <TextView
                         android:id="@+id/place_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
+                        android:layout_width="160dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:background="@drawable/placename"
-                        android:text="地点:天安门"
                         android:textColor="@color/black" />
 
 
-                    <TextView
-                        android:id="@+id/number_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:text="人数:754"
-                        android:textColor="@color/black"
-                        android:visibility="gone" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/number_tv"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginLeft="20dp"-->
+<!--                        android:text="人数:754"-->
+<!--                        android:textColor="@color/black"-->
+<!--                        android:visibility="gone" />-->
                 </LinearLayout>
 
                 <LinearLayout
@@ -97,7 +98,15 @@
                     android:adjustViewBounds="true"
                     android:background="@drawable/image_shape"
                     android:src="@drawable/tiananmen_test"
-                    app:siRadius="5dp"/>
+                    app:siRadius="5dp" />
+
+                <com.github.siyamed.shapeimageview.RoundedImageView
+                    android:layout_width="30dp"
+                    android:layout_height="0.5dp"
+                    android:layout_marginLeft="120dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@color/white"
+                    app:siRadius="5dp" />
 
                 <com.github.siyamed.shapeimageview.RoundedImageView
                     android:id="@+id/detailImage2"
@@ -107,7 +116,15 @@
                     android:adjustViewBounds="true"
                     android:background="@drawable/image_shape"
                     android:src="@drawable/tiananmen2"
-                    app:siRadius="5dp"/>
+                    app:siRadius="5dp" />
+
+                <com.github.siyamed.shapeimageview.RoundedImageView
+                    android:layout_width="30dp"
+                    android:layout_height="0.5dp"
+                    android:layout_marginLeft="120dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@color/white"
+                    app:siRadius="5dp" />
 
                 <com.github.siyamed.shapeimageview.RoundedImageView
                     android:id="@+id/detailImage3"
@@ -117,7 +134,15 @@
                     android:adjustViewBounds="true"
                     android:background="@drawable/image_shape"
                     android:src="@drawable/tiananmen2"
-                    app:siRadius="5dp"/>
+                    app:siRadius="5dp" />
+
+                <com.github.siyamed.shapeimageview.RoundedImageView
+                    android:layout_width="30dp"
+                    android:layout_height="0.5dp"
+                    android:layout_marginLeft="120dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@color/white"
+                    app:siRadius="5dp" />
 
                 <com.github.siyamed.shapeimageview.RoundedImageView
                     android:id="@+id/detailImage4"
@@ -127,17 +152,25 @@
                     android:adjustViewBounds="true"
                     android:background="@drawable/image_shape"
                     android:src="@drawable/tiananmen_test"
-                    app:siRadius="5dp"/>
+                    app:siRadius="5dp" />
+
+                <com.github.siyamed.shapeimageview.RoundedImageView
+                    android:layout_width="30dp"
+                    android:layout_height="0.5dp"
+                    android:layout_marginLeft="120dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@color/white"
+                    app:siRadius="5dp" />
 
                 <com.github.siyamed.shapeimageview.RoundedImageView
                     android:id="@+id/detailImage5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="5dp"
                     android:adjustViewBounds="true"
                     android:background="@drawable/image_shape"
                     android:src="@drawable/tiananmen_test"
-                    app:siRadius="5dp"/>
+                    app:siRadius="5dp" />
 
 
             </LinearLayout>

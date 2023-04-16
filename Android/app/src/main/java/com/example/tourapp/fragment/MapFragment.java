@@ -207,6 +207,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
                     behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 }
+                MapStatus.Builder builder1 = new MapStatus.Builder();
+                builder1.zoom(5.0f);
+                mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder1.build()));
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("http://121.37.67.235:8000/app01/")
                         .addConverterFactory(GsonConverterFactory.create())
@@ -258,8 +261,8 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                 //筛选地点
                                 for (int i = 1; i < places.size(); i++) {
                                     for (int j = 0; j < places.size() - i; j++) {
-                                        double first = places.get(j)[0] * places.get(j)[0] + places.get(j)[1] * places.get(j)[1];
-                                        double second = places.get(j+1)[0] * places.get(j+1)[0] + places.get(j+1)[1] * places.get(j+1)[1];
+                                        double first = (places.get(j)[0]-currentPoint[0]) * (places.get(j)[0]-currentPoint[0]) + (places.get(j)[1]-currentPoint[1]) * (places.get(j)[1]-currentPoint[1]);
+                                        double second = (places.get(j+1)[0]-currentPoint[0]) * (places.get(j+1)[0]-currentPoint[0]) + (places.get(j+1)[1]-currentPoint[1]) * (places.get(j+1)[1]-currentPoint[1]);
                                         if(first>second){
                                             double[] point = places.get(j+1);
                                             places.set(j+1,places.get(j));
@@ -322,6 +325,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                 if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
                     behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 }
+                MapStatus.Builder builder2 = new MapStatus.Builder();
+                builder2.zoom(5.0f);
+                mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder2.build()));
                 GetRouteService getRouteService = (GetRouteService) ServiceCreator_app01.creatService(GetRouteService.class);
                 RouteData routeData = new RouteData();
                 routeData.setLatitude(currentPoint[0]);
@@ -387,7 +393,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                                 System.out.println("生成路线请求2"+gson.toJson(response.body()));
                                                 List<OverlayOptions> options = new ArrayList<OverlayOptions>();
                                                 List<LatLng> latLngList = new ArrayList<LatLng>();
-                                                BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.baidumarker2);
 
                                                 OnGetRoutePlanResultListener listener = new OnGetRoutePlanResultListener() {
                                                     @Override
@@ -421,54 +426,74 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                                 };
 
                                                 if (response.body() != null) {
-
                                                     RouteRespose routeRespose = response.body();
+                                                    System.out.println(response.body());
                                                     RouteListData data1 = routeRespose.getData();
                                                     List<List<RoutePlace>> routes = data1.getRoute();
                                                     List<PlanNode> planNodeList = new ArrayList<PlanNode>();
-                                                    for (int i = 0; i < routes.size(); i++) {
-                                                        options.clear();
-                                                        planNodeList.clear();
-                                                        for (int j = 0; j < routes.get(i).size(); j++) {
-                                                            LatLng latLng = new LatLng(routes.get(i).get(j).getLatitude(), routes.get(i).get(j).getLongitude());
-                                                            PlanNode planNode = PlanNode.withLocation(latLng);
-                                                            planNodeList.add(planNode);
-                                                            Bundle bundle = new Bundle();
-                                                            bundle.putLong("poi", -1);
-                                                            bundle.putLong("stars",routes.get(i).get(j).getStars());
-                                                            bundle.putDouble("latitude", routes.get(i).get(j).getLatitude());
-                                                            bundle.putDouble("longitude", routes.get(i).get(j).getLongitude());
-                                                            String str = "人数："+routes.get(i).get(j).getStars();
-                                                            drawBitMap(str,bitmapDescriptor);
-                                                            OverlayOptions options1 = new MarkerOptions()
-                                                                    .extraInfo(bundle)
-                                                                    .icon(bitmapDescriptor)
-                                                                    .position(latLng);
-                                                            options.add(options1);
-                                                        }
-                                                        RoutePlanSearch mSearch = RoutePlanSearch.newInstance();
-                                                        mSearch.setOnGetRoutePlanResultListener(listener);
-                                                        LatLng latLngStart = new LatLng(routes.get(i).get(0).getLatitude(), routes.get(i).get(0).getLongitude());
-                                                        LatLng latLngEnd = new LatLng(routes.get(i).get(routes.get(i).size()-1).getLatitude(),routes.get(i).get(routes.get(i).size()-1).getLongitude());
-                                                        PlanNode stNode = PlanNode.withLocation(latLngStart);
-                                                        PlanNode endNode = PlanNode.withLocation(latLngEnd);
-                                                        mSearch.drivingSearch(new DrivingRoutePlanOption().passBy(planNodeList).from(stNode).to(endNode));
-                                                        mSearch.destroy();
-                                                        mBaiduMap.addOverlays(options);
+
+                                                    long num1 = 0;
+                                                    long num2 = 0;
+                                                    long num3 = 0;
+                                                    for (int i = 0; i < routes.get(0).size(); i++) {
+                                                        num1 = num1 + routes.get(0).get(i).getStars();
+                                                    }
+                                                    for (int i = 0; i < routes.get(1).size(); i++) {
+                                                        num2 = num1 + routes.get(1).get(i).getStars();
+                                                    }
+                                                    for (int i = 0; i < routes.get(2).size(); i++) {
+                                                        num3 = num1 + routes.get(2).get(i).getStars();
+                                                    }
+                                                    List<RoutePlace> routePlaceList = new ArrayList<RoutePlace>();
+                                                    long[] stars = new long[3];
+                                                    stars[0] = num1;
+                                                    stars[1] = num2;
+                                                    stars[2] = num3;
+                                                    if(stars[0]>stars[1]){
+                                                        long s = stars[0];
+                                                        stars[0] = stars[1];
+                                                        stars[1] = s;
+                                                        routePlaceList = routes.get(0);
+                                                        routes.set(0, routes.get(1));
+                                                        routes.set(1, routePlaceList);
+                                                    }
+                                                    if(stars[1]>stars[2]){
+                                                        long s = stars[1];
+                                                        stars[1] = stars[2];
+                                                        stars[2] = s;
+                                                        routePlaceList = routes.get(1);
+                                                        routes.set(1, routes.get(2));
+                                                        routes.set(2, routePlaceList);
+                                                    }
+                                                    if(stars[1]>stars[2]){
+                                                        long s = stars[1];
+                                                        stars[1] = stars[2];
+                                                        stars[2] = s;
+                                                        routePlaceList = routes.get(1);
+                                                        routes.set(1, routes.get(2));
+                                                        routes.set(2, routePlaceList);
                                                     }
 
-//                                                    List<LatLng> points = new ArrayList<LatLng>();
-//                                                    Timer timer1 = new Timer();
-//                                                    TimerTask task1 = new Task1(routes, mBaiduMap, timer1, mapView);
-//                                                    timer1.schedule(task1, 0, 400);
-//
-//                                                    Timer timer2 = new Timer();
-//                                                    TimerTask task2 = new Task2(routes, mBaiduMap, timer2, mapView);
-//                                                    timer2.schedule(task2, 0, 400);
-//
-//                                                    Timer timer3 = new Timer();
-//                                                    TimerTask task3 = new Task3(routes, mBaiduMap, timer3, mapView);
-//                                                    timer3.schedule(task3, 0, 400);
+                                                    View view1 = getActivity().getLayoutInflater().inflate(R.layout.routemarker,null);
+                                                    View view2 = getActivity().getLayoutInflater().inflate(R.layout.routemarker,null);
+                                                    View view3 = getActivity().getLayoutInflater().inflate(R.layout.routemarker,null);
+
+                                                    BitmapDescriptor bitmapDescriptor1 = BitmapDescriptorFactory.fromView(view1);
+                                                    BitmapDescriptor bitmapDescriptor2 = BitmapDescriptorFactory.fromView(view2);
+                                                    BitmapDescriptor bitmapDescriptor3 = BitmapDescriptorFactory.fromView(view3);
+
+                                                    List<LatLng> points = new ArrayList<LatLng>();
+                                                    Timer timer1 = new Timer();
+                                                    TimerTask task1 = new Task1(routes, mBaiduMap, timer1, mapView,view1,bitmapDescriptor1);
+                                                    timer1.schedule(task1, 0, 400);
+
+                                                    Timer timer2 = new Timer();
+                                                    TimerTask task2 = new Task2(routes, mBaiduMap, timer2, mapView,view2,bitmapDescriptor2);
+                                                    timer2.schedule(task2, 0, 400);
+
+                                                    Timer timer3 = new Timer();
+                                                    TimerTask task3 = new Task3(routes, mBaiduMap, timer3, mapView, view3,bitmapDescriptor3);
+                                                    timer3.schedule(task3, 0, 400);
                                                 } else {
                                                     Toast.makeText(getContext(), "生成路线为null", Toast.LENGTH_SHORT).show();
                                                 }
@@ -531,6 +556,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                                 }
                                 List<double[]> nearlypoint = realPoints;
                                 double[] nearlypoint1 = new double[3];
+                                MapStatus.Builder builder = new MapStatus.Builder();
+                                builder.zoom(16.0f);
+                                mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
                                 for (int i = 0; i < nearlypoint.size(); i++) {
                                     nearlypoint1 = nearlypoint.get(i);
                                     LatLng point = new LatLng(nearlypoint1[0], nearlypoint1[1]);
@@ -611,11 +639,9 @@ public class MapFragment extends Fragment implements View.OnClickListener {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
-                    System.out.println("1");
                     behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                     pop_upsView.setVisibility(View.GONE);
                 } else {
-                    System.out.println("2");
                     pop_upsView.setVisibility(View.VISIBLE);
                     behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
@@ -707,8 +733,11 @@ public class MapFragment extends Fragment implements View.OnClickListener {
 
                 //设置地点和详细信息和图片
                 PoiPhoto poiPhoto = new PoiPhoto();
-                if(poiPhoto.detail.get(marker.getExtraInfo().getLong("poi")) != null){
-                    Detail detail1 = (Detail) poiPhoto.detail.get(marker.getExtraInfo().getLong("poi"));
+                Long poi1 = marker.getExtraInfo().getLong("poi");
+                String poiStr = poi1.toString();
+                Detail detail1 = (Detail) poiPhoto.detail.get(poiStr);
+                if(detail1 != null){
+                    System.out.println(detail1.getName());
                     textViewName.setText(detail1.getName());
                     textView.setText(detail1.getDetail());
                     imageView1.setImageResource(detail1.getPhotos()[0]);
@@ -736,11 +765,11 @@ public class MapFragment extends Fragment implements View.OnClickListener {
                             .location(marker.getPosition())
                             .newVersion(1));
                     long stars = (long) marker.getExtraInfo().get("stars");
-                    if (stars != -1) {
-                        TextView number_tv = pop_upsView.findViewById(R.id.number_tv);
-                        number_tv.setText("人数 : " + stars);
-                        number_tv.setVisibility(View.VISIBLE);
-                    }
+//                    if (stars != -1) {
+//                        TextView number_tv = pop_upsView.findViewById(R.id.number_tv);
+//                        number_tv.setText("人数 : " + stars);
+//                        number_tv.setVisibility(View.VISIBLE);
+//                    }
                     Photo photo = new Photo();
                     Random random = new Random();
                     int number = random.nextInt(100);
@@ -770,60 +799,6 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         translateAnimation.setDuration(250);
         view.setAnimation(translateAnimation);
     }
-    //绘制带有人数的marker
-    public void drawBitMap(String str, BitmapDescriptor bitmapDescriptor){
-        float scale = this.getResources().getDisplayMetrics().density;
-        int width = bitmapDescriptor.getBitmap().getWidth();
-        int height = bitmapDescriptor.getBitmap().getHeight();
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_4444);
-
-        Paint  paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setDither(true);
-        paint.setFilterBitmap(true);
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(14*scale);
-
-        Rect bounds = new Rect();
-        paint.getTextBounds(str, 0, str.length(), bounds);
-        bitmap = scaleWithWH(bitmap,bounds);
-
-        float paddingLeft = (bitmap.getWidth() - bounds.width()) / 2;
-        Canvas canvas = new Canvas(bitmap);
-
-        Paint painRect = new Paint(Paint.ANTI_ALIAS_FLAG);
-        painRect.setStyle(Paint.Style.FILL_AND_STROKE);
-        painRect.setColor(0xffffff);
-        float left = canvas.getHeight();
-
-        RectF r2 = new RectF();
-        r2.left = paddingLeft - 2;
-        r2.top = 0;
-        r2.right = paddingLeft + bounds.width() + 12;
-        r2.bottom = bounds.height() + 10;
-        canvas.drawRoundRect(r2, 10, 10, painRect);
-
-        canvas.drawText(str, paddingLeft, bounds.height(), paint);
-
-        canvas.drawBitmap(bitmapDescriptor.getBitmap(), (bitmap.getWidth()-width)/2, bounds.height()+15 , null);
-    }
-
-    private Bitmap scaleWithWH(Bitmap src, Rect bounds) {
-        if( src == null || bounds == null){
-            return src;
-        }else {
-            int width = src.getWidth();
-            int height = src.getHeight();
-            int bWidth = bounds.width();
-            int bHeight = bounds.height();
-            //计算缩放比例
-            int scaleWidth = bWidth;
-            int scaleHeight = bHeight + height;
-
-            int scale = bWidth / width;
-            //开始缩放
-            return Bitmap.createScaledBitmap(src, (scale+2)*width, scaleHeight + 15, true);
-        }
-    }
 
     //初始化视图
     public void initView(View view) {
@@ -843,7 +818,7 @@ public class MapFragment extends Fragment implements View.OnClickListener {
         MyLocationData myLocationData = new MyLocationData.Builder().latitude(currentPoint[0]).longitude(currentPoint[1]).build();
         mBaiduMap.setMyLocationData(myLocationData);
         MapStatus.Builder builder = new MapStatus.Builder();
-        builder.zoom(15.0f).target(latLng);
+        builder.zoom(5.0f).target(latLng);
         mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
         mBaiduMap.setIndoorEnable(true);
 
